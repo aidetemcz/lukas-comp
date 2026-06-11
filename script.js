@@ -8,16 +8,12 @@ function updateClock() {
 updateClock();
 setInterval(updateClock, 10000);
 
-// ── Icon selection ──
+// ── Icon selection + open ──
 document.querySelectorAll('.icon').forEach(icon => {
   icon.addEventListener('click', () => {
     document.querySelectorAll('.icon').forEach(i => i.classList.remove('selected'));
     icon.classList.add('selected');
-  });
-
-  icon.addEventListener('dblclick', () => {
-    const app = icon.dataset.app;
-    openApp(app);
+    openApp(icon.dataset.app);
   });
 });
 
