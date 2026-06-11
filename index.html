@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lukas-PC</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Desktop -->
+  <div id="desktop">
+
+    <!-- Desktop icons -->
+    <div class="desktop-icons">
+
+      <!-- Folder: Fotky a videa -->
+      <div class="icon" data-app="folder-photos">
+        <img src="assets/icons/folder.svg" alt="složka" />
+        <span>Fotky a videa</span>
+      </div>
+
+      <!-- Folder: Deník -->
+      <div class="icon" data-app="diary">
+        <img src="assets/icons/notepad.svg" alt="poznámkový blok" />
+        <span>denik_soukrome.txt</span>
+      </div>
+
+      <!-- App: Chrome -->
+      <div class="icon" data-app="chrome">
+        <img src="assets/icons/chrome.svg" alt="Chrome" />
+        <span>Google Chrome</span>
+      </div>
+
+      <!-- App: Discord -->
+      <div class="icon" data-app="discord">
+        <img src="assets/icons/discord.svg" alt="Discord" />
+        <span>Discord</span>
+      </div>
+
+      <!-- App: Halo -->
+      <div class="icon" data-app="halo">
+        <img src="assets/icons/halo.svg" alt="Halo" />
+        <span>Halo Infinite</span>
+      </div>
+
+      <!-- App: Counter-Strike -->
+      <div class="icon" data-app="cs">
+        <img src="assets/icons/cs.svg" alt="Counter-Strike" />
+        <span>Counter-Strike 2</span>
+      </div>
+
+      <!-- Recycle Bin -->
+      <div class="icon" data-app="recycle">
+        <img src="assets/icons/recycle.svg" alt="Koš" />
+        <span>Koš</span>
+      </div>
+
+    </div>
+
+    <!-- Taskbar -->
+    <div id="taskbar">
+      <button id="start-btn">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 0h11v11H0zm13 0h11v11H13zM0 13h11v11H0zm13 0h11v11H13z" fill="currentColor"/>
+        </svg>
+      </button>
+      <div id="taskbar-apps"></div>
+      <div id="taskbar-right">
+        <span id="taskbar-time"></span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Modal: Update/Loading placeholder -->
+  <div id="modal-overlay" class="hidden">
+    <div id="modal">
+      <div id="modal-title"></div>
+      <div id="modal-body"></div>
+      <button id="modal-close">Zavřít</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

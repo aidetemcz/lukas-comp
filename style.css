@@ -1,0 +1,194 @@
+/* Reset & base */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  user-select: none;
+}
+
+/* ── Desktop ── */
+#desktop {
+  width: 100vw;
+  height: 100vh;
+  background: url('assets/wallpaper.jpg') center/cover no-repeat, linear-gradient(135deg, #0d1b2a 0%, #1b2a3b 50%, #0a1628 100%);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Desktop icons ── */
+.desktop-icons {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 8px;
+  padding: 16px 12px;
+}
+
+.icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80px;
+  padding: 6px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.8), 0 0 6px rgba(0,0,0,0.6);
+  transition: background 0.1s;
+}
+
+.icon:hover { background: rgba(255,255,255,0.15); }
+.icon.selected { background: rgba(0,120,215,0.45); }
+
+.icon img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  image-rendering: auto;
+}
+
+.icon span {
+  margin-top: 4px;
+  font-size: 11px;
+  text-align: center;
+  line-height: 1.2;
+  max-width: 76px;
+  word-break: break-word;
+}
+
+/* ── Taskbar ── */
+#taskbar {
+  height: 44px;
+  background: rgba(18, 18, 18, 0.92);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  gap: 4px;
+  flex-shrink: 0;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+#start-btn {
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.1s;
+}
+#start-btn:hover { background: rgba(255,255,255,0.12); }
+#start-btn svg { width: 18px; height: 18px; }
+
+#taskbar-apps {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.taskbar-app-btn {
+  height: 36px;
+  padding: 0 12px;
+  background: rgba(255,255,255,0.08);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.1s;
+}
+.taskbar-app-btn:hover { background: rgba(255,255,255,0.16); }
+.taskbar-app-btn img { width: 18px; height: 18px; }
+
+#taskbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  font-size: 12px;
+  padding-right: 8px;
+}
+
+#taskbar-time { font-variant-numeric: tabular-nums; }
+
+/* ── Modal ── */
+#modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+#modal-overlay.hidden { display: none; }
+
+#modal {
+  background: #1e1e2e;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  padding: 28px 32px;
+  min-width: 360px;
+  max-width: 480px;
+  color: #e0e0e0;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+}
+
+#modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #fff;
+}
+
+#modal-body {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  color: #bbb;
+}
+
+#modal-body .progress-bar-wrap {
+  margin-top: 14px;
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+#modal-body .progress-bar {
+  height: 100%;
+  width: 0%;
+  background: #0078d4;
+  border-radius: 2px;
+  animation: progress 8s linear forwards;
+}
+@keyframes progress { to { width: 100%; } }
+
+#modal-close {
+  display: block;
+  margin-left: auto;
+  padding: 8px 20px;
+  background: #0078d4;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+#modal-close:hover { background: #106ebe; }

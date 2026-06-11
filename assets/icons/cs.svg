@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <rect width="48" height="48" rx="6" fill="#1b2838"/>
+  <circle cx="24" cy="24" r="14" fill="#f4a00c" opacity="0.15"/>
+  <path d="M16 20 L22 14 L32 14 L36 20 L36 28 L30 34 L18 34 L12 28 Z" fill="none" stroke="#f4a00c" stroke-width="2"/>
+  <text x="24" y="28" text-anchor="middle" font-size="8" font-family="Arial" font-weight="bold" fill="#f4a00c">CS2</text>
+</svg>
