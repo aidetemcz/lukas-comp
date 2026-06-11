@@ -28,9 +28,40 @@ document.getElementById('desktop').addEventListener('click', e => {
   }
 });
 
+// ── Notepad ──
+const notepadWindow = document.getElementById('notepad-window');
+const notepadContent = document.getElementById('notepad-content');
+document.getElementById('notepad-close-btn').addEventListener('click', () => {
+  notepadWindow.classList.add('hidden');
+});
+
+let diaryLoaded = false;
+
+function openDiary() {
+  notepadWindow.classList.remove('hidden');
+  if (diaryLoaded) return;
+  fetch('content/denik.md')
+    .then(r => r.text())
+    .then(text => {
+      // Strip markdown headings/horizontal rules, keep readable plain text
+      const plain = text
+        .replace(/^#{1,6}\s+/gm, '')
+        .replace(/^\s*---+\s*$/gm, '──────────────────────────────')
+        .replace(/\*\*(.+?)\*\*/g, '$1');
+      notepadContent.textContent = plain;
+      diaryLoaded = true;
+    })
+    .catch(() => {
+      notepadContent.textContent = '[Soubor nelze načíst]';
+    });
+}
+
 // ── App launcher ──
 function openApp(app) {
   switch (app) {
+    case 'diary':
+      openDiary();
+      break;
     case 'halo':
       showUpdateModal('Halo Infinite', 'Stahování aktualizace…', '12,4 GB');
       break;
@@ -41,7 +72,6 @@ function openApp(app) {
       showModal('Koš', 'Koš je prázdný.');
       break;
     default:
-      // placeholder — other apps will be implemented later
       break;
   }
 }

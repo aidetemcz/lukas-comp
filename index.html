@@ -73,6 +73,28 @@
 
   </div>
 
+  <!-- Notepad window -->
+  <div id="notepad-window" class="hidden">
+    <div class="notepad-titlebar">
+      <img class="notepad-titlebar-icon" src="assets/icons/notepad.svg" alt="" />
+      <span class="notepad-titlebar-name">denik_soukrome.txt – Poznámkový blok</span>
+      <button class="notepad-close" id="notepad-close-btn">✕</button>
+    </div>
+    <div class="notepad-menubar">
+      <span class="notepad-menu-item">Soubor</span>
+      <span class="notepad-menu-item">Úpravy</span>
+      <span class="notepad-menu-item">Zobrazení</span>
+      <span class="notepad-menu-item">Nápověda</span>
+    </div>
+    <div class="notepad-content" id="notepad-content">Načítám…</div>
+    <div class="notepad-statusbar">
+      <span id="notepad-lines">Řádek 1, sloupec 1</span>
+      <span>100%</span>
+      <span>Windows (CRLF)</span>
+      <span>UTF-8</span>
+    </div>
+  </div>
+
   <!-- Modal: Update/Loading placeholder -->
   <div id="modal-overlay" class="hidden">
     <div id="modal">
