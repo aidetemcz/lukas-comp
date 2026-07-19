@@ -915,11 +915,477 @@ function openRecycle() {
   renderRecycleList();
 }
 
+// ── Discord ──
+const DISCORD_AVATAR_COLORS = ['#5865f2', '#3ba55d', '#faa61a', '#ed4245', '#eb459e', '#9256d9', '#1abc9c', '#e67e22'];
+function discordAvatarColor(nick) {
+  let h = 0;
+  for (let i = 0; i < nick.length; i++) h = (h * 31 + nick.charCodeAt(i)) >>> 0;
+  return DISCORD_AVATAR_COLORS[h % DISCORD_AVATAR_COLORS.length];
+}
+
+// Each message = author block with one or more text lines.
+// { author, time, date, lukas?, texts:[], attachment?, reactions?:[{emoji,count,byLukas?}] }
+
+const DISCORD = {
+  servers: [
+    {
+      id: 'cs2',
+      name: 'CS2 CZ/SK Community',
+      initials: 'CS2',
+      icon: 'assets/icons/cs.svg',
+      joined: 'Přidán září 2025',
+      activeChannel: 'obecné',
+      channels: [
+        {
+          name: 'obecné', topic: 'gaming chat, mm, klipy',
+          messages: [
+            { author: 'davepvp', time: '18:40', date: '5. 1. 2026', texts: ['kluci mm dneska? mám chuť na pár her'] },
+            { author: 'hidd3nfram3', lukas: true, time: '18:44', date: '5. 1. 2026', texts: ['jj za hodku', '2 sloty ještě volný'] },
+            { author: 'Kryštof12', time: '18:46', date: '5. 1. 2026', texts: ['beru jeden'] },
+            { author: 'SmokeyKC', time: '19:02', date: '5. 1. 2026', texts: ['gg wp z včera btw, ten clutch na inferno byl nechutnej'] },
+            { author: 'hidd3nfram3', lukas: true, time: '19:03', date: '5. 1. 2026', texts: ['haha díky, měl jsem štěstí'], reactions: [{ emoji: '🔥', count: 2 }] },
+            { author: 'davepvp', time: '20:15', date: '28. 1. 2026', texts: ['hraješ?'] },
+            { author: 'hidd3nfram3', lukas: true, time: '20:31', date: '28. 1. 2026', texts: ['dneska nemůžu, zítra jo'] },
+            { author: 'Kryštof12', time: '17:22', date: '2. 2. 2026', texts: ['faceit ligy zacinaji, kdo jde do teamu'] },
+            { author: 'hidd3nfram3', lukas: true, time: '17:40', date: '2. 2. 2026', texts: ['možná, dám vědět'] },
+            { author: 'davepvp', time: '19:50', date: '10. 2. 2026', texts: ['lukyy mm? potřebujeme pátýho'] },
+            { author: 'hidd3nfram3', lukas: true, time: '21:12', date: '15. 2. 2026', texts: ['gg'], reactions: [{ emoji: '👍', count: 1 }] },
+            { author: 'davepvp', time: '18:33', date: '20. 2. 2026', texts: ['kde ses ztratil'] },
+            { author: 'SmokeyKC', time: '22:10', date: '1. 3. 2026', texts: ['hraje eště někdo nebo jsme umřeli'] },
+            { author: 'Kryštof12', time: '19:47', date: '10. 3. 2026', texts: ['dead server moment 💀'] },
+            { author: 'davepvp', time: '20:05', date: '18. 3. 2026', texts: ['@hidd3nfram3 ping, ozvi se někdy'] }
+          ]
+        },
+        {
+          name: 'matchmaking-lft', topic: 'hledání spoluhráčů',
+          messages: [
+            { author: 'SmokeyKC', time: '18:00', date: '4. 3. 2026', texts: ['2 na premier, DMG+ ideálně'] },
+            { author: 'Kryštof12', time: '18:14', date: '4. 3. 2026', texts: ['idu'] }
+          ]
+        },
+        {
+          name: 'klipy', topic: 'nejlepší momenty',
+          messages: [
+            { author: 'davepvp', time: '23:41', date: '12. 1. 2026', texts: ['[klip] ace na mirage'], reactions: [{ emoji: '🔥', count: 3 }, { emoji: '👍', count: 2, byLukas: true }] }
+          ]
+        }
+      ],
+      members: {
+        online: ['davepvp', 'Kryštof12', 'SmokeyKC', 'hidd3nfram3'],
+        offline: ['m1lda', 'petr_hrbaty', 'zocke']
+      }
+    },
+    {
+      id: 'halo',
+      name: 'Halo Infinite Central EU',
+      initials: 'HALO',
+      icon: 'assets/icons/halo.svg',
+      joined: 'Přidán říjen 2025',
+      activeChannel: 'obecné',
+      channels: [
+        {
+          name: 'obecné', topic: 'Halo Infinite EU komunita',
+          messages: [
+            { author: 'SpartanCZ', time: '20:11', date: '8. 3. 2026', texts: ['ranked dneska? btb je mrtvý'] },
+            { author: 'noble_six', time: '20:20', date: '8. 3. 2026', texts: ['jj za chvíli'] }
+          ]
+        },
+        {
+          name: 'lft-ranked', topic: 'hledání do ranked',
+          messages: [
+            { author: 'noble_six', time: '21:00', date: '9. 3. 2026', texts: ['1 do fireteamu, onyx'] }
+          ]
+        }
+      ],
+      members: {
+        online: ['SpartanCZ', 'noble_six', 'hidd3nfram3'],
+        offline: ['halo_vet', 'kbelik']
+      }
+    },
+    {
+      id: 'grind',
+      name: 'Grind Mindset CZ',
+      initials: 'GM',
+      color: '#faa61a',
+      joined: 'Přidán leden 2026',
+      activeChannel: 'denní-cíle',
+      channels: [
+        {
+          name: 'denní-cíle', topic: 'disciplína > motivace',
+          messages: [
+            { author: 'disciplined_v', time: '06:02', date: '20. 3. 2026', texts: ['5AM klub. studená sprcha ✅ 40 kliků ✅ žádný telefon do 8'], reactions: [{ emoji: '🔥', count: 5 }, { emoji: '👍', count: 3, byLukas: true }] },
+            { author: 'stoic_tom', time: '06:40', date: '20. 3. 2026', texts: ['Marcus Aurelius: „Máš moc nad svou myslí, ne nad vnějšími událostmi.“ pamatuj bratře'] },
+            { author: 'grindcore', time: '07:15', date: '20. 3. 2026', texts: ['týden 6 bez cukru, hlava čistá'], reactions: [{ emoji: '👍', count: 4, byLukas: true }] }
+          ]
+        },
+        {
+          name: 'knihy-a-podcasty', topic: 'self-improvement zdroje',
+          messages: [
+            { author: 'stoic_tom', time: '19:30', date: '18. 3. 2026', texts: ['48 zákonů moci — povinnost. kdo nečetl, NGMI'] }
+          ]
+        }
+      ],
+      members: {
+        online: ['disciplined_v', 'stoic_tom', 'grindcore', 'hidd3nfram3'],
+        offline: ['earlybird', 'monkmode22']
+      }
+    },
+    {
+      id: 'looksmaxx',
+      name: 'Looksmaxx CZ/SK',
+      initials: 'LMX',
+      color: '#9256d9',
+      joined: 'Přidán 5. března 2026',
+      activeChannel: 'self-hate-mondays',
+      channels: [
+        {
+          name: 'pravidla', topic: 'přečti než napíšeš',
+          messages: [
+            { author: 'mod_glowup', time: '12:00', date: '1. 1. 2026', texts: [
+              '📌 PRAVIDLA SERVERU',
+              '1. žádný cope, jen fakta a PSL',
+              '2. foto-rating jen v #foto-rating',
+              '3. bez blackpill spamu mimo #self-hate-mondays',
+              '4. respektuj mogery. NGMI attitude = ban'
+            ] }
+          ]
+        },
+        {
+          name: 'představení-noví', topic: 'napiš PSL a stats',
+          messages: [
+            { author: 'newcel_2010', time: '16:20', date: '6. 3. 2026', texts: ['ahoj, 16, 178cm, mewuju 3 měsíce. PSL asi 4. kde začít?'] },
+            { author: 'aleph_null', time: '16:44', date: '6. 3. 2026', texts: ['guasha + přiber svaly. postni foto do rating kanálu'] },
+            { author: 'KOROLEV_88', time: '17:05', date: '9. 3. 2026', texts: ['5\'8 recessed chin, MTN na dobrý den. jdu na to'] }
+          ]
+        },
+        {
+          name: 'ranní-rutina', topic: 'glow protokoly',
+          messages: [
+            { author: 'ash_pilled', time: '05:50', date: '17. 3. 2026', texts: ['mewing od probuzení, mastic gum 1h, studená voda na obličej, guasha 20 min'] },
+            { author: 'Frame_God', time: '06:30', date: '17. 3. 2026', texts: ['přidej spánek na zádech, jinak ztrácíš gainy'], reactions: [{ emoji: '🗿', count: 4 }] }
+          ]
+        },
+        {
+          name: 'looksmaxx-tipy', topic: 'protokoly a routines',
+          messages: [
+            { author: 'Frame_God', time: '19:12', date: '16. 3. 2026', texts: ['hardmogger, dej mi hunter eyes routine plz'] },
+            { author: 'ash_pilled', time: '19:20', date: '16. 3. 2026', texts: ['1. spí na zádech 2. dropni cukr 3. mewing 24/7 4. eyebag surgery za 3 roky'] },
+            { author: 'Frame_God', time: '19:22', date: '16. 3. 2026', texts: ['eyebag surgery je meme nebo real'] },
+            { author: 'ash_pilled', time: '19:25', date: '16. 3. 2026', texts: ['100% real, dělá se v turecku za 1200 EUR'], reactions: [{ emoji: '🗿', count: 3 }] },
+            { author: 'aleph_null', time: '20:40', date: '19. 3. 2026', texts: ['canthal tilt fix: guasha na spodní víčko + spánek 8h. positive tilt = free +1 PSL'] }
+          ]
+        },
+        {
+          name: 'foto-rating', topic: 'rate bez lítosti',
+          messages: [
+            { author: 'n0nam3_69', time: '21:03', date: '18. 3. 2026', texts: ['rate me chlapi bez lítosti'], attachment: { type: 'blur', filename: 'IMG_2231.png' } },
+            { author: 'aleph_null', time: '21:19', date: '18. 3. 2026', texts: ['NT tier. Fixni si canthal tilt (guasha 30 min/den) a přiber. 5/10.'] },
+            { author: 'n0nam3_69', time: '21:22', date: '18. 3. 2026', texts: ['to je fér, díky'], reactions: [{ emoji: '👍', count: 2 }] },
+            { author: 'KOROLEV_88', time: '22:40', date: '21. 3. 2026', texts: ['a mě?'], attachment: { type: 'blur', filename: 'selfie_dnes.jpg' } },
+            { author: 'mchmch', time: '22:55', date: '21. 3. 2026', texts: ['4. midface moc dlouhý, mew a mrkni na bimax za pár let'] }
+          ]
+        },
+        {
+          name: 'self-hate-mondays', topic: 'sem to jde když je nejhůř',
+          messages: [
+            { author: 'glow_v3', time: '08:14', date: '9. 3. 2026', texts: ['právě mě mogla holka na tramvaji ktera nedostane na SŠ', 'to byla ta poslední kapka', '💀💀💀'], reactions: [{ emoji: '💀', count: 6, byLukas: true }] },
+            { author: 'KOROLEV_88', time: '09:20', date: '9. 3. 2026', texts: ['another monday another reminder ze jsem framecel'] },
+            { author: 'mchmch', time: '09:31', date: '9. 3. 2026', texts: ['cope harder brácho, aspoň máš vlasy. já mám recessed hairline v 19'], reactions: [{ emoji: '😭', count: 3 }] },
+            { author: 'dr3ad_v2', time: '03:14', date: '12. 3. 2026', texts: ['tohle sem posílám vždycky když si někdo myslí že na tom nezáleží'], attachment: { type: 'sensitive', caption: '[Screenshot – článek o Junko Furuta s komentářem uživatele. Extrémní obsah.]', filename: 'reminder.png' } },
+            { author: 'glow_v3', time: '03:40', date: '12. 3. 2026', texts: ['ježiš vole', 'proč to sem taháš'] },
+            { author: 'aleph_null', time: '07:02', date: '16. 3. 2026', texts: ['dnešní blackpill: usmál jsem se na kolegyni v práci, dostal jsem „HR meeting“. it\'s over.'], reactions: [{ emoji: '📉', count: 4 }, { emoji: '🥀', count: 2 }] },
+            { author: 'KOROLEV_88', time: '23:55', date: '23. 3. 2026', texts: ['nový týden, stejnej obličej. LDAR režim aktivován'], reactions: [{ emoji: '💀', count: 5, byLukas: true }, { emoji: '🧎', count: 2 }] }
+          ]
+        },
+        {
+          name: 'vysledky-po-rocích', topic: 'before / after',
+          messages: [
+            { author: 'Frame_God', time: '20:00', date: '14. 3. 2026', texts: ['2 roky mewingu + 1 rok gymu. mírný glowup ale genetika je strop'], attachment: { type: 'blur', filename: 'before_after.png' }, reactions: [{ emoji: '🗿', count: 7 }] }
+          ]
+        },
+        {
+          name: 'turecko-operace-info', topic: 'chirurgie, kliniky, ceny',
+          messages: [
+            { author: 'MTN_max', time: '18:30', date: '13. 3. 2026', texts: ['napsal jsem 4 klinikám v Istanbulu, nejlevnější BSSO 4200 EUR'] },
+            { author: 'someguy_23', time: '18:44', date: '13. 3. 2026', texts: ['co Dr. Cinik? doporučuju'] },
+            { author: 'MTN_max', time: '18:50', date: '13. 3. 2026', texts: ['ptal jsem se, čeká 8 měsíců'], reactions: [{ emoji: '🗿', count: 2 }] },
+            { author: 'ash_pilled', time: '19:30', date: '20. 3. 2026', texts: ['bimax + genioplasty combo v Polsku vyšlo kámošovi na 6k EUR. worth every euro prej'] }
+          ]
+        },
+        {
+          name: 'memy', topic: 'wojak nation',
+          messages: [
+            { author: 'mchmch', time: '15:00', date: '15. 3. 2026', texts: ['virgin scrolls looksmax before bed / chad has never heard of PSL'], attachment: { type: 'blur', filename: 'wojak_psl.png' }, reactions: [{ emoji: '🗿', count: 8 }, { emoji: '💀', count: 4 }] }
+          ]
+        },
+        {
+          name: 'chill-vseobecne', topic: 'offtopic',
+          messages: [
+            { author: 'glow_v3', time: '16:20', date: '19. 3. 2026', texts: ['hraje někdo cs2? potřebuju odreagovat'] },
+            { author: 'KOROLEV_88', time: '16:35', date: '19. 3. 2026', texts: ['jj DMG, přidej se do lft kanálu'] }
+          ]
+        },
+        {
+          name: 'cs2-halo-lft', topic: 'gaming mimo looksmaxx',
+          messages: [
+            { author: 'glow_v3', time: '17:10', date: '19. 3. 2026', texts: ['2 sloty cs2 premier, kdo má DMG+'] }
+          ]
+        }
+      ],
+      members: {
+        online: ['aleph_null', 'ash_pilled', 'Frame_God', 'KOROLEV_88', 'mchmch', 'MTN_max', 'hidd3nfram3'],
+        offline: ['glow_v3', 'n0nam3_69', 'dr3ad_v2', 'someguy_23', 'newcel_2010', 'mod_glowup']
+      }
+    }
+  ],
+  dms: [
+    {
+      id: 'davepvp',
+      name: 'davepvp',
+      messages: [
+        { author: 'davepvp', time: '21:30', date: '14. 9. 2025', texts: ['gg dnes to bylo super, ten retake na B byl clean'] },
+        { author: 'hidd3nfram3', lukas: true, time: '21:32', date: '14. 9. 2025', texts: ['jj zítra zas?'] },
+        { author: 'davepvp', time: '21:33', date: '14. 9. 2025', texts: ['jasně, po škole'] },
+        { author: 'hidd3nfram3', lukas: true, time: '15:10', date: '20. 9. 2025', texts: ['mm?'] },
+        { author: 'davepvp', time: '15:12', date: '20. 9. 2025', texts: ['za 5 min, dělám tým'] },
+        { author: 'davepvp', time: '19:44', date: '5. 11. 2025', texts: ['hraješ?'] },
+        { author: 'hidd3nfram3', lukas: true, time: '20:05', date: '5. 11. 2025', texts: ['nemůžu, učení'] },
+        { author: 'davepvp', time: '18:20', date: '10. 1. 2026', texts: ['lukyy dlouho jsme nehráli, všechno ok?'] },
+        { author: 'hidd3nfram3', lukas: true, time: '19:02', date: '10. 1. 2026', texts: ['jo mám teď dost věcí'] },
+        { author: 'davepvp', time: '17:50', date: '2. 2. 2026', texts: ['všechno v pohodě u tebe?'] },
+        { author: 'hidd3nfram3', lukas: true, time: '18:40', date: '2. 2. 2026', texts: ['jo v pohodě'] },
+        { author: 'davepvp', time: '20:15', date: '20. 2. 2026', texts: ['hraješ někdy eště?'] },
+        { author: 'davepvp', time: '21:00', date: '1. 3. 2026', texts: ['?'] },
+        { author: 'davepvp', time: '19:30', date: '12. 3. 2026', texts: ['hraješ dneska?'] }
+      ]
+    }
+  ]
+};
+
+const discordWindow = document.getElementById('discord-window');
+const discordServerRail = document.getElementById('discord-server-rail');
+const discordServerName = document.getElementById('discord-server-name');
+const discordChannelList = document.getElementById('discord-channel-list');
+const discordMainHeader = document.getElementById('discord-main-header');
+const discordMessages = document.getElementById('discord-messages');
+const discordInput = document.getElementById('discord-input');
+const discordInputBox = document.getElementById('discord-input-box');
+const discordMemberPanel = document.getElementById('discord-member-panel');
+
+let discordView = 'server';   // 'server' | 'dm'
+let discordActiveServerId = 'looksmaxx';
+let discordActiveDmId = null;
+
+document.getElementById('discord-close-btn').addEventListener('click', () => {
+  discordWindow.classList.add('hidden');
+});
+
+function getActiveServer() {
+  return DISCORD.servers.find(s => s.id === discordActiveServerId);
+}
+
+function renderServerRail() {
+  const homeActive = discordView === 'dm';
+  let html = `
+    <div class="discord-server-icon home${homeActive ? ' active' : ''}" data-home="1" title="Přímé zprávy">
+      <img src="assets/icons/discord.svg" alt="" />
+    </div>
+    <div class="discord-rail-sep"></div>
+  `;
+  html += DISCORD.servers.map(s => {
+    const active = discordView === 'server' && s.id === discordActiveServerId;
+    const inner = s.icon
+      ? `<img src="${s.icon}" alt="" />`
+      : `<span>${s.initials}</span>`;
+    const style = s.color && !s.icon ? ` style="background:${s.color};color:#fff"` : '';
+    return `<div class="discord-server-icon${active ? ' active' : ''}" data-server="${s.id}" title="${s.joined}"${style}>${inner}</div>`;
+  }).join('');
+  discordServerRail.innerHTML = html;
+  discordServerRail.querySelector('[data-home]').addEventListener('click', openDiscordDMs);
+  discordServerRail.querySelectorAll('[data-server]').forEach(node => {
+    node.addEventListener('click', () => selectDiscordServer(node.dataset.server));
+  });
+}
+
+function selectDiscordServer(id) {
+  discordView = 'server';
+  discordActiveServerId = id;
+  renderServerRail();
+  renderChannelPanel();
+  renderServerChannel();
+}
+
+function renderChannelPanel() {
+  const server = getActiveServer();
+  discordServerName.textContent = server.name;
+  discordChannelList.innerHTML = server.channels.map(ch => {
+    const isActive = ch.name === server.activeChannel;
+    const isUnread = server.id === 'looksmaxx' && ch.name === 'self-hate-mondays' && !isActive;
+    return `
+      <div class="discord-channel-item${isActive ? ' active' : ''}${isUnread ? ' unread' : ''}" data-channel="${ch.name}">
+        <span class="discord-hash">#</span>
+        <span class="discord-channel-name-text">${ch.name}</span>
+      </div>
+    `;
+  }).join('');
+  discordChannelList.querySelectorAll('[data-channel]').forEach(node => {
+    node.addEventListener('click', () => {
+      server.activeChannel = node.dataset.channel;
+      renderChannelPanel();
+      renderServerChannel();
+    });
+  });
+}
+
+function avatarHTML(author, isLukas) {
+  if (isLukas) return '<span class="discord-avatar discord-avatar-default"></span>';
+  const color = discordAvatarColor(author);
+  return `<span class="discord-avatar" style="background:${color}">${author.charAt(0).toUpperCase()}</span>`;
+}
+
+function attachmentHTML(att) {
+  if (!att) return '';
+  if (att.type === 'sensitive') {
+    return `
+      <div class="discord-attachment">
+        <div class="discord-attachment-img sensitive">
+          <span class="discord-attachment-caption">${att.caption}</span>
+        </div>
+        <span class="discord-attachment-filename">${att.filename}</span>
+      </div>
+    `;
+  }
+  return `
+    <div class="discord-attachment">
+      <div class="discord-attachment-img"></div>
+      <span class="discord-attachment-filename">${att.filename}</span>
+    </div>
+  `;
+}
+
+function reactionsHTML(reactions) {
+  if (!reactions || !reactions.length) return '';
+  return `<div class="discord-reactions">${reactions.map(r => `
+    <span class="discord-reaction${r.byLukas ? ' by-lukas' : ''}">
+      <span>${r.emoji}</span><span class="discord-reaction-count">${r.count}</span>
+    </span>
+  `).join('')}</div>`;
+}
+
+function renderMessageBlocks(messages) {
+  let html = '';
+  let lastDate = null;
+  messages.forEach(msg => {
+    if (msg.date !== lastDate) {
+      html += `<div class="discord-date-divider"><span>${msg.date}</span></div>`;
+      lastDate = msg.date;
+    }
+    const authorColor = msg.lukas ? '#f2f3f5' : discordAvatarColor(msg.author);
+    html += `
+      <div class="discord-msg">
+        ${avatarHTML(msg.author, msg.lukas)}
+        <div class="discord-msg-body">
+          <div class="discord-msg-head">
+            <span class="discord-msg-author" style="color:${authorColor}">${msg.author}</span>
+            <span class="discord-msg-time">${msg.date} ${msg.time}</span>
+          </div>
+          ${msg.texts.map(t => `<div class="discord-msg-line">${t}</div>`).join('')}
+          ${attachmentHTML(msg.attachment)}
+          ${reactionsHTML(msg.reactions)}
+        </div>
+      </div>
+    `;
+  });
+  return html;
+}
+
+function renderServerChannel() {
+  const server = getActiveServer();
+  const channel = server.channels.find(c => c.name === server.activeChannel);
+  discordMainHeader.innerHTML = `<span class="discord-hash">#</span><span>${channel.name}</span><span class="discord-topic">${channel.topic}</span>`;
+  discordMessages.innerHTML = renderMessageBlocks(channel.messages);
+  discordMessages.scrollTop = discordMessages.scrollHeight;
+  discordInputBox.textContent = `Napsat zprávu do #${channel.name}`;
+  discordInput.classList.remove('hidden');
+
+  // Member panel
+  discordMemberPanel.classList.remove('hidden');
+  discordMemberPanel.innerHTML = renderMembers(server.members);
+}
+
+function renderMembers(members) {
+  const memberRow = (nick, online) => {
+    const isLukas = nick === 'hidd3nfram3';
+    const av = isLukas
+      ? '<span class="discord-avatar discord-avatar-default"></span>'
+      : `<span class="discord-avatar" style="background:${discordAvatarColor(nick)}">${nick.charAt(0).toUpperCase()}</span>`;
+    return `
+      <div class="discord-member ${online ? 'online-member' : ''}${isLukas ? ' is-lukas' : ''}">
+        <span class="discord-member-avatar-wrap">${av}<span class="discord-member-status-dot ${online ? 'online' : 'offline'}"></span></span>
+        <span class="discord-member-name">${nick}</span>
+      </div>
+    `;
+  };
+  let html = '';
+  html += `<div class="discord-member-group-title">Online — ${members.online.length}</div>`;
+  html += members.online.map(n => memberRow(n, true)).join('');
+  html += `<div class="discord-member-group-title">Offline — ${members.offline.length}</div>`;
+  html += members.offline.map(n => memberRow(n, false)).join('');
+  return html;
+}
+
+function openDiscordDMs() {
+  discordView = 'dm';
+  discordActiveDmId = discordActiveDmId || DISCORD.dms[0].id;
+  renderServerRail();
+
+  // channel panel becomes DM list
+  discordServerName.textContent = 'Přímé zprávy';
+  discordChannelList.innerHTML = DISCORD.dms.map(dm => `
+    <div class="discord-dm-item${dm.id === discordActiveDmId ? ' active' : ''}" data-dm="${dm.id}">
+      <span class="discord-avatar" style="background:${discordAvatarColor(dm.name)}">${dm.name.charAt(0).toUpperCase()}</span>
+      <span class="discord-dm-name">${dm.name}</span>
+    </div>
+  `).join('');
+  discordChannelList.querySelectorAll('[data-dm]').forEach(node => {
+    node.addEventListener('click', () => {
+      discordActiveDmId = node.dataset.dm;
+      openDiscordDMs();
+    });
+  });
+
+  renderDMConversation();
+}
+
+function renderDMConversation() {
+  const dm = DISCORD.dms.find(d => d.id === discordActiveDmId);
+  discordMainHeader.innerHTML = `<span class="discord-avatar" style="background:${discordAvatarColor(dm.name)};width:24px;height:24px;font-size:11px">${dm.name.charAt(0).toUpperCase()}</span><span>${dm.name}</span>`;
+  discordMessages.innerHTML = renderMessageBlocks(dm.messages);
+  discordMessages.scrollTop = discordMessages.scrollHeight;
+  discordInputBox.textContent = `Napsat zprávu uživateli @${dm.name}`;
+  discordInput.classList.remove('hidden');
+  discordMemberPanel.classList.add('hidden');
+}
+
+function openDiscord() {
+  discordWindow.classList.remove('hidden');
+  discordView = 'server';
+  discordActiveServerId = 'looksmaxx';
+  // ensure looksmaxx opens on self-hate-mondays
+  DISCORD.servers.find(s => s.id === 'looksmaxx').activeChannel = 'self-hate-mondays';
+  renderServerRail();
+  renderChannelPanel();
+  renderServerChannel();
+}
+
 // ── App launcher ──
 function openApp(app) {
   switch (app) {
     case 'chrome':
       openChrome();
+      break;
+    case 'discord':
+      openDiscord();
       break;
     case 'halo':
       showUpdateModal('Halo Infinite', 'Stahování aktualizace…', '12,4 GB');
