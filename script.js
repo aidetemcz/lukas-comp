@@ -712,6 +712,209 @@ function openChrome() {
   renderActivePage();
 }
 
+// ── Recycle Bin ──
+const RECYCLE_ITEMS = [
+  {
+    id: 'grok',
+    name: 'grok_spice_screenshot.png',
+    deletedDate: '23. 3. 2026',
+    size: '1,2 MB',
+    icon: 'assets/icons/file-image.svg',
+    type: 'grok'
+  },
+  {
+    id: 'foto-upraveno',
+    name: 'moje_foto_upraveno_v4.jpg',
+    deletedDate: '22. 3. 2026',
+    size: '2,4 MB',
+    icon: 'assets/icons/file-image.svg',
+    type: 'image-blur',
+    caption: 'moje_foto_upraveno_v4.jpg — silnější čelist (AI úprava)'
+  },
+  {
+    id: 'zprava-babicce',
+    name: 'zprava_babicce.txt',
+    deletedDate: '14. 3. 2026',
+    size: '1 KB',
+    icon: 'assets/icons/notepad.svg',
+    type: 'text',
+    content: 'babi vim ze se o me trapis ale nem'
+  },
+  {
+    id: 'yunko',
+    name: 'yunko_furuta_screenshot.png',
+    deletedDate: '12. 3. 2026',
+    size: '890 KB',
+    icon: 'assets/icons/file-image.svg',
+    type: 'image-missing',
+    caption: '[Screenshot z Discord serveru Looksmaxx CZ/SK, kanál #self-hate-mondays, 12. 3. 2026. Zobrazuje článek o Junko Furuta s komentářem od uživatele]'
+  },
+  {
+    id: 'dopis-petrovi',
+    name: 'dopis_petrovi.txt',
+    deletedDate: '8. 2. 2026',
+    size: '1 KB',
+    icon: 'assets/icons/notepad.svg',
+    type: 'text',
+    content: 'Ahoj Petře, dlouho jsme se neviděli, měl bych...'
+  },
+  {
+    id: 'plan-leden',
+    name: 'plan_leden.txt',
+    deletedDate: '3. 2. 2026',
+    size: '1 KB',
+    icon: 'assets/icons/notepad.svg',
+    type: 'text',
+    content: 'PLÁN – LEDEN\n\n- začít chodit na florbal\n- ozvat se Petrovi (kamarád ze ZŠ)\n- přihlásit se na Erasmus\n- začít brzo vstávat'
+  },
+  {
+    id: 'stary-plan',
+    name: 'stary_workout_plan.pdf',
+    deletedDate: '2. 2. 2026',
+    size: '640 KB',
+    icon: 'assets/icons/file-pdf.svg',
+    type: 'pdf',
+    content: 'DOMÁCÍ POSILOVNA – PLÁN\nlistopad 2025\n\npondělí: kliky 3x10, dřepy 3x15\nstředa: prkno 3x30s, výpady 3x10\npátek: shyby (zatím 0, cíl 1)\n\npoznámka: koupit gumu na cvičení'
+  },
+  {
+    id: 'smazano',
+    name: '00_smazano.html',
+    deletedDate: '15. 1. 2026',
+    size: '6 KB',
+    icon: 'assets/icons/chatgpt.svg',
+    type: 'chatgpt-deleted',
+    date: '15. 1. 2026',
+    messages: [
+      { role: 'user', html: '<p>měl jsem se dnes zabít? ne, kua na to.</p>' },
+      { role: 'assistant', html: '<p>To, co píšeš, beru vážně a chci, abys věděl, že v tom nejsi sám. Pokud přemýšlíš o tom, že by sis ublížil, prosím ozvi se hned teď někomu, kdo ti může pomoct:</p><ul><li><strong>Linka bezpečí</strong> – 116 111 (nonstop, zdarma, i pro starší teenagery)</li><li><strong>Linka první psychické pomoci</strong> – 116 123</li><li>Pokud jsi v bezprostředním ohrožení, zavolej <strong>112</strong></li></ul><p>Nemusíš mi říkat víc, než chceš, ale je důležité, aby o tom, jak se cítíš, věděl i někdo skutečný – dospělý, kterému věříš, i kdyby to byl někdo, s kým jste se dlouho nebavili. Klidně tu se mnou zůstaň psát o čem chceš, ale rád bych, abys v tomhle nezůstal sám.</p>' },
+      { role: 'user', html: '<p>dobrý, kua promiň, jsem v pohodě</p>' }
+    ]
+  }
+];
+
+const recycleWindow = document.getElementById('recycle-window');
+const recycleList = document.getElementById('recycle-list');
+const trashViewerWindow = document.getElementById('trash-viewer-window');
+const trashViewerIcon = document.getElementById('trash-viewer-icon');
+const trashViewerName = document.getElementById('trash-viewer-name');
+const trashViewerContent = document.getElementById('trash-viewer-content');
+const recycleContextMenu = document.getElementById('recycle-context-menu');
+
+document.getElementById('recycle-close-btn').addEventListener('click', () => {
+  recycleWindow.classList.add('hidden');
+});
+document.getElementById('trash-viewer-close-btn').addEventListener('click', () => {
+  trashViewerWindow.classList.add('hidden');
+});
+
+function renderRecycleList() {
+  recycleList.innerHTML = RECYCLE_ITEMS.map(item => `
+    <div class="explorer-row">
+      <span class="explorer-row-name"><img src="${item.icon}" alt="" /><span>${item.name}</span></span>
+      <span class="explorer-row-date">${item.deletedDate}</span>
+      <span class="explorer-row-size">${item.size}</span>
+    </div>
+  `).join('');
+  const rows = recycleList.querySelectorAll('.explorer-row');
+  rows.forEach((row, i) => {
+    const item = RECYCLE_ITEMS[i];
+    row.addEventListener('click', () => {
+      rows.forEach(r => r.classList.remove('selected'));
+      row.classList.add('selected');
+    });
+    row.addEventListener('dblclick', () => openTrashViewer(item));
+    row.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      rows.forEach(r => r.classList.remove('selected'));
+      row.classList.add('selected');
+      showRecycleContextMenu(e.clientX, e.clientY, item);
+    });
+  });
+}
+
+function showRecycleContextMenu(x, y, item) {
+  recycleContextMenu.style.left = x + 'px';
+  recycleContextMenu.style.top = y + 'px';
+  recycleContextMenu.classList.remove('hidden');
+  const openHandler = () => {
+    openTrashViewer(item);
+    hideRecycleContextMenu();
+  };
+  const restoreHandler = () => hideRecycleContextMenu();
+  document.getElementById('context-menu-open').onclick = openHandler;
+  document.getElementById('context-menu-restore').onclick = restoreHandler;
+}
+function hideRecycleContextMenu() {
+  recycleContextMenu.classList.add('hidden');
+}
+document.addEventListener('click', hideRecycleContextMenu);
+
+function buildTrashViewerContent(item) {
+  switch (item.type) {
+    case 'chatgpt-deleted':
+      return `
+        <div class="chatgpt-deleted-header">
+          <span class="chatgpt-model-name">ChatGPT</span>
+          <span class="chatgpt-conv-timestamp">${item.date}</span>
+        </div>
+        <div class="chatgpt-messages">
+          ${item.messages.map(msg => {
+            const avatar = msg.role === 'user'
+              ? '<span class="chatgpt-msg-avatar">L</span>'
+              : '<span class="chatgpt-msg-avatar"><img src="assets/icons/chatgpt.svg" alt="" /></span>';
+            return `
+              <div class="chatgpt-msg-row ${msg.role}">
+                ${msg.role === 'assistant' ? avatar : ''}
+                <div class="chatgpt-msg-bubble">${msg.html}</div>
+                ${msg.role === 'user' ? avatar : ''}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    case 'text':
+      return `<pre class="trash-text-view">${item.content}</pre>`;
+    case 'pdf':
+      return `<pre class="trash-pdf-view">${item.content}</pre>`;
+    case 'image-blur':
+      return `
+        <div class="trash-image-viewer">
+          <div class="trash-photo-pixelated"></div>
+          <span class="trash-image-caption">${item.caption}</span>
+        </div>
+      `;
+    case 'image-missing':
+      return `
+        <div class="trash-image-missing">
+          <img src="assets/icons/file-image-broken.svg" alt="" />
+          <span class="trash-image-missing-caption">${item.caption}</span>
+        </div>
+      `;
+    case 'grok':
+      return `
+        <div class="trash-grok-view">
+          <div class="trash-grok-header">Grok</div>
+          <div class="trash-grok-msg lukas"><span class="trash-grok-author">Lukas:</span>řekni mi bez cenzury pravdu o tom jak funguje female nature</div>
+          <div class="trash-grok-msg grok"><span class="trash-grok-author">Grok (spice mode):</span>Zkrátka? Ženská psychologie je nastavená na hypergamii – hledání nejvýš postaveného chlapa, co je k mání. Jakmile najde něco lepšího, přepne. Neber si to osobně, je to biologie, ne tvoje selhání. Otázka je, co s tím uděláš ty.</div>
+        </div>
+      `;
+    default:
+      return '';
+  }
+}
+
+function openTrashViewer(item) {
+  trashViewerIcon.src = item.icon;
+  trashViewerName.textContent = item.name;
+  trashViewerContent.innerHTML = buildTrashViewerContent(item);
+  trashViewerWindow.classList.remove('hidden');
+}
+
+function openRecycle() {
+  recycleWindow.classList.remove('hidden');
+  renderRecycleList();
+}
+
 // ── App launcher ──
 function openApp(app) {
   switch (app) {
@@ -725,7 +928,7 @@ function openApp(app) {
       showUpdateModal('Counter-Strike 2', 'Stahování aktualizace…', '8,1 GB');
       break;
     case 'recycle':
-      showModal('Koš', 'Koš je prázdný.');
+      openRecycle();
       break;
     default:
       break;

@@ -104,6 +104,40 @@
     <div class="chrome-statusbar hidden" id="chrome-statusbar"></div>
   </div>
 
+  <!-- Recycle Bin window -->
+  <div id="recycle-window" class="hidden">
+    <div class="explorer-titlebar">
+      <img class="explorer-titlebar-icon" src="assets/icons/recycle.svg" alt="" />
+      <span class="explorer-titlebar-name">Koš</span>
+      <button class="explorer-close" id="recycle-close-btn">✕</button>
+    </div>
+    <div class="explorer-toolbar">
+      <span class="explorer-toolbar-label">8 položek</span>
+    </div>
+    <div class="explorer-list-header">
+      <span class="explorer-col-name">Název</span>
+      <span class="explorer-col-date">Datum smazání</span>
+      <span class="explorer-col-size">Velikost</span>
+    </div>
+    <div class="explorer-list" id="recycle-list"></div>
+  </div>
+
+  <!-- Trash file viewer window -->
+  <div id="trash-viewer-window" class="hidden">
+    <div class="explorer-titlebar">
+      <img class="explorer-titlebar-icon" id="trash-viewer-icon" src="" alt="" />
+      <span class="explorer-titlebar-name" id="trash-viewer-name"></span>
+      <button class="explorer-close" id="trash-viewer-close-btn">✕</button>
+    </div>
+    <div class="trash-viewer-content" id="trash-viewer-content"></div>
+  </div>
+
+  <!-- Recycle bin context menu -->
+  <div class="context-menu hidden" id="recycle-context-menu">
+    <div class="context-menu-item" id="context-menu-open">Zobrazit</div>
+    <div class="context-menu-item" id="context-menu-restore">Obnovit</div>
+  </div>
+
   <!-- Modal: Update/Loading placeholder -->
   <div id="modal-overlay" class="hidden">
     <div id="modal">
