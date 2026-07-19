@@ -20,12 +20,6 @@
         <span>Fotky a videa</span>
       </div>
 
-      <!-- Folder: Deník -->
-      <div class="icon" data-app="diary">
-        <img src="assets/icons/notepad.svg" alt="poznámkový blok" />
-        <span>denik_soukrome.txt</span>
-      </div>
-
       <!-- App: Chrome -->
       <div class="icon" data-app="chrome">
         <img src="assets/icons/chrome.svg" alt="Chrome" />
@@ -73,25 +67,60 @@
 
   </div>
 
-  <!-- Notepad window -->
-  <div id="notepad-window" class="hidden">
-    <div class="notepad-titlebar">
-      <img class="notepad-titlebar-icon" src="assets/icons/notepad.svg" alt="" />
-      <span class="notepad-titlebar-name">denik_soukrome.txt – Poznámkový blok</span>
-      <button class="notepad-close" id="notepad-close-btn">✕</button>
+  <!-- Chrome browser window -->
+  <div id="chrome-window" class="hidden">
+    <div class="chrome-titlebar">
+      <div class="chrome-traffic-lights"><span></span><span></span><span></span></div>
+      <div class="chrome-tabbar">
+        <div class="chrome-tab active">
+          <img class="chrome-tab-favicon" src="assets/icons/chatgpt.svg" alt="" />
+          <span class="chrome-tab-title">ChatGPT</span>
+        </div>
+      </div>
+      <button class="chrome-close" id="chrome-close-btn">✕</button>
     </div>
-    <div class="notepad-menubar">
-      <span class="notepad-menu-item">Soubor</span>
-      <span class="notepad-menu-item">Úpravy</span>
-      <span class="notepad-menu-item">Zobrazení</span>
-      <span class="notepad-menu-item">Nápověda</span>
+    <div class="chrome-toolbar">
+      <div class="chrome-nav-btns">
+        <span class="chrome-nav-btn">‹</span>
+        <span class="chrome-nav-btn">›</span>
+        <span class="chrome-nav-btn">⟳</span>
+      </div>
+      <div class="chrome-address-bar">
+        <svg class="chrome-lock-icon" viewBox="0 0 24 24" width="11" height="11">
+          <path fill="currentColor" d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm3 8H9V6a3 3 0 0 1 6 0v3z"/>
+        </svg>
+        <span id="chrome-address-text">chat.openai.com/c/6f2a91d0-8b3e-4c1a-9f2d-3a7e5c0b1d44</span>
+      </div>
     </div>
-    <div class="notepad-content" id="notepad-content">Načítám…</div>
-    <div class="notepad-statusbar">
-      <span id="notepad-lines">Řádek 1, sloupec 1</span>
-      <span>100%</span>
-      <span>Windows (CRLF)</span>
-      <span>UTF-8</span>
+    <div class="chrome-page">
+      <div id="chatgpt-app">
+        <aside class="chatgpt-sidebar">
+          <div class="chatgpt-sidebar-top">
+            <div class="chatgpt-logo-row">
+              <img class="chatgpt-logo-mark" src="assets/icons/chatgpt.svg" alt="" />
+              <span class="chatgpt-logo-text">ChatGPT</span>
+            </div>
+            <button class="chatgpt-newchat-btn">
+              <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 4v16m-8-8h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              Nový chat
+            </button>
+          </div>
+          <div class="chatgpt-conv-list" id="chatgpt-conv-list"></div>
+          <div class="chatgpt-sidebar-bottom">
+            <div class="chatgpt-user-row">
+              <span class="chatgpt-user-avatar">L</span>
+              <span class="chatgpt-user-name">us4r.4O4</span>
+            </div>
+          </div>
+        </aside>
+        <main class="chatgpt-main">
+          <div class="chatgpt-main-header">
+            <span class="chatgpt-model-name">ChatGPT</span>
+            <span class="chatgpt-conv-timestamp" id="chatgpt-conv-timestamp"></span>
+          </div>
+          <div class="chatgpt-messages" id="chatgpt-messages"></div>
+        </main>
+      </div>
     </div>
   </div>
 
