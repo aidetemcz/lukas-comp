@@ -71,12 +71,7 @@
   <div id="chrome-window" class="hidden">
     <div class="chrome-titlebar">
       <div class="chrome-traffic-lights"><span></span><span></span><span></span></div>
-      <div class="chrome-tabbar">
-        <div class="chrome-tab active">
-          <img class="chrome-tab-favicon" src="assets/icons/chatgpt.svg" alt="" />
-          <span class="chrome-tab-title">ChatGPT</span>
-        </div>
-      </div>
+      <div class="chrome-tabbar" id="chrome-tabbar"></div>
       <button class="chrome-close" id="chrome-close-btn">✕</button>
     </div>
     <div class="chrome-toolbar">
@@ -91,37 +86,22 @@
         </svg>
         <span id="chrome-address-text">chat.openai.com/c/6f2a91d0-8b3e-4c1a-9f2d-3a7e5c0b1d44</span>
       </div>
-    </div>
-    <div class="chrome-page">
-      <div id="chatgpt-app">
-        <aside class="chatgpt-sidebar">
-          <div class="chatgpt-sidebar-top">
-            <div class="chatgpt-logo-row">
-              <img class="chatgpt-logo-mark" src="assets/icons/chatgpt.svg" alt="" />
-              <span class="chatgpt-logo-text">ChatGPT</span>
-            </div>
-            <button class="chatgpt-newchat-btn">
-              <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 4v16m-8-8h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-              Nový chat
-            </button>
+      <div class="chrome-toolbar-right">
+        <button class="chrome-menu-btn" id="chrome-menu-btn">⋮</button>
+        <div class="chrome-menu-dropdown hidden" id="chrome-menu-dropdown">
+          <div class="chrome-menu-item" id="chrome-menu-history">
+            <span>Historie</span><span class="chrome-menu-shortcut">Ctrl+H</span>
           </div>
-          <div class="chatgpt-conv-list" id="chatgpt-conv-list"></div>
-          <div class="chatgpt-sidebar-bottom">
-            <div class="chatgpt-user-row">
-              <span class="chatgpt-user-avatar">L</span>
-              <span class="chatgpt-user-name">us4r.4O4</span>
-            </div>
-          </div>
-        </aside>
-        <main class="chatgpt-main">
-          <div class="chatgpt-main-header">
-            <span class="chatgpt-model-name">ChatGPT</span>
-            <span class="chatgpt-conv-timestamp" id="chatgpt-conv-timestamp"></span>
-          </div>
-          <div class="chatgpt-messages" id="chatgpt-messages"></div>
-        </main>
+          <div class="chrome-menu-item">Stažené soubory<span class="chrome-menu-shortcut">Ctrl+J</span></div>
+          <div class="chrome-menu-item">Záložky</div>
+          <div class="chrome-menu-sep"></div>
+          <div class="chrome-menu-item">Nastavení</div>
+        </div>
       </div>
     </div>
+    <div class="chrome-bookmarks-bar" id="chrome-bookmarks-bar"></div>
+    <div class="chrome-page" id="chrome-page"></div>
+    <div class="chrome-statusbar hidden" id="chrome-statusbar"></div>
   </div>
 
   <!-- Modal: Update/Loading placeholder -->

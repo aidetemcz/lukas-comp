@@ -225,7 +225,7 @@ body {
   width: 11px; height: 11px; border-radius: 50%;
   background: #b9bcc1;
 }
-.chrome-tabbar { flex: 1; display: flex; align-items: flex-end; height: 100%; }
+.chrome-tabbar { flex: 1; display: flex; align-items: flex-end; height: 100%; overflow: hidden; }
 .chrome-tab {
   display: flex;
   align-items: center;
@@ -233,13 +233,18 @@ body {
   height: 30px;
   margin-top: 6px;
   padding: 0 14px;
-  background: #fff;
+  background: #d3d6db;
   border-radius: 8px 8px 0 0;
   font-size: 12px;
   color: #3c4043;
-  max-width: 220px;
+  max-width: 190px;
+  min-width: 110px;
+  cursor: pointer;
+  flex-shrink: 1;
 }
-.chrome-tab-favicon { width: 14px; height: 14px; border-radius: 3px; }
+.chrome-tab:hover { background: #e4e6ea; }
+.chrome-tab.active { background: #fff; }
+.chrome-tab-favicon { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
 .chrome-tab-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .chrome-close {
   width: 26px; height: 26px;
@@ -280,11 +285,206 @@ body {
 }
 .chrome-lock-icon { color: #5f6368; flex-shrink: 0; }
 
+.chrome-toolbar-right { position: relative; flex-shrink: 0; }
+.chrome-menu-btn {
+  width: 30px; height: 30px;
+  background: none; border: none; border-radius: 50%;
+  color: #444; font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.chrome-menu-btn:hover { background: rgba(0,0,0,0.06); }
+.chrome-menu-dropdown {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.22);
+  padding: 6px 0;
+  min-width: 210px;
+  z-index: 950;
+  font-size: 13px;
+  color: #1f1f1f;
+}
+.chrome-menu-dropdown.hidden { display: none; }
+.chrome-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  cursor: pointer;
+  gap: 20px;
+}
+.chrome-menu-item:hover { background: #f1f3f4; }
+.chrome-menu-shortcut { color: #8a8a8a; font-size: 11.5px; }
+.chrome-menu-sep { height: 1px; background: #eee; margin: 6px 0; }
+
+/* ── Bookmarks bar ── */
+.chrome-bookmarks-bar {
+  height: 32px;
+  flex-shrink: 0;
+  background: #fff;
+  border-bottom: 1px solid #e5e5e5;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  gap: 2px;
+  position: relative;
+}
+.chrome-bookmark-folder {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  color: #3c4043;
+  cursor: pointer;
+}
+.chrome-bookmark-folder:hover, .chrome-bookmark-folder.open { background: #eef0f2; }
+.chrome-bookmark-folder-icon { width: 14px; height: 14px; flex-shrink: 0; color: #b9860a; }
+.chrome-bookmark-dropdown {
+  position: absolute;
+  top: 32px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.22);
+  padding: 6px 0;
+  min-width: 240px;
+  z-index: 950;
+  font-size: 12.5px;
+}
+.chrome-bookmark-dropdown.hidden { display: none; }
+.chrome-bookmark-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  color: #1f1f1f;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.chrome-bookmark-item:hover { background: #f1f3f4; }
+.chrome-bookmark-item img { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+
 .chrome-page {
   flex: 1;
   overflow: hidden;
   background: #fff;
+  position: relative;
 }
+
+/* ── Status bar (hover URL preview) ── */
+.chrome-statusbar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-bottom: none;
+  border-left: none;
+  border-radius: 0 6px 0 0;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: #3c4043;
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  z-index: 80;
+}
+.chrome-statusbar.hidden { display: none; }
+
+/* ── History page ── */
+.chrome-history-page {
+  height: 100%;
+  overflow-y: auto;
+  padding: 24px 0 60px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+.chrome-history-inner { max-width: 680px; margin: 0 auto; padding: 0 24px; }
+.chrome-history-title { font-size: 24px; font-weight: 400; color: #202124; margin-bottom: 20px; }
+.chrome-history-search {
+  width: 100%;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  background: #f1f3f4;
+  padding: 0 16px;
+  font-size: 14px;
+  color: #202124;
+  margin-bottom: 18px;
+}
+.chrome-history-search:focus { outline: none; background: #e8eaed; }
+.chrome-history-date-group { margin-bottom: 4px; }
+.chrome-history-date-heading {
+  font-size: 13px;
+  font-weight: 600;
+  color: #5f6368;
+  padding: 14px 0 6px;
+}
+.chrome-history-entry {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.chrome-history-entry:hover { background: #f1f3f4; }
+.chrome-history-favicon { width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; }
+.chrome-history-text { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 8px; }
+.chrome-history-entry-title {
+  font-size: 13.5px;
+  color: #202124;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.chrome-history-entry-url {
+  font-size: 12px;
+  color: #8a9099;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.chrome-history-entry-time {
+  font-size: 12px;
+  color: #8a9099;
+  flex-shrink: 0;
+  width: 48px;
+  text-align: right;
+}
+
+/* ── "Site can't be reached" error page ── */
+.chrome-error-page {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+.chrome-error-inner { text-align: left; max-width: 460px; }
+.chrome-error-dino {
+  width: 60px;
+  height: 46px;
+  margin-bottom: 22px;
+  opacity: 0.85;
+}
+.chrome-error-heading { font-size: 22px; color: #202124; font-weight: 400; margin-bottom: 14px; }
+.chrome-error-text { font-size: 14px; color: #202124; line-height: 1.7; margin-bottom: 18px; }
+.chrome-error-text code { background: #f1f3f4; padding: 1px 5px; border-radius: 4px; font-size: 12.5px; }
+.chrome-error-reload {
+  padding: 8px 18px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  background: #fff;
+  color: #131314;
+  font-size: 13px;
+  cursor: pointer;
+}
+.chrome-error-reload:hover { background: #f6f8fa; }
 
 /* ── ChatGPT UI (embedded in Chrome) ── */
 #chatgpt-app {
