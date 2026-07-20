@@ -371,7 +371,7 @@ function makeInitialTabs() {
   return [
     { id: 'chatgpt', type: 'chatgpt', title: 'ChatGPT', url: 'chat.openai.com/c/6f2a91d0-8b3e-4c1a-9f2d-3a7e5c0b1d44', favicon: 'assets/icons/chatgpt.svg' },
     { id: 'facerate', type: 'facerate', title: 'facerate.io — Upload', url: 'facerate.io/upload', favicon: 'assets/icons/fav-facerate.svg' },
-    { id: 'youtube', type: 'blank', title: "why 6'0 is the new 5'8 - YouTube", url: 'youtube.com/watch?v=w6057', favicon: 'assets/icons/fav-youtube.svg' },
+    { id: 'youtube', type: 'youtube', title: "why 6'0 is the new 5'8 - YouTube", url: 'youtube.com/watch?v=w6057', favicon: 'assets/icons/fav-youtube.svg' },
     { id: 'duolingo', type: 'blank', title: 'Duolingo', url: 'duolingo.com/learn', favicon: 'assets/icons/fav-duolingo.svg' },
     { id: 'google-search', type: 'blank', title: 'vlak plzeň hlavní praha víkend - Hledat Googlem', url: 'google.com/search?q=vlak+plzen+hlavni+praha+vikend', favicon: 'assets/icons/fav-google.svg' },
     { id: 'gmail', type: 'blank', title: 'Doručená pošta – Gmail', url: 'mail.google.com/mail/u/0/#inbox', favicon: 'assets/icons/fav-gmail.svg' }
@@ -515,6 +515,9 @@ function navigateActiveTab(title, url) {
     tab.type = 'facerate';
     tab.title = 'facerate.io — Upload';
     facerateView = 'upload';
+  } else if (url.startsWith('youtube.com')) {
+    tab.type = 'youtube';
+    tab.title = title;
   } else {
     tab.type = 'blank';
     tab.title = title;
@@ -714,6 +717,10 @@ function renderActivePage() {
     chromePage.innerHTML = buildFacerateAppHTML();
     attachFacerateHandlers();
     renderFacerateBody();
+  } else if (tab.type === 'youtube') {
+    chromePage.innerHTML = buildYoutubeShellHTML();
+    attachYoutubeShellHandlers();
+    renderYoutubeContent(tab.url);
   } else {
     chromePage.innerHTML = buildErrorPageHTML(tab.url);
   }
@@ -993,6 +1000,476 @@ function attachFacerateHandlers() {
       renderFacerateBody();
     });
   });
+}
+
+// ── YouTube (shell only — content is placeholder, to be filled in later) ──
+const YT_CHANNELS = Array.from({ length: 8 }, (_, i) => `[Channel name ${i + 1}]`);
+const YT_VIEWS = ['1,2 tis. zhlédnutí', '45 tis. zhlédnutí', '128 tis. zhlédnutí', '2,3 mil. zhlédnutí', '890 zhlédnutí', '15 tis. zhlédnutí', '3,1 mil. zhlédnutí', '62 tis. zhlédnutí'];
+const YT_AGES = ['před 3 hodinami', 'před 1 dnem', 'před 5 dny', 'před 2 týdny', 'před 1 měsícem', 'před 3 měsíci', 'před 1 rokem', 'před 6 dny'];
+const YT_DURATIONS = ['12:34', '4:21', '1:02:15', '8:47', '0:58', '22:10', '15:03', '6:40'];
+
+function makePlaceholderVideos(count, prefix) {
+  const arr = [];
+  for (let i = 0; i < count; i++) {
+    arr.push({
+      id: `${prefix}${i + 1}`,
+      title: `[Title placeholder ${i + 1}]`,
+      channel: YT_CHANNELS[i % YT_CHANNELS.length],
+      views: YT_VIEWS[(i * 3) % YT_VIEWS.length],
+      age: YT_AGES[(i * 5) % YT_AGES.length],
+      duration: YT_DURATIONS[(i * 2) % YT_DURATIONS.length]
+    });
+  }
+  return arr;
+}
+
+const YT_HOME_VIDEOS = makePlaceholderVideos(24, 'demo');
+const YT_SHORTS_IDS = ['short1', 'short2', 'short3', 'short4', 'short5'];
+const YT_COMMENTS = Array.from({ length: 7 }, (_, i) => ({
+  author: `[Comment author ${i + 1}]`,
+  text: `[Comment text ${i + 1}]`,
+  likes: (i + 1) * 4
+}));
+
+function resolveVideoById(id) {
+  const flat = HISTORY_DAYS.flatMap(d => d.items.map(it => ({ ...it, date: d.date })));
+  const match = flat.find(it => it.url === `youtube.com/watch?v=${id}` || it.url === `youtube.com/shorts/${id}`);
+  if (match) {
+    return {
+      id,
+      title: match.title.replace(/ - YouTube$/, ''),
+      channel: '[Channel name]',
+      views: '[View count placeholder]',
+      age: match.date,
+      duration: '—',
+      fromHistory: true
+    };
+  }
+  const known = YT_HOME_VIDEOS.find(v => v.id === id);
+  if (known) return { ...known, fromHistory: false };
+  return { id, title: '[Title placeholder]', channel: '[Channel name]', views: '[View count placeholder]', age: '[Upload date placeholder]', duration: '—', fromHistory: false };
+}
+
+function parseYoutubeUrl(url) {
+  const rest = url.replace(/^youtube\.com/, '');
+  if (!rest || rest === '/') return { page: 'home' };
+  if (rest.startsWith('/watch')) {
+    const m = rest.match(/[?&]v=([^&]+)/);
+    return { page: 'watch', id: m ? decodeURIComponent(m[1]) : YT_HOME_VIDEOS[0].id };
+  }
+  if (rest.startsWith('/results')) {
+    const m = rest.match(/search_query=([^&]+)/);
+    return { page: 'search', query: m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : '' };
+  }
+  if (rest.startsWith('/shorts/')) return { page: 'shorts', id: rest.split('/shorts/')[1] || YT_SHORTS_IDS[0] };
+  if (rest.startsWith('/@')) return { page: 'channel', handle: rest.slice(2).split('/')[0] };
+  if (rest.startsWith('/feed/history')) return { page: 'history' };
+  if (rest.startsWith('/feed/subscriptions')) return { page: 'subscriptions' };
+  if (rest.startsWith('/feed/watch_later')) return { page: 'empty', label: 'Ke zhlédnutí později' };
+  if (rest.startsWith('/feed/liked')) return { page: 'empty', label: 'Videa, která se mi líbí' };
+  return { page: 'home' };
+}
+
+function navigateYoutube(url, title) {
+  const tab = TABS.find(t => t.id === activeTabId);
+  if (tab) {
+    tab.url = url;
+    tab.title = title || tab.title;
+    tab.type = 'youtube';
+    tab.favicon = 'assets/icons/fav-youtube.svg';
+  }
+  renderTabbar();
+  updateAddressBar();
+  renderYoutubeContent(url);
+}
+
+function ytVideoCardHTML(v) {
+  return `
+    <div class="yt-card" data-video-id="${v.id}">
+      <div class="yt-card-thumb"><span class="yt-card-duration">${v.duration}</span></div>
+      <div class="yt-card-meta">
+        <span class="yt-card-avatar"></span>
+        <div class="yt-card-text">
+          <div class="yt-card-title">${v.title}</div>
+          <div class="yt-card-channel">${v.channel}</div>
+          <div class="yt-card-stats">${v.views} · ${v.age}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function ytVideoRowHTML(v) {
+  return `
+    <div class="yt-row" data-video-id="${v.id}">
+      <div class="yt-row-thumb"><span class="yt-card-duration">${v.duration}</span></div>
+      <div class="yt-row-body">
+        <div class="yt-row-title">${v.title}</div>
+        <div class="yt-row-stats">${v.views} · ${v.age}</div>
+        <div class="yt-row-channel"><span class="yt-card-avatar small"></span>${v.channel}</div>
+        <div class="yt-row-desc">[Video description placeholder]</div>
+      </div>
+    </div>
+  `;
+}
+
+function ytRecRowHTML(v) {
+  return `
+    <div class="yt-rec-row" data-video-id="${v.id}">
+      <div class="yt-rec-thumb"><span class="yt-card-duration">${v.duration}</span></div>
+      <div class="yt-rec-text">
+        <div class="yt-rec-title">${v.title}</div>
+        <div class="yt-rec-channel">${v.channel}</div>
+        <div class="yt-rec-stats">${v.views} · ${v.age}</div>
+      </div>
+    </div>
+  `;
+}
+
+function attachYtCardHandlers(container) {
+  container.querySelectorAll('[data-video-id]').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.dataset.videoId;
+      const v = resolveVideoById(id);
+      navigateYoutube(`youtube.com/watch?v=${id}`, `${v.title} - YouTube`);
+    });
+  });
+}
+
+function ytHomePageHTML() {
+  return `<div class="yt-grid">${YT_HOME_VIDEOS.map(ytVideoCardHTML).join('')}</div>`;
+}
+
+function ytSearchPageHTML(query) {
+  const results = YT_HOME_VIDEOS.slice(0, 12);
+  return `
+    <div class="yt-search-results">
+      <div class="yt-search-header">Výsledky vyhledávání pro: <strong>${query || '[search query]'}</strong></div>
+      ${results.map(ytVideoRowHTML).join('')}
+    </div>
+  `;
+}
+
+function ytChannelPageHTML(handle) {
+  const name = handle ? `@${handle}` : '@[channel_handle]';
+  const videos = YT_HOME_VIDEOS.slice(0, 8);
+  return `
+    <div class="yt-channel-page">
+      <div class="yt-channel-banner"></div>
+      <div class="yt-channel-head">
+        <span class="yt-channel-avatar"></span>
+        <div class="yt-channel-head-text">
+          <div class="yt-channel-name">[Channel name]</div>
+          <div class="yt-channel-sub">${name} · [1,2 tis.] odběratelů · [42] videí</div>
+          <div class="yt-channel-desc">[Channel description placeholder]</div>
+        </div>
+        <button class="yt-subscribe-btn" id="yt-subscribe-btn">Odebírat</button>
+      </div>
+      <div class="yt-channel-tabs">
+        <span class="yt-channel-tab active" data-tab="videos">Videa</span>
+        <span class="yt-channel-tab" data-tab="shorts">Shorts</span>
+        <span class="yt-channel-tab" data-tab="playlists">Playlisty</span>
+        <span class="yt-channel-tab" data-tab="about">O kanálu</span>
+      </div>
+      <div class="yt-channel-tab-body" id="yt-channel-tab-body">
+        <div class="yt-grid">${videos.map(ytVideoCardHTML).join('')}</div>
+      </div>
+    </div>
+  `;
+}
+
+function attachYtChannelHandlers() {
+  const btn = document.getElementById('yt-subscribe-btn');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const subscribed = btn.classList.toggle('subscribed');
+      btn.textContent = subscribed ? 'Odebíráno' : 'Odebírat';
+    });
+  }
+  document.querySelectorAll('.yt-channel-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.yt-channel-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const body = document.getElementById('yt-channel-tab-body');
+      if (tab.dataset.tab === 'videos') {
+        body.innerHTML = `<div class="yt-grid">${YT_HOME_VIDEOS.slice(0, 8).map(ytVideoCardHTML).join('')}</div>`;
+        attachYtCardHandlers(body);
+      } else {
+        body.innerHTML = `<div class="yt-empty-state">Obsah záložky „${tab.textContent}“ zatím není naplněn.</div>`;
+      }
+    });
+  });
+}
+
+function ytWatchPageHTML(id) {
+  const v = resolveVideoById(id);
+  const recs = YT_HOME_VIDEOS.filter(x => x.id !== id).slice(0, 14);
+  return `
+    <div class="yt-watch-page">
+      <div class="yt-watch-main">
+        <div class="yt-player">
+          <div class="yt-player-surface"><button class="yt-player-play">▶</button></div>
+          <div class="yt-player-controls">
+            <button class="yt-ctrl-btn">▶</button>
+            <div class="yt-timeline"><div class="yt-timeline-progress"></div></div>
+            <span class="yt-time">0:00 / ${v.duration || '12:34'}</span>
+            <button class="yt-ctrl-btn">🔊</button>
+            <button class="yt-ctrl-btn">HD</button>
+            <button class="yt-ctrl-btn">⛶</button>
+          </div>
+        </div>
+        <div class="yt-watch-title">${v.title}</div>
+        <div class="yt-watch-row">
+          <div class="yt-watch-channel">
+            <span class="yt-card-avatar"></span>
+            <div>
+              <div class="yt-watch-channel-name">${v.channel}</div>
+              <div class="yt-watch-channel-subs">[1,2 tis.] odběratelů</div>
+            </div>
+            <button class="yt-subscribe-btn" id="yt-subscribe-btn">Odebírat</button>
+          </div>
+          <div class="yt-watch-actions">
+            <span class="yt-action-btn">👍 <span>[1,1 tis.]</span></span>
+            <span class="yt-action-btn">👎</span>
+            <span class="yt-action-btn">↗ Sdílet</span>
+            <span class="yt-action-btn">⬇ Uložit</span>
+          </div>
+        </div>
+        <div class="yt-watch-views-date">${v.views} · ${v.age}</div>
+        <div class="yt-comments">
+          <div class="yt-comments-count">[124] komentářů</div>
+          ${YT_COMMENTS.map(c => `
+            <div class="yt-comment">
+              <span class="yt-card-avatar small"></span>
+              <div class="yt-comment-body">
+                <div class="yt-comment-head"><span class="yt-comment-author">${c.author}</span><span class="yt-comment-time">[před X dny]</span></div>
+                <div class="yt-comment-text">${c.text}</div>
+                <div class="yt-comment-actions">👍 ${c.likes} &nbsp; 👎 &nbsp; Odpovědět</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      <div class="yt-watch-sidebar">${recs.map(ytRecRowHTML).join('')}</div>
+    </div>
+  `;
+}
+
+function attachYtWatchHandlers() {
+  const content = document.getElementById('yt-content');
+  attachYtCardHandlers(content);
+  const btn = document.getElementById('yt-subscribe-btn');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const subscribed = btn.classList.toggle('subscribed');
+      btn.textContent = subscribed ? 'Odebíráno' : 'Odebírat';
+    });
+  }
+  const playBtn = content.querySelector('.yt-player-play');
+  if (playBtn) playBtn.addEventListener('click', () => playBtn.classList.toggle('playing'));
+}
+
+function ytShortsPageHTML(id) {
+  const idx = Math.max(0, YT_SHORTS_IDS.indexOf(id));
+  const v = resolveVideoById(YT_SHORTS_IDS[idx]);
+  return `
+    <div class="yt-shorts-page">
+      <div class="yt-shorts-nav">
+        <button class="yt-shorts-arrow" id="yt-shorts-up" ${idx === 0 ? 'disabled' : ''}>▲</button>
+        <button class="yt-shorts-arrow" id="yt-shorts-down" ${idx === YT_SHORTS_IDS.length - 1 ? 'disabled' : ''}>▼</button>
+      </div>
+      <div class="yt-shorts-player">
+        <div class="yt-shorts-surface"><button class="yt-player-play">▶</button></div>
+        <div class="yt-shorts-meta">
+          <div class="yt-shorts-channel"><span class="yt-card-avatar small"></span>${v.channel}<button class="yt-subscribe-btn small" id="yt-subscribe-btn">Odebírat</button></div>
+          <div class="yt-shorts-title">${v.title}</div>
+        </div>
+      </div>
+      <div class="yt-shorts-actions">
+        <div class="yt-shorts-action">👍<span>[12 tis.]</span></div>
+        <div class="yt-shorts-action">👎<span></span></div>
+        <div class="yt-shorts-action">💬<span>[321]</span></div>
+        <div class="yt-shorts-action">↗<span>Sdílet</span></div>
+      </div>
+    </div>
+  `;
+}
+
+function attachYtShortsHandlers(id) {
+  const idx = Math.max(0, YT_SHORTS_IDS.indexOf(id));
+  const up = document.getElementById('yt-shorts-up');
+  const down = document.getElementById('yt-shorts-down');
+  if (up) up.addEventListener('click', () => {
+    if (idx > 0) navigateYoutube(`youtube.com/shorts/${YT_SHORTS_IDS[idx - 1]}`, 'Shorts - YouTube');
+  });
+  if (down) down.addEventListener('click', () => {
+    if (idx < YT_SHORTS_IDS.length - 1) navigateYoutube(`youtube.com/shorts/${YT_SHORTS_IDS[idx + 1]}`, 'Shorts - YouTube');
+  });
+  const btn = document.getElementById('yt-subscribe-btn');
+  if (btn) btn.addEventListener('click', () => {
+    const subscribed = btn.classList.toggle('subscribed');
+    btn.textContent = subscribed ? 'Odebíráno' : 'Odebírat';
+  });
+}
+
+function ytHistoryPageHTML() {
+  const ytDays = HISTORY_DAYS
+    .map(day => ({ date: day.date, items: day.items.filter(it => it.url.startsWith('youtube.com')) }))
+    .filter(day => day.items.length);
+  if (!ytDays.length) return ytEmptyPageHTML('Historie sledování');
+  return `
+    <div class="yt-history-page">
+      <div class="yt-history-title">Historie sledování</div>
+      ${ytDays.map(day => `
+        <div class="yt-history-date">${day.date}</div>
+        ${day.items.map(it => `
+          <div class="yt-row yt-history-row" data-url="${it.url}" data-title="${it.title}">
+            <div class="yt-row-thumb"></div>
+            <div class="yt-row-body">
+              <div class="yt-row-title">${it.title.replace(/ - YouTube$/, '')}</div>
+              <div class="yt-row-stats">zhlédnuto ${it.time}</div>
+            </div>
+          </div>
+        `).join('')}
+      `).join('')}
+    </div>
+  `;
+}
+
+function attachYtHistoryHandlers(container) {
+  container.querySelectorAll('.yt-history-row').forEach(el => {
+    el.addEventListener('click', () => navigateYoutube(el.dataset.url, el.dataset.title));
+  });
+}
+
+function ytSubscriptionsPageHTML() {
+  const chips = YT_CHANNELS.slice(0, 6);
+  return `
+    <div class="yt-subscriptions-page">
+      <div class="yt-sub-chips">
+        ${chips.map(c => `<div class="yt-sub-chip"><span class="yt-card-avatar small"></span>${c}</div>`).join('')}
+      </div>
+      <div class="yt-empty-state">Zatím žádná nová videa od odebíraných kanálů.</div>
+    </div>
+  `;
+}
+
+function ytEmptyPageHTML(label) {
+  return `<div class="yt-empty-state">${label ? `„${label}“ — zatím žádný obsah.` : 'Zatím žádný obsah.'}</div>`;
+}
+
+function renderYoutubeContent(url) {
+  const content = document.getElementById('yt-content');
+  if (!content) return;
+  const parsed = parseYoutubeUrl(url);
+  const sidebar = document.getElementById('yt-sidebar');
+  if (sidebar) sidebar.classList.toggle('slim', parsed.page === 'watch' || parsed.page === 'shorts');
+  const searchInput = document.getElementById('yt-search-input');
+  if (searchInput) searchInput.value = parsed.page === 'search' ? (parsed.query || '') : '';
+
+  switch (parsed.page) {
+    case 'watch':
+      content.innerHTML = ytWatchPageHTML(parsed.id);
+      attachYtWatchHandlers();
+      break;
+    case 'search':
+      content.innerHTML = ytSearchPageHTML(parsed.query);
+      attachYtCardHandlers(content);
+      break;
+    case 'channel':
+      content.innerHTML = ytChannelPageHTML(parsed.handle);
+      attachYtChannelHandlers();
+      attachYtCardHandlers(content);
+      break;
+    case 'shorts':
+      content.innerHTML = ytShortsPageHTML(parsed.id);
+      attachYtShortsHandlers(parsed.id);
+      break;
+    case 'history':
+      content.innerHTML = ytHistoryPageHTML();
+      attachYtHistoryHandlers(content);
+      break;
+    case 'subscriptions':
+      content.innerHTML = ytSubscriptionsPageHTML();
+      break;
+    case 'empty':
+      content.innerHTML = ytEmptyPageHTML(parsed.label);
+      break;
+    default:
+      content.innerHTML = ytHomePageHTML();
+      attachYtCardHandlers(content);
+      break;
+  }
+}
+
+function buildYoutubeShellHTML() {
+  return `
+    <div class="yt-app">
+      <header class="yt-topbar">
+        <div class="yt-topbar-left">
+          <span class="yt-icon-btn" title="Menu">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+          </span>
+          <div class="yt-logo" id="yt-logo-home">
+            <svg viewBox="0 0 28 20" width="28" height="20"><rect width="28" height="20" rx="6" fill="#ff0000"/><path d="M11 6l8 4-8 4z" fill="#fff"/></svg>
+            <span>YouTube</span>
+          </div>
+        </div>
+        <div class="yt-topbar-center">
+          <div class="yt-search-wrap">
+            <input class="yt-search-input" id="yt-search-input" placeholder="Hledat" />
+            <button class="yt-search-btn" id="yt-search-btn">
+              <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M15.5 14h-.8l-.3-.3a6.5 6.5 0 1 0-.7.7l.3.3v.8l5 5L20.5 19zm-6 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="yt-topbar-right">
+          <span class="yt-icon-btn">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11z"/></svg>
+          </span>
+          <span class="yt-icon-btn">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 22a2.2 2.2 0 0 0 2.2-2.2h-4.4A2.2 2.2 0 0 0 12 22zm7-6.2V11c0-3.1-1.6-5.6-4.5-6.3V4a2.5 2.5 0 0 0-5 0v.7C6.6 5.4 5 8 5 11v4.8L3 18v1h18v-1z"/></svg>
+          </span>
+          <span class="yt-avatar">L</span>
+        </div>
+      </header>
+      <div class="yt-shell-body">
+        <aside class="yt-sidebar" id="yt-sidebar">
+          <div class="yt-sidebar-item" data-nav="home"><span class="yt-sidebar-icon">🏠</span>Domů</div>
+          <div class="yt-sidebar-item" data-nav="shorts"><span class="yt-sidebar-icon">⚡</span>Shorts</div>
+          <div class="yt-sidebar-item" data-nav="subscriptions"><span class="yt-sidebar-icon">📺</span>Odběry</div>
+          <div class="yt-sidebar-sep"></div>
+          <div class="yt-sidebar-item" data-nav="history"><span class="yt-sidebar-icon">🕘</span>Historie</div>
+          <div class="yt-sidebar-item" data-nav="watch_later"><span class="yt-sidebar-icon">🕓</span>Ke zhlédnutí později</div>
+          <div class="yt-sidebar-item" data-nav="liked"><span class="yt-sidebar-icon">👍</span>Videa, která se mi líbí</div>
+        </aside>
+        <main class="yt-content" id="yt-content"></main>
+      </div>
+    </div>
+  `;
+}
+
+function attachYoutubeShellHandlers() {
+  document.getElementById('yt-logo-home').addEventListener('click', () => navigateYoutube('youtube.com', 'YouTube'));
+  document.querySelectorAll('.yt-sidebar-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const nav = item.dataset.nav;
+      if (nav === 'home') navigateYoutube('youtube.com', 'YouTube');
+      else if (nav === 'shorts') navigateYoutube(`youtube.com/shorts/${YT_SHORTS_IDS[0]}`, 'Shorts - YouTube');
+      else if (nav === 'subscriptions') navigateYoutube('youtube.com/feed/subscriptions', 'Odběry - YouTube');
+      else if (nav === 'history') navigateYoutube('youtube.com/feed/history', 'Historie sledování - YouTube');
+      else if (nav === 'watch_later') navigateYoutube('youtube.com/feed/watch_later', 'Ke zhlédnutí později - YouTube');
+      else if (nav === 'liked') navigateYoutube('youtube.com/feed/liked', 'Videa, která se mi líbí - YouTube');
+    });
+  });
+  const searchInput = document.getElementById('yt-search-input');
+  const doSearch = () => {
+    const q = searchInput.value.trim();
+    if (!q) return;
+    navigateYoutube(`youtube.com/results?search_query=${encodeURIComponent(q)}`, `${q} - Hledání - YouTube`);
+  };
+  document.getElementById('yt-search-btn').addEventListener('click', doSearch);
+  searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
 }
 
 function openChrome() {
