@@ -126,73 +126,6 @@ body {
 
 #taskbar-time { font-variant-numeric: tabular-nums; }
 
-/* ── Modal ── */
-#modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-#modal-overlay.hidden { display: none; }
-
-#modal {
-  background: #1e1e2e;
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 8px;
-  padding: 28px 32px;
-  min-width: 360px;
-  max-width: 480px;
-  color: #e0e0e0;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
-}
-
-#modal-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 12px;
-  color: #fff;
-}
-
-#modal-body {
-  font-size: 14px;
-  line-height: 1.6;
-  margin-bottom: 20px;
-  color: #bbb;
-}
-
-#modal-body .progress-bar-wrap {
-  margin-top: 14px;
-  height: 4px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 2px;
-  overflow: hidden;
-}
-#modal-body .progress-bar {
-  height: 100%;
-  width: 0%;
-  background: #0078d4;
-  border-radius: 2px;
-  animation: progress 8s linear forwards;
-}
-@keyframes progress { to { width: 100%; } }
-
-#modal-close {
-  display: block;
-  margin-left: auto;
-  padding: 8px 20px;
-  background: #0078d4;
-  border: none;
-  border-radius: 4px;
-  color: #fff;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-#modal-close:hover { background: #106ebe; }
-
 /* ── Chrome browser window ── */
 #chrome-window {
   position: fixed;
@@ -1829,3 +1762,317 @@ body {
 }
 .fr-forum-title { font-size: 13.5px; color: #e2e4f0; }
 .fr-forum-meta { display: flex; gap: 14px; font-size: 11.5px; color: #7d8299; margin-top: 4px; }
+
+/* ── Counter-Strike 2 launcher (Steam-style) ── */
+#cs2-window {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(1080px, 96vw);
+  height: min(740px, 88vh);
+  background: #1b2838;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  z-index: 905;
+  box-shadow: 0 16px 56px rgba(0,0,0,0.7);
+  overflow: hidden;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  color: #c7d5e0;
+}
+#cs2-window.hidden { display: none; }
+.cs2-titlebar {
+  height: 40px;
+  flex-shrink: 0;
+  background: #171a21;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  border-bottom: 1px solid #000;
+}
+.cs2-titlebar-icon { width: 20px; height: 20px; }
+.cs2-titlebar-name { flex: 1; font-size: 13px; color: #c7d5e0; letter-spacing: 0.3px; }
+.cs2-close {
+  width: 26px; height: 24px;
+  background: none; border: none; border-radius: 4px;
+  color: #8f98a0; cursor: pointer; font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+}
+.cs2-close:hover { background: #c0392b; color: #fff; }
+
+.cs2-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 22px 28px 40px;
+  background: linear-gradient(180deg, #1b2838 0%, #16202c 100%);
+}
+
+.cs2-profile-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #2a3f57;
+  margin-bottom: 20px;
+}
+.cs2-avatar {
+  width: 64px; height: 64px; border-radius: 4px;
+  background: #0e141b;
+  border: 2px solid #3a4f68;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.cs2-avatar svg { width: 38px; height: 38px; color: #5a6f85; }
+.cs2-profile-name { font-size: 19px; font-weight: 600; color: #fff; }
+.cs2-profile-sub { font-size: 12.5px; color: #8f98a0; margin-top: 3px; }
+.cs2-rank-badge {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #0e141bcc;
+  border: 1px solid #3a4f68;
+  border-radius: 8px;
+  padding: 10px 18px;
+}
+.cs2-rank-icon {
+  width: 40px; height: 40px;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  background: linear-gradient(135deg, #f0a04b, #d6822b);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 800; color: #1b2838;
+  flex-shrink: 0;
+}
+.cs2-rank-text { font-size: 13px; color: #f0a04b; font-weight: 700; }
+.cs2-rank-since { font-size: 11px; color: #8f98a0; margin-top: 2px; }
+
+.cs2-stats-row {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.cs2-stat-card {
+  flex: 1;
+  background: #0e141bcc;
+  border: 1px solid #2a3f57;
+  border-radius: 8px;
+  padding: 14px 16px;
+  text-align: center;
+}
+.cs2-stat-value { font-size: 26px; font-weight: 700; color: #66c0f4; }
+.cs2-stat-label { font-size: 11px; color: #8f98a0; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
+.cs2-stat-card.warn .cs2-stat-value { color: #f0a04b; }
+
+.cs2-section-title {
+  font-size: 14px;
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 12px;
+  margin-top: 26px;
+}
+.cs2-section-title:first-of-type { margin-top: 0; }
+
+.cs2-hours-chart { background: #0e141bcc; border: 1px solid #2a3f57; border-radius: 8px; padding: 14px; }
+.cs2-hours-chart svg { width: 100%; height: 150px; display: block; }
+
+.cs2-matches { display: flex; flex-direction: column; gap: 6px; }
+.cs2-match-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 9px 14px;
+  background: #0e141bcc;
+  border: 1px solid #2a3f57;
+  border-left: 3px solid #3a4f68;
+  border-radius: 6px;
+  font-size: 12.5px;
+}
+.cs2-match-row.win { border-left-color: #90ba3c; }
+.cs2-match-row.loss { border-left-color: #c0392b; }
+.cs2-match-result { width: 60px; flex-shrink: 0; font-weight: 700; }
+.cs2-match-row.win .cs2-match-result { color: #90ba3c; }
+.cs2-match-row.loss .cs2-match-result { color: #e05a4e; }
+.cs2-match-map { width: 90px; flex-shrink: 0; color: #fff; }
+.cs2-match-score { width: 60px; flex-shrink: 0; color: #8f98a0; }
+.cs2-match-kd { width: 110px; flex-shrink: 0; color: #c7d5e0; }
+.cs2-match-time { flex: 1; text-align: right; color: #8f98a0; }
+
+.cs2-friends { display: flex; flex-direction: column; gap: 8px; }
+.cs2-friend-row { display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: #0e141bcc; border-radius: 6px; }
+.cs2-friend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.cs2-friend-dot.online { background: #90ba3c; box-shadow: 0 0 6px #90ba3c; }
+.cs2-friend-dot.offline { background: #5a6773; }
+.cs2-friend-name { font-size: 13px; color: #fff; flex: 1; }
+.cs2-friend-status { font-size: 11.5px; color: #8f98a0; }
+
+.cs2-achievements { display: flex; gap: 12px; flex-wrap: wrap; }
+.cs2-achievement {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 96px;
+  text-align: center;
+  padding: 10px 6px;
+  background: #0e141bcc;
+  border: 1px solid #2a3f57;
+  border-radius: 8px;
+}
+.cs2-achievement-icon { font-size: 22px; }
+.cs2-achievement-name { font-size: 10.5px; color: #c7d5e0; line-height: 1.3; }
+
+/* ── Halo Infinite launcher (Waypoint-style) ── */
+#halo-window {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(1080px, 96vw);
+  height: min(740px, 88vh);
+  background: #0a0f14;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  z-index: 905;
+  box-shadow: 0 16px 56px rgba(0,0,0,0.7);
+  overflow: hidden;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  color: #c9d6dc;
+}
+#halo-window.hidden { display: none; }
+.halo-titlebar {
+  height: 40px;
+  flex-shrink: 0;
+  background: #05080b;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  border-bottom: 1px solid #123a44;
+}
+.halo-titlebar-icon { width: 20px; height: 20px; border-radius: 50%; }
+.halo-titlebar-name { flex: 1; font-size: 13px; color: #c9d6dc; letter-spacing: 0.5px; text-transform: uppercase; }
+.halo-close {
+  width: 26px; height: 24px;
+  background: none; border: none; border-radius: 4px;
+  color: #6f8992; cursor: pointer; font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+}
+.halo-close:hover { background: #c0392b; color: #fff; }
+
+.halo-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 28px 40px;
+  background:
+    radial-gradient(ellipse at top, rgba(79,216,232,0.08), transparent 60%),
+    linear-gradient(180deg, #0a0f14 0%, #060a0d 100%);
+}
+
+.halo-profile-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #123a44;
+  margin-bottom: 20px;
+}
+.halo-avatar {
+  width: 64px; height: 64px;
+  clip-path: polygon(15% 0, 100% 0, 100% 85%, 85% 100%, 0 100%, 0 15%);
+  background: #0d1a20;
+  border: 2px solid #1d4d58;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.halo-avatar svg { width: 36px; height: 36px; color: #4fd8e8; }
+.halo-profile-name { font-size: 19px; font-weight: 700; color: #fff; letter-spacing: 0.4px; }
+.halo-profile-sub { font-size: 12.5px; color: #6f8992; margin-top: 3px; }
+.halo-rank-badge {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #0d1a20cc;
+  border: 1px solid #1d4d58;
+  clip-path: polygon(6% 0, 100% 0, 100% 100%, 0 100%, 0 20%);
+  padding: 10px 20px 10px 16px;
+}
+.halo-rank-icon {
+  width: 40px; height: 40px;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  background: linear-gradient(135deg, #4fd8e8, #1d848f);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 800; color: #05141a;
+  flex-shrink: 0;
+}
+.halo-rank-text { font-size: 13px; color: #4fd8e8; font-weight: 700; letter-spacing: 0.3px; }
+.halo-rank-sub { font-size: 11px; color: #6f8992; margin-top: 2px; }
+
+.halo-section-title {
+  font-size: 13px;
+  color: #4fd8e8;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 12px;
+  margin-top: 26px;
+}
+.halo-section-title:first-of-type { margin-top: 0; }
+
+.halo-matches { display: flex; flex-direction: column; gap: 6px; }
+.halo-match-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 9px 14px;
+  background: #0d1a20cc;
+  border: 1px solid #16323a;
+  border-left: 3px solid #1d4d58;
+  clip-path: polygon(1.5% 0, 100% 0, 100% 100%, 0 100%, 0 12%);
+  font-size: 12.5px;
+}
+.halo-match-row.win { border-left-color: #4fd8e8; }
+.halo-match-row.loss { border-left-color: #c0392b; }
+.halo-match-result { width: 60px; flex-shrink: 0; font-weight: 700; }
+.halo-match-row.win .halo-match-result { color: #4fd8e8; }
+.halo-match-row.loss .halo-match-result { color: #e05a4e; }
+.halo-match-playlist { width: 110px; flex-shrink: 0; color: #9fb3ba; }
+.halo-match-map { width: 90px; flex-shrink: 0; color: #fff; }
+.halo-match-score { width: 70px; flex-shrink: 0; color: #6f8992; }
+.halo-match-kd { width: 100px; flex-shrink: 0; color: #c9d6dc; }
+.halo-match-time { flex: 1; text-align: right; color: #6f8992; }
+
+.halo-friends { display: flex; flex-direction: column; gap: 8px; }
+.halo-friend-row { display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: #0d1a20cc; border-radius: 4px; }
+.halo-friend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.halo-friend-dot.online { background: #4fd8e8; box-shadow: 0 0 6px #4fd8e8; }
+.halo-friend-dot.offline { background: #445a60; }
+.halo-friend-name { font-size: 13px; color: #fff; flex: 1; }
+.halo-friend-status { font-size: 11.5px; color: #6f8992; }
+
+.halo-two-col { display: flex; gap: 20px; }
+.halo-two-col > div { flex: 1; min-width: 0; }
+
+.halo-weapon-row { margin-bottom: 12px; }
+.halo-weapon-head { display: flex; justify-content: space-between; font-size: 12px; color: #c9d6dc; margin-bottom: 4px; }
+.halo-weapon-bar-wrap { height: 6px; background: #16232899; border-radius: 3px; overflow: hidden; }
+.halo-weapon-bar { display: block; height: 100%; background: linear-gradient(90deg, #1d848f, #4fd8e8); border-radius: 3px; }
+
+.halo-medals { display: flex; gap: 12px; flex-wrap: wrap; }
+.halo-medal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 92px;
+  text-align: center;
+  padding: 10px 6px;
+  background: #0d1a20cc;
+  border: 1px solid #16323a;
+  clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
+}
+.halo-medal-icon { font-size: 20px; }
+.halo-medal-name { font-size: 10px; color: #c9d6dc; line-height: 1.3; }

@@ -1970,6 +1970,242 @@ function openPhotos() {
   renderPhotos();
 }
 
+// ── Counter-Strike 2 launcher ──
+const cs2Window = document.getElementById('cs2-window');
+document.getElementById('cs2-close-btn').addEventListener('click', () => {
+  cs2Window.classList.add('hidden');
+});
+
+const CS2_MONTHLY_HOURS = [
+  { label: 'pro', hours: 40 },
+  { label: 'led', hours: 85 },
+  { label: 'úno', hours: 145 },
+  { label: 'bře', hours: 340 }
+];
+
+const CS2_MATCHES = [
+  { map: 'Mirage', win: true, score: '13:9', kd: '24 / 15 / 6', ratio: '1.60', time: '21. 3. 2026, 02:44' },
+  { map: 'Inferno', win: false, score: '8:13', kd: '14 / 16 / 5', ratio: '0.88', time: '19. 3. 2026, 23:58' },
+  { map: 'Ancient', win: true, score: '13:11', kd: '19 / 15 / 4', ratio: '1.27', time: '18. 3. 2026, 01:12' },
+  { map: 'Anubis', win: false, score: '10:13', kd: '17 / 16 / 7', ratio: '1.06', time: '16. 3. 2026, 22:30' },
+  { map: 'Dust II', win: true, score: '13:7', kd: '22 / 12 / 3', ratio: '1.83', time: '15. 3. 2026, 00:47' },
+  { map: 'Nuke', win: false, score: '9:13', kd: '13 / 17 / 4', ratio: '0.76', time: '13. 3. 2026, 23:05' },
+  { map: 'Mirage', win: true, score: '13:10', kd: '21 / 15 / 5', ratio: '1.40', time: '11. 3. 2026, 01:33' },
+  { map: 'Overpass', win: false, score: '11:13', kd: '16 / 16 / 6', ratio: '1.00', time: '9. 3. 2026, 22:52' },
+  { map: 'Vertigo', win: true, score: '13:6', kd: '23 / 11 / 2', ratio: '2.09', time: '7. 3. 2026, 00:18' },
+  { map: 'Inferno', win: false, score: '7:13', kd: '12 / 14 / 3', ratio: '0.86', time: '5. 3. 2026, 23:40' }
+];
+
+const CS2_FRIENDS = [
+  { name: 'davepvp', online: false, status: 'naposledy online před 3 dny' },
+  { name: 'Kryštof12', online: true, status: 'online' },
+  { name: 'SmokeyKC', online: true, status: 'online' }
+];
+
+const CS2_ACHIEVEMENTS = [
+  { icon: '🎖️', name: 'Veterán — 1000+ h celkem' },
+  { icon: '🎯', name: 'Sniper — 500 headshotů' },
+  { icon: '🔥', name: 'Clutch King — 50× 1vX' },
+  { icon: '🌙', name: 'Night Owl — 100 zápasů po půlnoci' }
+];
+
+function cs2HoursChartSVG() {
+  const data = CS2_MONTHLY_HOURS;
+  const w = 600, h = 150, padL = 30, padR = 10, padT = 24, padB = 22;
+  const plotW = w - padL - padR, plotH = h - padT - padB;
+  const max = Math.max(...data.map(d => d.hours)) * 1.15;
+  const slot = plotW / data.length, barW = slot * 0.46;
+  const gridlines = [0, 0.25, 0.5, 0.75, 1].map(t => {
+    const y = padT + plotH - t * plotH;
+    return `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${w - padR}" y2="${y.toFixed(1)}" stroke="#2a3f57" stroke-width="0.6"/>`;
+  }).join('');
+  let bars = '';
+  data.forEach((d, i) => {
+    const bh = (d.hours / max) * plotH;
+    const x = padL + slot * i + (slot - barW) / 2;
+    const y = padT + plotH - bh;
+    const isMarch = i === data.length - 1;
+    bars += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${bh.toFixed(1)}" rx="3" fill="${isMarch ? '#f0a04b' : '#66c0f4'}" opacity="${isMarch ? 1 : 0.75}"/>`;
+    bars += `<text x="${(x + barW / 2).toFixed(1)}" y="${(y - 7).toFixed(1)}" font-size="12" fill="${isMarch ? '#f0a04b' : '#c7d5e0'}" text-anchor="middle" font-weight="${isMarch ? 700 : 400}">${d.hours}h</text>`;
+    bars += `<text x="${(x + barW / 2).toFixed(1)}" y="${h - 6}" font-size="11" fill="#8f98a0" text-anchor="middle">${d.label}</text>`;
+  });
+  return `<svg viewBox="0 0 ${w} ${h}">${gridlines}${bars}</svg>`;
+}
+
+function buildCs2BodyHTML() {
+  return `
+    <div class="cs2-profile-row">
+      <div class="cs2-avatar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4.4 0-8 2.2-8 5v2h16v-2c0-2.8-3.6-5-8-5z"/></svg></div>
+      <div>
+        <div class="cs2-profile-name">hidd3nfram3</div>
+        <div class="cs2-profile-sub">Counter-Strike 2 · Premier</div>
+      </div>
+      <div class="cs2-rank-badge">
+        <div class="cs2-rank-icon">DMG</div>
+        <div>
+          <div class="cs2-rank-text">Distinguished Master Guardian</div>
+          <div class="cs2-rank-since">od ledna 2026 · rank stagnuje</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cs2-stats-row">
+      <div class="cs2-stat-card warn"><div class="cs2-stat-value">340 h</div><div class="cs2-stat-label">Odehráno v březnu</div></div>
+      <div class="cs2-stat-card"><div class="cs2-stat-value">1.34</div><div class="cs2-stat-label">K/D ratio</div></div>
+      <div class="cs2-stat-card"><div class="cs2-stat-value">42 %</div><div class="cs2-stat-label">Headshot %</div></div>
+    </div>
+
+    <div class="cs2-section-title">Odehrané hodiny za měsíc</div>
+    <div class="cs2-hours-chart">${cs2HoursChartSVG()}</div>
+
+    <div class="cs2-section-title">Poslední zápasy</div>
+    <div class="cs2-matches">
+      ${CS2_MATCHES.map(m => `
+        <div class="cs2-match-row ${m.win ? 'win' : 'loss'}">
+          <span class="cs2-match-result">${m.win ? 'Výhra' : 'Prohra'}</span>
+          <span class="cs2-match-map">${m.map}</span>
+          <span class="cs2-match-score">${m.score}</span>
+          <span class="cs2-match-kd">K/D ${m.ratio} (${m.kd})</span>
+          <span class="cs2-match-time">${m.time}</span>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="cs2-section-title">Přátelé</div>
+    <div class="cs2-friends">
+      ${CS2_FRIENDS.map(f => `
+        <div class="cs2-friend-row">
+          <span class="cs2-friend-dot ${f.online ? 'online' : 'offline'}"></span>
+          <span class="cs2-friend-name">${f.name}</span>
+          <span class="cs2-friend-status">${f.status}</span>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="cs2-section-title">Achievementy</div>
+    <div class="cs2-achievements">
+      ${CS2_ACHIEVEMENTS.map(a => `
+        <div class="cs2-achievement">
+          <span class="cs2-achievement-icon">${a.icon}</span>
+          <span class="cs2-achievement-name">${a.name}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function openCs2() {
+  document.getElementById('cs2-body').innerHTML = buildCs2BodyHTML();
+  cs2Window.classList.remove('hidden');
+}
+
+// ── Halo Infinite launcher ──
+const haloWindow = document.getElementById('halo-window');
+document.getElementById('halo-close-btn').addEventListener('click', () => {
+  haloWindow.classList.add('hidden');
+});
+
+const HALO_MATCHES = [
+  { playlist: 'Ranked Slayer', map: 'Aquarius', win: true, score: '50:38', kd: '18 / 12 / 5', ratio: '1.50', time: '20. 3. 2026, 22:47' },
+  { playlist: 'Ranked Slayer', map: 'Live Fire', win: false, score: '42:50', kd: '14 / 15 / 4', ratio: '0.93', time: '19. 3. 2026, 21:15' },
+  { playlist: 'Ranked Slayer', map: 'Recharge', win: true, score: '50:44', kd: '16 / 12 / 6', ratio: '1.33', time: '17. 3. 2026, 23:02' },
+  { playlist: 'Big Team Battle', map: 'Deadlock', win: false, score: '62:75', kd: '22 / 22 / 8', ratio: '1.00', time: '15. 3. 2026, 20:40' },
+  { playlist: 'Ranked Slayer', map: 'Streets', win: true, score: '50:33', kd: '20 / 11 / 3', ratio: '1.82', time: '12. 3. 2026, 22:10' },
+  { playlist: 'Ranked Slayer', map: 'Aquarius', win: false, score: '39:50', kd: '13 / 16 / 5', ratio: '0.81', time: '9. 3. 2026, 21:55' }
+];
+
+const HALO_FRIENDS = [
+  { name: 'davepvp', online: false, status: 'offline' },
+  { name: 'Kryštof12', online: true, status: 'online' },
+  { name: 'SmokeyKC', online: true, status: 'online' },
+  { name: 'orange_dude', online: true, status: 'online' }
+];
+
+const HALO_WEAPONS = [
+  { name: 'BR75 Battle Rifle', pct: 62 },
+  { name: 'Sidekick', pct: 21 },
+  { name: 'Sniper Rifle', pct: 11 }
+];
+
+const HALO_MEDALS = [
+  { icon: '⚔️', name: 'Killing Spree' },
+  { icon: '💯', name: 'Perfect' },
+  { icon: '⚡', name: 'Quick Draw' },
+  { icon: '🛡️', name: 'Extermination' }
+];
+
+function buildHaloBodyHTML() {
+  return `
+    <div class="halo-profile-row">
+      <div class="halo-avatar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6c0 2.4 1.2 4.4 3 5.6V16H8v2h2v2h4v-2h2v-2h-1v-2.4c1.8-1.2 3-3.2 3-5.6a6 6 0 0 0-6-6z"/></svg></div>
+      <div>
+        <div class="halo-profile-name">hidd3nfram3</div>
+        <div class="halo-profile-sub">Halo Infinite · Ranked Slayer</div>
+      </div>
+      <div class="halo-rank-badge">
+        <div class="halo-rank-icon">ONX</div>
+        <div>
+          <div class="halo-rank-text">Onyx</div>
+          <div class="halo-rank-sub">1 850 CSR</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="halo-section-title">Poslední zápasy</div>
+    <div class="halo-matches">
+      ${HALO_MATCHES.map(m => `
+        <div class="halo-match-row ${m.win ? 'win' : 'loss'}">
+          <span class="halo-match-result">${m.win ? 'Výhra' : 'Prohra'}</span>
+          <span class="halo-match-playlist">${m.playlist}</span>
+          <span class="halo-match-map">${m.map}</span>
+          <span class="halo-match-score">${m.score}</span>
+          <span class="halo-match-kd">K/D ${m.ratio} (${m.kd})</span>
+          <span class="halo-match-time">${m.time}</span>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="halo-two-col">
+      <div>
+        <div class="halo-section-title">Spartan Company</div>
+        <div class="halo-friends">
+          ${HALO_FRIENDS.map(f => `
+            <div class="halo-friend-row">
+              <span class="halo-friend-dot ${f.online ? 'online' : 'offline'}"></span>
+              <span class="halo-friend-name">${f.name}</span>
+              <span class="halo-friend-status">${f.status}</span>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="halo-section-title">Oblíbené zbraně</div>
+        ${HALO_WEAPONS.map(w => `
+          <div class="halo-weapon-row">
+            <div class="halo-weapon-head"><span>${w.name}</span><span>${w.pct}%</span></div>
+            <div class="halo-weapon-bar-wrap"><span class="halo-weapon-bar" style="width:${w.pct}%"></span></div>
+          </div>
+        `).join('')}
+      </div>
+      <div>
+        <div class="halo-section-title">Medaile</div>
+        <div class="halo-medals">
+          ${HALO_MEDALS.map(m => `
+            <div class="halo-medal">
+              <span class="halo-medal-icon">${m.icon}</span>
+              <span class="halo-medal-name">${m.name}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function openHalo() {
+  document.getElementById('halo-body').innerHTML = buildHaloBodyHTML();
+  haloWindow.classList.remove('hidden');
+}
+
 // ── App launcher ──
 function openApp(app) {
   switch (app) {
@@ -1983,10 +2219,10 @@ function openApp(app) {
       openDiscord();
       break;
     case 'halo':
-      showUpdateModal('Halo Infinite', 'Stahování aktualizace…', '12,4 GB');
+      openHalo();
       break;
     case 'cs':
-      showUpdateModal('Counter-Strike 2', 'Stahování aktualizace…', '8,1 GB');
+      openCs2();
       break;
     case 'recycle':
       openRecycle();
@@ -1994,30 +2230,4 @@ function openApp(app) {
     default:
       break;
   }
-}
-
-// ── Modal helpers ──
-const overlay = document.getElementById('modal-overlay');
-const modalTitle = document.getElementById('modal-title');
-const modalBody = document.getElementById('modal-body');
-document.getElementById('modal-close').addEventListener('click', () => {
-  overlay.classList.add('hidden');
-});
-
-function showModal(title, bodyHtml) {
-  modalTitle.textContent = title;
-  modalBody.innerHTML = bodyHtml;
-  overlay.classList.remove('hidden');
-}
-
-function showUpdateModal(appName, message, size) {
-  modalTitle.textContent = appName;
-  modalBody.innerHTML = `
-    <p>${message}</p>
-    <p style="margin-top:6px;font-size:12px;color:#888;">Zbývá stáhnout: ${size}</p>
-    <div class="progress-bar-wrap">
-      <div class="progress-bar"></div>
-    </div>
-  `;
-  overlay.classList.remove('hidden');
 }

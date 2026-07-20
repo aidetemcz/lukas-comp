@@ -197,13 +197,24 @@
     <div class="context-menu-item" id="context-menu-restore">Obnovit</div>
   </div>
 
-  <!-- Modal: Update/Loading placeholder -->
-  <div id="modal-overlay" class="hidden">
-    <div id="modal">
-      <div id="modal-title"></div>
-      <div id="modal-body"></div>
-      <button id="modal-close">Zavřít</button>
+  <!-- Counter-Strike 2 launcher window -->
+  <div id="cs2-window" class="hidden">
+    <div class="cs2-titlebar">
+      <img class="cs2-titlebar-icon" src="assets/icons/cs.svg" alt="" />
+      <span class="cs2-titlebar-name">Counter-Strike 2</span>
+      <button class="cs2-close" id="cs2-close-btn">✕</button>
     </div>
+    <div class="cs2-body" id="cs2-body"></div>
+  </div>
+
+  <!-- Halo Infinite launcher window -->
+  <div id="halo-window" class="hidden">
+    <div class="halo-titlebar">
+      <img class="halo-titlebar-icon" src="assets/icons/halo.svg" alt="" />
+      <span class="halo-titlebar-name">Halo Infinite</span>
+      <button class="halo-close" id="halo-close-btn">✕</button>
+    </div>
+    <div class="halo-body" id="halo-body"></div>
   </div>
 
   <script src="script.js"></script>
