@@ -44,6 +44,12 @@
         <span>Counter-Strike 2</span>
       </div>
 
+      <!-- Note: cile.txt -->
+      <div class="icon" data-app="cile" id="cile-icon">
+        <img src="assets/icons/notepad.svg" alt="poznámkový blok" />
+        <span>cile.txt</span>
+      </div>
+
       <!-- Recycle Bin -->
       <div class="icon" data-app="recycle">
         <img src="assets/icons/recycle.svg" alt="Koš" />
@@ -61,10 +67,76 @@
       </button>
       <div id="taskbar-apps"></div>
       <div id="taskbar-right">
+        <div class="systray" id="systray">
+          <span class="systray-icon" id="systray-discord" title="Discord">
+            <img src="assets/icons/discord.svg" alt="" />
+            <span class="systray-badge">3</span>
+          </span>
+          <span class="systray-icon" id="systray-steam" title="Steam">
+            <img src="assets/icons/steam.svg" alt="" />
+          </span>
+          <span class="systray-icon" title="Wi-Fi: Připojeno">
+            <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 20a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2zM7.8 14.8a6 6 0 0 1 8.4 0l-1.6 1.6a3.8 3.8 0 0 0-5.2 0zM4.4 11.4a11 11 0 0 1 15.2 0l-1.6 1.6a8.8 8.8 0 0 0-12 0z"/></svg>
+          </span>
+          <span class="systray-icon" title="Hlasitost">
+            <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M4 9v6h4l5 5V4L8 9zm11.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>
+          </span>
+          <span class="systray-icon systray-battery" title="Baterie: 34 %">
+            <svg viewBox="0 0 24 12" width="20" height="10"><rect x="1" y="1" width="19" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.3"/><rect x="21" y="4" width="2" height="4" rx="1" fill="currentColor"/><rect x="2.5" y="2.5" width="6.5" height="7" rx="1" fill="currentColor"/></svg>
+            <span class="systray-battery-pct">34%</span>
+          </span>
+        </div>
         <span id="taskbar-time"></span>
       </div>
     </div>
 
+    <!-- Start menu -->
+    <div id="start-menu" class="hidden">
+      <input class="start-menu-search" placeholder="Hledat" />
+      <div class="start-menu-grid" id="start-menu-grid"></div>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast-notification" class="hidden">
+      <img class="toast-icon" src="assets/icons/discord.svg" alt="" />
+      <div class="toast-body">
+        <div class="toast-title">Looksmaxx CZ/SK</div>
+        <div class="toast-text"><strong>KOROLEV_88</strong> tě zmínil v <strong>#foto-rating</strong></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Notepad window (cile.txt) -->
+  <div id="notepad-window" class="hidden">
+    <div class="notepad-titlebar">
+      <img class="notepad-titlebar-icon" src="assets/icons/notepad.svg" alt="" />
+      <span class="notepad-titlebar-name">cile.txt – Poznámkový blok</span>
+      <button class="notepad-close" id="notepad-close-btn">✕</button>
+    </div>
+    <div class="notepad-menubar">
+      <span class="notepad-menu-item">Soubor</span>
+      <span class="notepad-menu-item">Úpravy</span>
+      <span class="notepad-menu-item">Formát</span>
+      <span class="notepad-menu-item">Zobrazení</span>
+      <span class="notepad-menu-item">Nápověda</span>
+    </div>
+    <textarea class="notepad-content" id="notepad-content" spellcheck="false">[Cíl 1 - leden]
+
+[Cíl 2 - březen]
+
+[Cíl 3]
+
+[Cíl 4]
+</textarea>
+    <div class="notepad-statusbar">
+      <button class="notepad-save-btn" id="notepad-save-btn">Uložit</button>
+      <span class="notepad-statusbar-sep"></span>
+      <span>Řádek 1, sloupec 1</span>
+      <span>100 %</span>
+      <span>Windows (CRLF)</span>
+      <span>UTF-8</span>
+    </div>
   </div>
 
   <!-- Chrome browser window -->

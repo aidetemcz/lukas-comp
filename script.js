@@ -1,20 +1,26 @@
-// ── Clock ──
+// ── Clock (fixed narrative time: 28. 3. 2026, 16:47 — ticks forward from there) ──
+const SIMULATED_CLOCK_BASE = new Date(2026, 2, 28, 16, 47, 0).getTime();
+const CLOCK_START_REAL = Date.now();
 function updateClock() {
-  const now = new Date();
-  const h = String(now.getHours()).padStart(2, '0');
-  const m = String(now.getMinutes()).padStart(2, '0');
+  const simulated = new Date(SIMULATED_CLOCK_BASE + (Date.now() - CLOCK_START_REAL));
+  const h = String(simulated.getHours()).padStart(2, '0');
+  const m = String(simulated.getMinutes()).padStart(2, '0');
   document.getElementById('taskbar-time').textContent = `${h}:${m}`;
 }
 updateClock();
 setInterval(updateClock, 10000);
 
 // ── Icon selection + open ──
+// cile.txt behaves like a real file (double-click to open); every other icon opens on single click.
 document.querySelectorAll('.icon').forEach(icon => {
   icon.addEventListener('click', () => {
     document.querySelectorAll('.icon').forEach(i => i.classList.remove('selected'));
     icon.classList.add('selected');
-    openApp(icon.dataset.app);
+    if (icon.dataset.app !== 'cile') openApp(icon.dataset.app);
   });
+  if (icon.dataset.app === 'cile') {
+    icon.addEventListener('dblclick', () => openApp('cile'));
+  }
 });
 
 // Deselect on desktop click
@@ -373,8 +379,8 @@ function makeInitialTabs() {
     { id: 'facerate', type: 'facerate', title: 'facerate.io — Upload', url: 'facerate.io/upload', favicon: 'assets/icons/fav-facerate.svg' },
     { id: 'youtube', type: 'youtube', title: "why 6'0 is the new 5'8 - YouTube", url: 'youtube.com/watch?v=w6057', favicon: 'assets/icons/fav-youtube.svg' },
     { id: 'duolingo', type: 'blank', title: 'Duolingo', url: 'duolingo.com/learn', favicon: 'assets/icons/fav-duolingo.svg' },
-    { id: 'google-search', type: 'blank', title: 'vlak plzeň hlavní praha víkend - Hledat Googlem', url: 'google.com/search?q=vlak+plzen+hlavni+praha+vikend', favicon: 'assets/icons/fav-google.svg' },
-    { id: 'gmail', type: 'blank', title: 'Doručená pošta – Gmail', url: 'mail.google.com/mail/u/0/#inbox', favicon: 'assets/icons/fav-gmail.svg' }
+    { id: 'google-search', type: 'google', title: 'vlak plzeň hlavní praha víkend - Hledat Googlem', url: 'google.com/search?q=vlak+plzen+hlavni+praha+vikend', favicon: 'assets/icons/fav-google.svg' },
+    { id: 'gmail', type: 'gmail', title: 'Doručená pošta – Gmail', url: 'mail.google.com/mail/u/0/#inbox', favicon: 'assets/icons/fav-gmail.svg' }
   ];
 }
 
@@ -386,6 +392,7 @@ function faviconForUrl(url) {
   if (url.startsWith('reddit.com')) return 'assets/icons/fav-reddit.svg';
   if (url.startsWith('duolingo.com')) return 'assets/icons/fav-duolingo.svg';
   if (url.startsWith('facerate.io')) return 'assets/icons/fav-facerate.svg';
+  if (url.startsWith('grok.x.ai')) return 'assets/icons/fav-grok.svg';
   return 'assets/icons/fav-globe.svg';
 }
 
@@ -517,6 +524,15 @@ function navigateActiveTab(title, url) {
     facerateView = 'upload';
   } else if (url.startsWith('youtube.com')) {
     tab.type = 'youtube';
+    tab.title = title;
+  } else if (url.startsWith('google.com/search')) {
+    tab.type = 'google';
+    tab.title = title;
+  } else if (url.startsWith('mail.google.com')) {
+    tab.type = 'gmail';
+    tab.title = title;
+  } else if (url.startsWith('grok.x.ai')) {
+    tab.type = 'grok';
     tab.title = title;
   } else {
     tab.type = 'blank';
@@ -721,6 +737,16 @@ function renderActivePage() {
     chromePage.innerHTML = buildYoutubeShellHTML();
     attachYoutubeShellHandlers();
     renderYoutubeContent(tab.url);
+  } else if (tab.type === 'google') {
+    chromePage.innerHTML = buildGooglePageHTML(tab.url);
+    attachGoogleHandlers();
+  } else if (tab.type === 'gmail') {
+    chromePage.innerHTML = buildGmailAppHTML();
+    renderGmailMain();
+    attachGmailFolderHandlers();
+  } else if (tab.type === 'grok') {
+    chromePage.innerHTML = buildGrokAppHTML();
+    attachGrokHandlers();
   } else {
     chromePage.innerHTML = buildErrorPageHTML(tab.url);
   }
@@ -2683,6 +2709,344 @@ function openHalo() {
   haloWindow.classList.remove('hidden');
 }
 
+// ── Google search (embedded in Chrome) — shell only, content is placeholder ──
+function parseGoogleQuery(url) {
+  const m = url.match(/[?&]q=([^&]+)/);
+  return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : '';
+}
+
+const GOOGLE_RESULTS = Array.from({ length: 9 }, (_, i) => ({
+  title: `[Title placeholder ${i + 1}]`,
+  url: `www.priklad-web-${i + 1}.cz › cesta › podcesta`,
+  desc: `[Popis výsledku placeholder ${i + 1} — krátký text shrnující obsah stránky.]`
+}));
+
+const GOOGLE_PAA = ['[Otázka placeholder 1]?', '[Otázka placeholder 2]?', '[Otázka placeholder 3]?', '[Otázka placeholder 4]?'];
+
+function buildGooglePageHTML(url) {
+  const query = parseGoogleQuery(url);
+  return `
+    <div class="g-app">
+      <header class="g-header">
+        <div class="g-logo"><span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC05">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span></div>
+        <div class="g-search-wrap">
+          <input class="g-search-input" id="g-search-input" value="${query}" />
+          <button class="g-search-btn" id="g-search-btn">
+            <svg viewBox="0 0 24 24" width="16" height="16"><path fill="#5f6368" d="M15.5 14h-.8l-.3-.3a6.5 6.5 0 1 0-.7.7l.3.3v.8l5 5L20.5 19zm-6 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z"/></svg>
+          </button>
+        </div>
+        <span class="g-avatar">L</span>
+      </header>
+      <div class="g-tabs">
+        <span class="g-tab active">Vše</span>
+        <span class="g-tab">Obrázky</span>
+        <span class="g-tab">Videa</span>
+        <span class="g-tab">Aktuality</span>
+        <span class="g-tab">Nákupy</span>
+        <span class="g-tab">Mapy</span>
+      </div>
+      <div class="g-body">
+        <div class="g-results-col">
+          <div class="g-stats">Přibližně 128 000 000 výsledků (0,42 s)</div>
+          ${GOOGLE_RESULTS.map(r => `
+            <div class="g-result">
+              <div class="g-result-url">${r.url}</div>
+              <div class="g-result-title">${r.title}</div>
+              <div class="g-result-desc">${r.desc}</div>
+            </div>
+          `).join('')}
+          <div class="g-pagination">
+            ${Array.from({ length: 10 }, (_, i) => `<span class="g-page${i === 0 ? ' active' : ''}">${i + 1}</span>`).join('')}
+            <span class="g-page g-page-next">Další ›</span>
+          </div>
+        </div>
+        <div class="g-paa-col">
+          <div class="g-paa-title">Lidé se také ptají</div>
+          ${GOOGLE_PAA.map(q => `<div class="g-paa-item"><span>${q}</span><span class="g-paa-chevron">⌄</span></div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function attachGoogleHandlers() {
+  const input = document.getElementById('g-search-input');
+  const doSearch = () => {
+    const q = input.value.trim();
+    if (!q) return;
+    navigateActiveTab(`${q} - Hledat Googlem`, `google.com/search?q=${encodeURIComponent(q)}`);
+  };
+  document.getElementById('g-search-btn').addEventListener('click', doSearch);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+}
+
+// ── Gmail (embedded in Chrome) — shell only, content is placeholder except the babička email ──
+const GMAIL_ACCOUNT_EMAIL = 'hidd3nfram3@gmail.com';
+const GMAIL_EMAILS = [
+  { id: 'babicka', sender: 'Babička', email: 'babicka@seznam.cz', subject: 'obed v nedeli', preview: 'Lukasi, prijedes v nedeli na obed? Napis mi. Babicka', body: 'Lukasi,\n\npřijedeš v neděli na oběd? Napiš mi prosím, ať vím, jestli mám vařit i pro tebe.\n\nBabička', date: '26. 3. 2026', time: '12:03', unread: true },
+  { id: 'google-sec', sender: 'Google', email: 'no-reply@accounts.google.com', subject: 'Bezpečnostní upozornění pro váš účet', preview: '[Náhled placeholder]', body: '[Obsah placeholder]', date: '25. 3. 2026', time: '09:14', unread: false },
+  { id: 'steam', sender: 'Steam', email: 'noreply@steampowered.com', subject: 'Tvůj týdenní souhrn nabídek', preview: '[Náhled placeholder]', body: '[Obsah placeholder]', date: '24. 3. 2026', time: '18:40', unread: false },
+  { id: 'discord-notif', sender: 'Discord', email: 'noreply@discord.com', subject: 'Nové aktivity ve tvých serverech', preview: '[Náhled placeholder]', body: '[Obsah placeholder]', date: '23. 3. 2026', time: '21:02', unread: false },
+  { id: 'duolingo-mail', sender: 'Duolingo', email: 'hello@duolingo.com', subject: 'Nezapomeň na dnešní lekci! 🔥', preview: '[Náhled placeholder]', body: '[Obsah placeholder]', date: '22. 3. 2026', time: '19:55', unread: false },
+  { id: 'nintendo', sender: 'Nintendo', email: 'newsletter@nintendo.com', subject: 'Newsletter: Novinky a nabídky', preview: '[Náhled placeholder]', body: '[Obsah placeholder]', date: '20. 3. 2026', time: '10:30', unread: false },
+  { id: 'youtube-notif', sender: 'YouTube', email: 'no-reply@youtube.com', subject: 'Nové video od kanálu, který sleduješ', preview: '[Náhled placeholder]', body: '[Obsah placeholder]', date: '18. 3. 2026', time: '17:20', unread: false }
+];
+let gmailOpenId = null;
+
+function buildGmailAppHTML() {
+  return `
+    <div class="gm-app">
+      <header class="gm-header">
+        <span class="gm-menu-icon">☰</span>
+        <div class="gm-logo">Gmail</div>
+        <div class="gm-search-wrap"><input class="gm-search-input" placeholder="Hledat v poště" /></div>
+        <span class="gm-avatar" title="${GMAIL_ACCOUNT_EMAIL}">L</span>
+      </header>
+      <div class="gm-body">
+        <aside class="gm-sidebar">
+          <button class="gm-compose-btn">✎ Napsat</button>
+          <div class="gm-folder active" data-folder="inbox">📥 Doručená pošta</div>
+          <div class="gm-folder" data-folder="starred">⭐ Se hvězdičkou</div>
+          <div class="gm-folder" data-folder="sent">📤 Odeslané</div>
+          <div class="gm-folder" data-folder="drafts">📝 Koncepty</div>
+          <div class="gm-folder" data-folder="spam">🚫 Spam</div>
+        </aside>
+        <main class="gm-main" id="gm-main"></main>
+      </div>
+    </div>
+  `;
+}
+
+function gmailInboxHTML() {
+  return `
+    <div class="gm-list">
+      ${GMAIL_EMAILS.map(m => `
+        <div class="gm-row${m.unread ? ' unread' : ''}" data-id="${m.id}">
+          <span class="gm-star">☆</span>
+          <span class="gm-sender">${m.sender}</span>
+          <span class="gm-subject">${m.subject} <span class="gm-preview">- ${m.preview}</span></span>
+          <span class="gm-date">${m.date}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function gmailDetailHTML(m) {
+  return `
+    <div class="gm-detail">
+      <button class="gm-back-btn" id="gm-back-btn">← Zpět</button>
+      <div class="gm-detail-subject">${m.subject}</div>
+      <div class="gm-detail-meta">
+        <span class="gm-detail-avatar">${m.sender.charAt(0)}</span>
+        <div>
+          <div class="gm-detail-sender">${m.sender} <span class="gm-detail-email">&lt;${m.email}&gt;</span></div>
+          <div class="gm-detail-date">${m.date} ${m.time}</div>
+        </div>
+      </div>
+      <div class="gm-detail-body">${m.body.replace(/\n/g, '<br/>')}</div>
+    </div>
+  `;
+}
+
+function renderGmailMain() {
+  const main = document.getElementById('gm-main');
+  if (!main) return;
+  if (gmailOpenId) {
+    const m = GMAIL_EMAILS.find(e => e.id === gmailOpenId);
+    main.innerHTML = gmailDetailHTML(m);
+    document.getElementById('gm-back-btn').addEventListener('click', () => { gmailOpenId = null; renderGmailMain(); });
+  } else {
+    main.innerHTML = gmailInboxHTML();
+    main.querySelectorAll('.gm-row').forEach(row => {
+      row.addEventListener('click', () => {
+        gmailOpenId = row.dataset.id;
+        const email = GMAIL_EMAILS.find(e => e.id === gmailOpenId);
+        if (email) email.unread = false;
+        renderGmailMain();
+      });
+    });
+  }
+}
+
+function attachGmailFolderHandlers() {
+  document.querySelectorAll('.gm-folder').forEach(f => {
+    f.addEventListener('click', () => {
+      document.querySelectorAll('.gm-folder').forEach(x => x.classList.remove('active'));
+      f.classList.add('active');
+      gmailOpenId = null;
+      const main = document.getElementById('gm-main');
+      if (f.dataset.folder === 'inbox') {
+        renderGmailMain();
+      } else {
+        main.innerHTML = '<div class="gm-empty-state">Žádné zprávy.</div>';
+      }
+    });
+  });
+}
+
+// ── Grok (embedded in Chrome) — shell only, content is placeholder ──
+const GROK_CONVERSATIONS = [
+  { id: 'c1', title: '[Konverzace placeholder 1]', date: '10. 3. 2026' },
+  { id: 'c2', title: '[Konverzace placeholder 2]', date: '15. 3. 2026' },
+  { id: 'c3', title: '[Konverzace placeholder 3]', date: '23. 3. 2026' }
+];
+let grokActiveId = 'c3';
+let grokSpiceMode = true;
+
+function buildGrokAppHTML() {
+  return `
+    <div class="grok-app">
+      <aside class="grok-sidebar">
+        <div class="grok-logo-row">
+          <img src="assets/icons/fav-grok.svg" alt="" />
+          <span>Grok</span>
+        </div>
+        <button class="grok-new-btn">+ Nová konverzace</button>
+        <div class="grok-conv-list" id="grok-conv-list"></div>
+      </aside>
+      <main class="grok-main">
+        <div class="grok-main-header">
+          <span>Grok</span>
+          <div class="grok-spice-toggle" id="grok-spice-toggle">
+            <span>Spice mode</span>
+            <span class="grok-toggle-switch ${grokSpiceMode ? 'on' : ''}" id="grok-toggle-switch"></span>
+          </div>
+        </div>
+        <div class="grok-messages" id="grok-messages"></div>
+        <div class="grok-input"><span class="grok-input-box">Zeptej se Groka na cokoliv…</span></div>
+      </main>
+    </div>
+  `;
+}
+
+function renderGrokConvList() {
+  const list = document.getElementById('grok-conv-list');
+  list.innerHTML = GROK_CONVERSATIONS.map(c => `
+    <div class="grok-conv-item${c.id === grokActiveId ? ' active' : ''}" data-id="${c.id}">
+      <div class="grok-conv-title">${c.title}</div>
+      <div class="grok-conv-date">${c.date}</div>
+    </div>
+  `).join('');
+  list.querySelectorAll('.grok-conv-item').forEach(node => {
+    node.addEventListener('click', () => {
+      grokActiveId = node.dataset.id;
+      renderGrokConvList();
+      renderGrokMessages();
+    });
+  });
+}
+
+function renderGrokMessages() {
+  const messages = document.getElementById('grok-messages');
+  messages.innerHTML = `
+    <div class="grok-msg-row user"><div class="grok-msg-bubble">[Zpráva placeholder — uživatel]</div></div>
+    <div class="grok-msg-row grok"><span class="grok-msg-avatar"><img src="assets/icons/fav-grok.svg" alt="" /></span><div class="grok-msg-bubble">[Odpověď placeholder — Grok]</div></div>
+  `;
+}
+
+function attachGrokHandlers() {
+  renderGrokConvList();
+  renderGrokMessages();
+  const toggle = document.getElementById('grok-spice-toggle');
+  toggle.addEventListener('click', () => {
+    grokSpiceMode = !grokSpiceMode;
+    document.getElementById('grok-toggle-switch').classList.toggle('on', grokSpiceMode);
+  });
+}
+
+// ── Notepad (cile.txt) ──
+const notepadWindow = document.getElementById('notepad-window');
+document.getElementById('notepad-close-btn').addEventListener('click', () => {
+  notepadWindow.classList.add('hidden');
+});
+document.getElementById('notepad-save-btn').addEventListener('click', () => {
+  // decorative — no actual persistence
+});
+
+function openNotepad() {
+  notepadWindow.classList.remove('hidden');
+}
+
+// ── Start menu ──
+const START_MENU_APPS = [
+  { app: 'chrome', label: 'Google Chrome', icon: 'assets/icons/chrome.svg' },
+  { app: 'discord', label: 'Discord', icon: 'assets/icons/discord.svg' },
+  { app: 'folder-photos', label: 'Fotky a videa', icon: 'assets/icons/folder.svg' },
+  { app: 'halo', label: 'Halo Infinite', icon: 'assets/icons/halo.svg' },
+  { app: 'cs', label: 'Counter-Strike 2', icon: 'assets/icons/cs.svg' },
+  { app: 'cile', label: 'cile.txt', icon: 'assets/icons/notepad.svg' },
+  { app: 'recycle', label: 'Koš', icon: 'assets/icons/recycle.svg' }
+];
+
+const startMenu = document.getElementById('start-menu');
+const startMenuGrid = document.getElementById('start-menu-grid');
+startMenuGrid.innerHTML = START_MENU_APPS.map(a => `
+  <div class="start-menu-tile" data-app="${a.app}">
+    <img src="${a.icon}" alt="" />
+    <span>${a.label}</span>
+  </div>
+`).join('');
+startMenuGrid.querySelectorAll('.start-menu-tile').forEach(tile => {
+  tile.addEventListener('click', () => {
+    openApp(tile.dataset.app);
+    startMenu.classList.add('hidden');
+  });
+});
+
+document.getElementById('start-btn').addEventListener('click', e => {
+  e.stopPropagation();
+  startMenu.classList.toggle('hidden');
+});
+startMenu.addEventListener('click', e => e.stopPropagation());
+document.addEventListener('click', () => startMenu.classList.add('hidden'));
+
+// ── Toast notification ──
+function showToastNotification() {
+  const toast = document.getElementById('toast-notification');
+  toast.classList.remove('hidden');
+  requestAnimationFrame(() => toast.classList.add('show'));
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.classList.add('hidden'), 300);
+  }, 3000);
+}
+setTimeout(showToastNotification, 900);
+
+// ── Taskbar (shows currently open app windows) ──
+const TASKBAR_APPS = [
+  { id: 'chrome', label: 'Google Chrome', icon: 'assets/icons/chrome.svg', el: chromeWindow },
+  { id: 'discord', label: 'Discord', icon: 'assets/icons/discord.svg', el: discordWindow },
+  { id: 'photos', label: 'Fotky a videa', icon: 'assets/icons/folder.svg', el: photosWindow },
+  { id: 'recycle', label: 'Koš', icon: 'assets/icons/recycle.svg', el: recycleWindow },
+  { id: 'halo', label: 'Halo Infinite', icon: 'assets/icons/halo.svg', el: haloWindow },
+  { id: 'cs2', label: 'Counter-Strike 2', icon: 'assets/icons/cs.svg', el: cs2Window },
+  { id: 'notepad', label: 'cile.txt', icon: 'assets/icons/notepad.svg', el: notepadWindow }
+];
+
+function renderTaskbarApps() {
+  const taskbarApps = document.getElementById('taskbar-apps');
+  const open = TASKBAR_APPS.filter(a => a.el && !a.el.classList.contains('hidden'));
+  taskbarApps.innerHTML = open.map(a => `
+    <button class="taskbar-app-btn" data-win="${a.id}"><img src="${a.icon}" alt="" />${a.label}</button>
+  `).join('');
+  taskbarApps.querySelectorAll('.taskbar-app-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const found = TASKBAR_APPS.find(a => a.id === btn.dataset.win);
+      if (found) found.el.classList.toggle('hidden');
+    });
+  });
+}
+
+function setupTaskbarTracking() {
+  const observer = new MutationObserver(renderTaskbarApps);
+  TASKBAR_APPS.forEach(a => {
+    if (a.el) observer.observe(a.el, { attributes: true, attributeFilter: ['class'] });
+  });
+  renderTaskbarApps();
+}
+setupTaskbarTracking();
+
 // ── App launcher ──
 function openApp(app) {
   switch (app) {
@@ -2703,6 +3067,9 @@ function openApp(app) {
       break;
     case 'recycle':
       openRecycle();
+      break;
+    case 'cile':
+      openNotepad();
       break;
     default:
       break;
