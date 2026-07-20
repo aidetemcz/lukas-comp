@@ -1,5 +1,6 @@
 // ── Clock ──
 function updateClock() {
+  if (window.__clockOverridden) return;
   const now = new Date();
   const h = String(now.getHours()).padStart(2, '0');
   const m = String(now.getMinutes()).padStart(2, '0');
@@ -11,6 +12,7 @@ setInterval(updateClock, 10000);
 // ── Icon selection + open ──
 document.querySelectorAll('.icon').forEach(icon => {
   icon.addEventListener('click', () => {
+    if (window.LukasEditor && window.LukasEditor.isEditMode()) return;
     document.querySelectorAll('.icon').forEach(i => i.classList.remove('selected'));
     icon.classList.add('selected');
     openApp(icon.dataset.app);
@@ -19,6 +21,7 @@ document.querySelectorAll('.icon').forEach(icon => {
 
 // Deselect on desktop click
 document.getElementById('desktop').addEventListener('click', e => {
+  if (window.LukasEditor && window.LukasEditor.isEditMode()) return;
   if (e.target === e.currentTarget || e.target.classList.contains('desktop-icons')) {
     document.querySelectorAll('.icon').forEach(i => i.classList.remove('selected'));
   }
@@ -28,6 +31,7 @@ document.getElementById('desktop').addEventListener('click', e => {
 const notepadWindow = document.getElementById('notepad-window');
 const notepadContent = document.getElementById('notepad-content');
 document.getElementById('notepad-close-btn').addEventListener('click', () => {
+  if (window.LukasEditor && window.LukasEditor.isEditMode()) return;
   notepadWindow.classList.add('hidden');
 });
 
@@ -85,9 +89,11 @@ function openDiary() {
         .replace(/^\s*---+\s*$/gm, '──────────────────────────────')
         .replace(/\*\*(.+?)\*\*/g, '$1');
       notepadContent.textContent = plain;
+      if (window.LukasEditor) window.LukasEditor.refresh();
     })
     .catch(() => {
       notepadContent.textContent = DIARY_FALLBACK;
+      if (window.LukasEditor) window.LukasEditor.refresh();
     });
 }
 
@@ -116,16 +122,20 @@ const overlay = document.getElementById('modal-overlay');
 const modalTitle = document.getElementById('modal-title');
 const modalBody = document.getElementById('modal-body');
 document.getElementById('modal-close').addEventListener('click', () => {
+  if (window.LukasEditor && window.LukasEditor.isEditMode()) return;
   overlay.classList.add('hidden');
 });
 
 function showModal(title, bodyHtml) {
+  if (window.LukasEditor) window.LukasEditor.setModalContext(title);
   modalTitle.textContent = title;
   modalBody.innerHTML = bodyHtml;
   overlay.classList.remove('hidden');
+  if (window.LukasEditor) window.LukasEditor.refresh();
 }
 
 function showUpdateModal(appName, message, size) {
+  if (window.LukasEditor) window.LukasEditor.setModalContext(appName);
   modalTitle.textContent = appName;
   modalBody.innerHTML = `
     <p>${message}</p>
@@ -135,4 +145,5 @@ function showUpdateModal(appName, message, size) {
     </div>
   `;
   overlay.classList.remove('hidden');
+  if (window.LukasEditor) window.LukasEditor.refresh();
 }

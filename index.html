@@ -104,6 +104,23 @@
     </div>
   </div>
 
+  <!-- Content editor UI -->
+  <div id="editor-ui">
+    <button id="editor-toggle-btn" title="Upravit obsah aplikace">✏️</button>
+    <div id="editor-panel" class="hidden">
+      <div id="editor-panel-header">Režim úprav</div>
+      <p id="editor-panel-hint">
+        Klikněte na libovolný text a přepište ho. Klikněte na ikonu/obrázek
+        a nahrajte vlastní fotku z počítače.
+      </p>
+      <button id="editor-wallpaper-btn">🖼️ Změnit pozadí plochy</button>
+      <button id="editor-reset-btn">↺ Obnovit výchozí obsah</button>
+      <button id="editor-done-btn">✓ Hotovo</button>
+    </div>
+    <input type="file" id="editor-file-input" accept="image/*" class="hidden" />
+  </div>
+
+  <script src="editor.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
