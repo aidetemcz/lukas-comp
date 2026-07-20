@@ -370,7 +370,7 @@ const BOOKMARKS_BAR = [
 function makeInitialTabs() {
   return [
     { id: 'chatgpt', type: 'chatgpt', title: 'ChatGPT', url: 'chat.openai.com/c/6f2a91d0-8b3e-4c1a-9f2d-3a7e5c0b1d44', favicon: 'assets/icons/chatgpt.svg' },
-    { id: 'facerate', type: 'blank', title: 'facerate.io', url: 'facerate.io/upload', favicon: 'assets/icons/fav-globe.svg' },
+    { id: 'facerate', type: 'facerate', title: 'facerate.io — Upload', url: 'facerate.io/upload', favicon: 'assets/icons/fav-facerate.svg' },
     { id: 'youtube', type: 'blank', title: "why 6'0 is the new 5'8 - YouTube", url: 'youtube.com/watch?v=w6057', favicon: 'assets/icons/fav-youtube.svg' },
     { id: 'duolingo', type: 'blank', title: 'Duolingo', url: 'duolingo.com/learn', favicon: 'assets/icons/fav-duolingo.svg' },
     { id: 'google-search', type: 'blank', title: 'vlak plzeň hlavní praha víkend - Hledat Googlem', url: 'google.com/search?q=vlak+plzen+hlavni+praha+vikend', favicon: 'assets/icons/fav-google.svg' },
@@ -385,6 +385,7 @@ function faviconForUrl(url) {
   if (url.startsWith('youtube.com')) return 'assets/icons/fav-youtube.svg';
   if (url.startsWith('reddit.com')) return 'assets/icons/fav-reddit.svg';
   if (url.startsWith('duolingo.com')) return 'assets/icons/fav-duolingo.svg';
+  if (url.startsWith('facerate.io')) return 'assets/icons/fav-facerate.svg';
   return 'assets/icons/fav-globe.svg';
 }
 
@@ -422,8 +423,15 @@ function attachHoverPreview(nodeList, urlGetter) {
 
 function updateAddressBar() {
   const tab = TABS.find(t => t.id === activeTabId);
-  chromeAddressText.textContent = tab.type === 'history' ? 'chrome://history' : tab.url;
+  chromeAddressText.value = tab.type === 'history' ? 'chrome://history' : tab.url;
 }
+
+chromeAddressText.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const typed = chromeAddressText.value.trim().replace(/^https?:\/\//, '');
+  if (typed) navigateActiveTab(typed, typed);
+  chromeAddressText.blur();
+});
 
 function selectTab(id) {
   activeTabId = id;
@@ -503,8 +511,14 @@ document.addEventListener('click', () => {
 function navigateActiveTab(title, url) {
   const tab = TABS.find(t => t.id === activeTabId);
   if (!tab) return;
-  tab.type = 'blank';
-  tab.title = title;
+  if (url.startsWith('facerate.io')) {
+    tab.type = 'facerate';
+    tab.title = 'facerate.io — Upload';
+    facerateView = 'upload';
+  } else {
+    tab.type = 'blank';
+    tab.title = title;
+  }
   tab.url = url;
   tab.favicon = faviconForUrl(url);
   renderTabbar();
@@ -696,9 +710,289 @@ function renderActivePage() {
   } else if (tab.type === 'history') {
     chromePage.innerHTML = buildHistoryPageHTML();
     attachHistoryHandlers();
+  } else if (tab.type === 'facerate') {
+    chromePage.innerHTML = buildFacerateAppHTML();
+    attachFacerateHandlers();
+    renderFacerateBody();
   } else {
     chromePage.innerHTML = buildErrorPageHTML(tab.url);
   }
+}
+
+// ── facerate.io ──
+let facerateView = 'upload';
+
+const FACERATE_SUBMISSIONS = [
+  {
+    date: '20. 2. 2026',
+    score: '3.4',
+    breakdown: [
+      { label: 'Canthal tilt', value: -1.5 },
+      { label: 'Midface ratio', value: -1.0 },
+      { label: 'Jaw / gonial angle', value: -0.5 },
+      { label: 'Skin & symetrie', value: 0.5 }
+    ],
+    comments: [
+      { author: 'PSL_verdict', text: 'recessed chin, negative canthal tilt, long midface. Sub tier. Mewing + guasha 6mo.' },
+      { author: 'chadaxis', text: '3.5. compact midface je saving grace. framecel ale.' },
+      { author: 'mogged4life', text: 'NGMI without bimax. Sorry brácho 💀' }
+    ]
+  },
+  {
+    date: '5. 3. 2026',
+    score: '3.7',
+    breakdown: [
+      { label: 'Canthal tilt', value: -1.0 },
+      { label: 'Midface ratio', value: -1.0 },
+      { label: 'Jaw / gonial angle', value: -0.3 },
+      { label: 'Skin & symetrie', value: 1.0 }
+    ],
+    comments: [
+      { author: 'chadaxis', text: 'small improvement, canthal tilt vypadá o chlup líp. keep mewing.' },
+      { author: 'PSL_verdict', text: '3.7. pořád LTN ale progress je progress.' },
+      { author: 'aleph_null', text: 'úhel pomáhá, ale nedej na to, je to jen fotka.' }
+    ]
+  },
+  {
+    date: '22. 3. 2026',
+    score: '3.1',
+    breakdown: [
+      { label: 'Canthal tilt', value: -1.6 },
+      { label: 'Midface ratio', value: -1.2 },
+      { label: 'Jaw / gonial angle', value: -0.6 },
+      { label: 'Skin & symetrie', value: 0.5 }
+    ],
+    comments: [
+      { author: 'hardmog99', text: 'wtf co si udělal, tohle je horší. přestaň si dávat neutrální úhly, nebo si přiznej reality.' },
+      { author: 'mogged4life', text: '😭😭 flash lighting nepomáhá. sorry.' },
+      { author: 'PSL_verdict', text: '3.1. neutral angle bolí, no cope teď.' }
+    ]
+  }
+];
+
+const FACERATE_VOTES = [
+  { author: 'KOROLEV_88', date: '21. 3. 2026', score: 2, note: '2. heavy recessed chin, no frame. brutal but true.' },
+  { author: 'n0nam3_69', date: '18. 3. 2026', score: 3, note: '3. compact midface, ale ta canthal tilt je negative.' },
+  { author: 'mchmch', date: '19. 3. 2026', score: 4 },
+  { author: 'Frame_God', date: '14. 3. 2026', score: 3 },
+  { author: 'ash_pilled', date: '16. 3. 2026', score: 4 },
+  { author: 'glow_v3', date: '9. 3. 2026', score: 3 },
+  { author: 'MTN_max', date: '13. 3. 2026', score: 2, note: '2. shortcel + framecel combo. NGMI.' },
+  { author: 'dr3ad_v2', date: '12. 3. 2026', score: 3 },
+  { author: 'someguy_23', date: '13. 3. 2026', score: 4 },
+  { author: 'newcel_2010', date: '6. 3. 2026', score: 3 },
+  { author: 'aleph_null', date: '4. 3. 2026', score: 2 },
+  { author: 'mod_glowup', date: '1. 3. 2026', score: 4 },
+  { author: 'Frame_God', date: '24. 2. 2026', score: 3 },
+  { author: 'glow_v3', date: '26. 2. 2026', score: 4 }
+];
+
+const FACERATE_LEADERBOARD = [
+  { rank: 1, author: 'GigaFrame', score: '8.9' },
+  { rank: 2, author: 'HunterEyesKing', score: '8.7' },
+  { rank: 3, author: 'NordicJaw', score: '8.5' },
+  { rank: 4, author: 'BoneStructureGod', score: '8.3' },
+  { rank: 5, author: 'SlavSlayer', score: '8.1' },
+  { rank: 6, author: 'sigma_apex_cz', score: '7.9' },
+  { rank: 7, author: 'MaxillaMaster', score: '7.8' },
+  { rank: 8, author: 'ChadleteCZ', score: '7.7' },
+  { rank: 9, author: 'TurkClinicSuccess', score: '7.6' },
+  { rank: 10, author: 'FramecelKiller', score: '7.5' }
+];
+
+const FACERATE_GUIDES = [
+  { title: 'The Mewing Bible: 12-month protocol', meta: '842K zobrazení · 14 min čtení' },
+  { title: 'Canthal Tilt: Why Positive is Everything', meta: '611K zobrazení · 9 min čtení' },
+  { title: 'Bimax in Istanbul: Full Cost Breakdown 2026', meta: '390K zobrazení · 18 min čtení' },
+  { title: 'Bone Smashing: Truth and Myths', meta: '204K zobrazení · 7 min čtení' },
+  { title: 'Frame > Face: Why Height Wins', meta: '156K zobrazení · 11 min čtení' }
+];
+
+const FACERATE_FORUM = [
+  { title: 'Is bimax worth it if I\'m already MTN?', author: 'MaxillaMaster', replies: 47 },
+  { title: 'PSA: canthal tilt surgery success stories thread', author: 'ChadleteCZ', replies: 132 },
+  { title: 'why is everyone under 6\'0 seething rn', author: 'SlavSlayer', replies: 88 },
+  { title: 'rate my jaw before/after mewing (6mo)', author: 'newcel_2010', replies: 21 },
+  { title: 'cope thread: genetics are 90% of it, change my mind', author: 'mogged4life', replies: 210 },
+  { title: 'Turkey bimax clinics — updated 2026 pricing megathread', author: 'MTN_max', replies: 64 },
+  { title: 'is looksmaxxing even worth it or just cope', author: 'dr3ad_v2', replies: 156 },
+  { title: 'heightmaxxing: limb lengthening surgery discussion', author: 'hardmog99', replies: 39 }
+];
+
+function frScoreClass(score) {
+  const n = Number(score);
+  if (n >= 6.5) return 'good';
+  if (n >= 5) return 'mid';
+  return 'low';
+}
+
+function buildFacerateAppHTML() {
+  const items = [
+    ['upload', 'Upload'], ['vote', 'Vote'], ['leaderboard', 'Leaderboard'],
+    ['guides', 'Guides'], ['forum', 'Forum']
+  ];
+  return `
+    <div class="fr-app">
+      <header class="fr-header">
+        <div class="fr-header-top">
+          <div class="fr-logo">facerate<span class="fr-logo-io">.io</span></div>
+          <div class="fr-user-chip"><span class="fr-user-dot"></span>hidd3nfram3</div>
+        </div>
+        <div class="fr-tagline">Data-driven face rating. Get your PSL score.</div>
+        <nav class="fr-nav" id="fr-nav">
+          ${items.map(([id, label]) => `<span class="fr-nav-item${facerateView === id ? ' active' : ''}" data-view="${id}">${label}</span>`).join('')}
+        </nav>
+      </header>
+      <div class="fr-body" id="fr-body"></div>
+    </div>
+  `;
+}
+
+function frBreakdownHTML(breakdown) {
+  return `
+    <div class="fr-breakdown">
+      ${breakdown.map(b => {
+        const pct = Math.max(4, Math.min(100, (b.value + 2) / 4 * 100));
+        const neg = b.value < 0;
+        return `
+          <div class="fr-breakdown-row">
+            <span class="fr-breakdown-label">${b.label}</span>
+            <span class="fr-breakdown-bar-wrap"><span class="fr-breakdown-bar${neg ? ' neg' : ''}" style="width:${pct}%"></span></span>
+            <span class="fr-breakdown-value ${neg ? 'neg' : 'pos'}">${b.value > 0 ? '+' : ''}${b.value}</span>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+function frUploadView() {
+  return `
+    <div class="fr-section">
+      <div class="fr-profile-row">
+        <div class="fr-profile-avatar"></div>
+        <div>
+          <div class="fr-profile-name">hidd3nfram3</div>
+          <div class="fr-profile-sub">3 submissions · poslední skóre <strong>3.1</strong></div>
+        </div>
+      </div>
+      <div class="fr-submissions">
+        ${FACERATE_SUBMISSIONS.map(sub => `
+          <div class="fr-submission-card">
+            <div class="fr-submission-thumb"><div class="fr-pixelated"></div></div>
+            <div class="fr-submission-main">
+              <div class="fr-submission-head">
+                <span class="fr-submission-date">${sub.date}</span>
+                <span class="fr-score fr-score-${frScoreClass(sub.score)}">${sub.score}<span class="fr-score-max">/10</span></span>
+              </div>
+              ${frBreakdownHTML(sub.breakdown)}
+              <div class="fr-comments">
+                ${sub.comments.map(c => `<div class="fr-comment"><span class="fr-comment-author">${c.author}:</span>${c.text}</div>`).join('')}
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function frVoteView() {
+  return `
+    <div class="fr-section">
+      <h3 class="fr-section-title">Tvoje hodnocení ostatních</h3>
+      <div class="fr-vote-list">
+        ${FACERATE_VOTES.map(v => `
+          <div class="fr-vote-row">
+            <div class="fr-pixelated small"></div>
+            <div class="fr-vote-main">
+              <div class="fr-vote-head"><span class="fr-vote-author">${v.author}</span><span class="fr-vote-date">${v.date}</span></div>
+              ${v.note ? `<div class="fr-vote-note">${v.note}</div>` : ''}
+            </div>
+            <span class="fr-score fr-score-${frScoreClass(v.score)} small">${v.score}<span class="fr-score-max">/10</span></span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function frLeaderboardView() {
+  return `
+    <div class="fr-section">
+      <h3 class="fr-section-title">Leaderboard — top PSL skóre</h3>
+      <div class="fr-leaderboard">
+        ${FACERATE_LEADERBOARD.map(u => `
+          <div class="fr-leaderboard-row">
+            <span class="fr-lb-rank">#${u.rank}</span>
+            <span class="fr-lb-avatar">${u.author.charAt(0)}</span>
+            <span class="fr-lb-name">${u.author}</span>
+            <span class="fr-score fr-score-good small">${u.score}<span class="fr-score-max">/10</span></span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="fr-your-rank">Tvoje pozice: <strong>#4 832</strong> z 12 456 · poslední skóre 3.1/10</div>
+    </div>
+  `;
+}
+
+function frGuidesView() {
+  return `
+    <div class="fr-section">
+      <h3 class="fr-section-title">Guides</h3>
+      <div class="fr-guides">
+        ${FACERATE_GUIDES.map(g => `
+          <div class="fr-guide-card">
+            <div class="fr-guide-thumb">📈</div>
+            <div>
+              <div class="fr-guide-title">${g.title}</div>
+              <div class="fr-guide-meta">${g.meta}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function frForumView() {
+  return `
+    <div class="fr-section">
+      <h3 class="fr-section-title">Forum</h3>
+      <div class="fr-forum">
+        ${FACERATE_FORUM.map(t => `
+          <div class="fr-forum-row">
+            <div class="fr-forum-title">${t.title}</div>
+            <div class="fr-forum-meta"><span>${t.author}</span><span>${t.replies} odpovědí</span></div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderFacerateBody() {
+  const body = document.getElementById('fr-body');
+  if (!body) return;
+  switch (facerateView) {
+    case 'vote': body.innerHTML = frVoteView(); break;
+    case 'leaderboard': body.innerHTML = frLeaderboardView(); break;
+    case 'guides': body.innerHTML = frGuidesView(); break;
+    case 'forum': body.innerHTML = frForumView(); break;
+    default: body.innerHTML = frUploadView(); break;
+  }
+}
+
+function attachFacerateHandlers() {
+  const nav = document.getElementById('fr-nav');
+  nav.querySelectorAll('.fr-nav-item').forEach(node => {
+    node.addEventListener('click', () => {
+      facerateView = node.dataset.view;
+      nav.querySelectorAll('.fr-nav-item').forEach(n => n.classList.remove('active'));
+      node.classList.add('active');
+      renderFacerateBody();
+    });
+  });
 }
 
 function openChrome() {
