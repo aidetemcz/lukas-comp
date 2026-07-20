@@ -1,14 +1,25 @@
-// ── Clock (fixed narrative time: 28. 3. 2026, 16:47 — ticks forward from there) ──
-const SIMULATED_CLOCK_BASE = new Date(2026, 2, 28, 16, 47, 0).getTime();
-const CLOCK_START_REAL = Date.now();
+// ── Clock (fixed narrative time — ticks forward from there; editable via the content editor) ──
+const CLOCK_CONTENT = { date: '28. 3. 2026', time: '16:47' };
+let SIMULATED_CLOCK_BASE = 0;
+let CLOCK_START_REAL = 0;
+function parseClockBase() {
+  const dateParts = CLOCK_CONTENT.date.match(/(\d+)\D+(\d+)\D+(\d+)/);
+  const timeParts = CLOCK_CONTENT.time.match(/(\d+):(\d+)/);
+  if (!dateParts || !timeParts) return Date.now();
+  return new Date(Number(dateParts[3]), Number(dateParts[2]) - 1, Number(dateParts[1]), Number(timeParts[1]), Number(timeParts[2]), 0).getTime();
+}
 function updateClock() {
   const simulated = new Date(SIMULATED_CLOCK_BASE + (Date.now() - CLOCK_START_REAL));
   const h = String(simulated.getHours()).padStart(2, '0');
   const m = String(simulated.getMinutes()).padStart(2, '0');
   document.getElementById('taskbar-time').textContent = `${h}:${m}`;
 }
-updateClock();
-setInterval(updateClock, 10000);
+function startClock() {
+  SIMULATED_CLOCK_BASE = parseClockBase();
+  CLOCK_START_REAL = Date.now();
+  updateClock();
+  setInterval(updateClock, 10000);
+}
 
 // ── Icon selection + open ──
 // cile.txt behaves like a real file (double-click to open); every other icon opens on single click.
@@ -29,6 +40,14 @@ document.getElementById('desktop').addEventListener('click', e => {
     document.querySelectorAll('.icon').forEach(i => i.classList.remove('selected'));
   }
 });
+
+// ── Shared: render an uploaded (editor-set) image if present, otherwise fall back to a placeholder ──
+function imageOrPlaceholder(imageUrl, placeholderHtml, extraClass) {
+  if (imageUrl) {
+    return `<img src="${imageUrl}" class="editor-uploaded-img${extraClass ? ' ' + extraClass : ''}" alt="" />`;
+  }
+  return placeholderHtml;
+}
 
 // ── ChatGPT (embedded in Chrome) ──
 const CHATGPT_CONVERSATIONS = [
@@ -373,15 +392,16 @@ const BOOKMARKS_BAR = [
 ];
 
 // ── Tabs ──
+const INITIAL_TABS_TEMPLATE = [
+  { id: 'chatgpt', type: 'chatgpt', title: 'ChatGPT', url: 'chat.openai.com/c/6f2a91d0-8b3e-4c1a-9f2d-3a7e5c0b1d44', favicon: 'assets/icons/chatgpt.svg' },
+  { id: 'facerate', type: 'facerate', title: 'facerate.io — Upload', url: 'facerate.io/upload', favicon: 'assets/icons/fav-facerate.svg' },
+  { id: 'youtube', type: 'youtube', title: "why 6'0 is the new 5'8 - YouTube", url: 'youtube.com/watch?v=w6057', favicon: 'assets/icons/fav-youtube.svg' },
+  { id: 'duolingo', type: 'blank', title: 'Duolingo', url: 'duolingo.com/learn', favicon: 'assets/icons/fav-duolingo.svg' },
+  { id: 'google-search', type: 'google', title: 'vlak plzeň hlavní praha víkend - Hledat Googlem', url: 'google.com/search?q=vlak+plzen+hlavni+praha+vikend', favicon: 'assets/icons/fav-google.svg' },
+  { id: 'gmail', type: 'gmail', title: 'Doručená pošta – Gmail', url: 'mail.google.com/mail/u/0/#inbox', favicon: 'assets/icons/fav-gmail.svg' }
+];
 function makeInitialTabs() {
-  return [
-    { id: 'chatgpt', type: 'chatgpt', title: 'ChatGPT', url: 'chat.openai.com/c/6f2a91d0-8b3e-4c1a-9f2d-3a7e5c0b1d44', favicon: 'assets/icons/chatgpt.svg' },
-    { id: 'facerate', type: 'facerate', title: 'facerate.io — Upload', url: 'facerate.io/upload', favicon: 'assets/icons/fav-facerate.svg' },
-    { id: 'youtube', type: 'youtube', title: "why 6'0 is the new 5'8 - YouTube", url: 'youtube.com/watch?v=w6057', favicon: 'assets/icons/fav-youtube.svg' },
-    { id: 'duolingo', type: 'blank', title: 'Duolingo', url: 'duolingo.com/learn', favicon: 'assets/icons/fav-duolingo.svg' },
-    { id: 'google-search', type: 'google', title: 'vlak plzeň hlavní praha víkend - Hledat Googlem', url: 'google.com/search?q=vlak+plzen+hlavni+praha+vikend', favicon: 'assets/icons/fav-google.svg' },
-    { id: 'gmail', type: 'gmail', title: 'Doručená pošta – Gmail', url: 'mail.google.com/mail/u/0/#inbox', favicon: 'assets/icons/fav-gmail.svg' }
-  ];
+  return INITIAL_TABS_TEMPLATE.map(t => ({ ...t }));
 }
 
 function faviconForUrl(url) {
@@ -707,7 +727,7 @@ function renderConversation() {
       ? '<span class="chatgpt-msg-avatar">L</span>'
       : `<span class="chatgpt-msg-avatar"><img src="assets/icons/chatgpt.svg" alt="" /></span>`;
     const photoHtml = msg.photo
-      ? '<div class="chatgpt-photo-attachment"><div class="chatgpt-photo-pixelated"></div><span class="chatgpt-photo-caption">fotka.jpg</span></div>'
+      ? `<div class="chatgpt-photo-attachment">${imageOrPlaceholder(msg.image, '<div class="chatgpt-photo-pixelated"></div>')}<span class="chatgpt-photo-caption">fotka.jpg</span></div>`
       : '';
     return `
       <div class="chatgpt-msg-row ${msg.role}">
@@ -912,7 +932,7 @@ function frUploadView() {
       <div class="fr-submissions">
         ${FACERATE_SUBMISSIONS.map(sub => `
           <div class="fr-submission-card">
-            <div class="fr-submission-thumb"><div class="fr-pixelated"></div></div>
+            <div class="fr-submission-thumb">${imageOrPlaceholder(sub.image, '<div class="fr-pixelated"></div>')}</div>
             <div class="fr-submission-main">
               <div class="fr-submission-head">
                 <span class="fr-submission-date">${sub.date}</span>
@@ -937,7 +957,7 @@ function frVoteView() {
       <div class="fr-vote-list">
         ${FACERATE_VOTES.map(v => `
           <div class="fr-vote-row">
-            <div class="fr-pixelated small"></div>
+            ${imageOrPlaceholder(v.image, '<div class="fr-pixelated small"></div>', 'small')}
             <div class="fr-vote-main">
               <div class="fr-vote-head"><span class="fr-vote-author">${v.author}</span><span class="fr-vote-date">${v.date}</span></div>
               ${v.note ? `<div class="fr-vote-note">${v.note}</div>` : ''}
@@ -1112,7 +1132,7 @@ function navigateYoutube(url, title) {
 function ytVideoCardHTML(v) {
   return `
     <div class="yt-card" data-video-id="${v.id}">
-      <div class="yt-card-thumb"><span class="yt-card-duration">${v.duration}</span></div>
+      <div class="yt-card-thumb">${imageOrPlaceholder(v.image, '')}<span class="yt-card-duration">${v.duration}</span></div>
       <div class="yt-card-meta">
         <span class="yt-card-avatar"></span>
         <div class="yt-card-text">
@@ -1128,7 +1148,7 @@ function ytVideoCardHTML(v) {
 function ytVideoRowHTML(v) {
   return `
     <div class="yt-row" data-video-id="${v.id}">
-      <div class="yt-row-thumb"><span class="yt-card-duration">${v.duration}</span></div>
+      <div class="yt-row-thumb">${imageOrPlaceholder(v.image, '')}<span class="yt-card-duration">${v.duration}</span></div>
       <div class="yt-row-body">
         <div class="yt-row-title">${v.title}</div>
         <div class="yt-row-stats">${v.views} · ${v.age}</div>
@@ -1142,7 +1162,7 @@ function ytVideoRowHTML(v) {
 function ytRecRowHTML(v) {
   return `
     <div class="yt-rec-row" data-video-id="${v.id}">
-      <div class="yt-rec-thumb"><span class="yt-card-duration">${v.duration}</span></div>
+      <div class="yt-rec-thumb">${imageOrPlaceholder(v.image, '')}<span class="yt-card-duration">${v.duration}</span></div>
       <div class="yt-rec-text">
         <div class="yt-rec-title">${v.title}</div>
         <div class="yt-rec-channel">${v.channel}</div>
@@ -1676,14 +1696,14 @@ function buildTrashViewerContent(item) {
     case 'image-blur':
       return `
         <div class="trash-image-viewer">
-          <div class="trash-photo-pixelated"></div>
+          ${imageOrPlaceholder(item.image, '<div class="trash-photo-pixelated"></div>')}
           <span class="trash-image-caption">${item.caption}</span>
         </div>
       `;
     case 'image-missing':
       return `
         <div class="trash-image-missing">
-          <img src="assets/icons/file-image-broken.svg" alt="" />
+          ${item.image ? `<img src="${item.image}" class="editor-uploaded-img" alt="" />` : '<img src="assets/icons/file-image-broken.svg" alt="" />'}
           <span class="trash-image-missing-caption">${item.caption}</span>
         </div>
       `;
@@ -2046,7 +2066,7 @@ function attachmentHTML(att) {
     return `
       <div class="discord-attachment">
         <div class="discord-attachment-img sensitive">
-          <span class="discord-attachment-caption">${att.caption}</span>
+          ${att.image ? `<img src="${att.image}" class="editor-uploaded-img" alt="" />` : `<span class="discord-attachment-caption">${att.caption}</span>`}
         </div>
         <span class="discord-attachment-filename">${att.filename}</span>
       </div>
@@ -2054,7 +2074,7 @@ function attachmentHTML(att) {
   }
   return `
     <div class="discord-attachment">
-      <div class="discord-attachment-img"></div>
+      <div class="discord-attachment-img">${imageOrPlaceholder(att.image, '')}</div>
       <span class="discord-attachment-filename">${att.filename}</span>
     </div>
   `;
@@ -2332,6 +2352,7 @@ function pvIllustration(f) {
 }
 
 function buildPhotoPreview(f) {
+  if (f.image) return `<div class="pv pv-uploaded"><img src="${f.image}" alt="" /></div>`;
   switch (f.preview) {
     case 'greentext': return pvGreentext(f);
     case 'meme': return pvMeme(f);
@@ -2956,15 +2977,22 @@ function attachGrokHandlers() {
 }
 
 // ── Notepad (cile.txt) ──
+const NOTEPAD_CONTENT = { text: '[Cíl 1 - leden]\n\n[Cíl 2 - březen]\n\n[Cíl 3]\n\n[Cíl 4]\n' };
 const notepadWindow = document.getElementById('notepad-window');
+const notepadContentEl = document.getElementById('notepad-content');
 document.getElementById('notepad-close-btn').addEventListener('click', () => {
   notepadWindow.classList.add('hidden');
 });
 document.getElementById('notepad-save-btn').addEventListener('click', () => {
-  // decorative — no actual persistence
+  // decorative — content already saves live as you type
+});
+notepadContentEl.addEventListener('input', () => {
+  NOTEPAD_CONTENT.text = notepadContentEl.value;
+  scheduleSaveContentOverrides();
 });
 
 function openNotepad() {
+  notepadContentEl.value = NOTEPAD_CONTENT.text;
   notepadWindow.classList.remove('hidden');
 }
 
@@ -3002,8 +3030,14 @@ startMenu.addEventListener('click', e => e.stopPropagation());
 document.addEventListener('click', () => startMenu.classList.add('hidden'));
 
 // ── Toast notification ──
+const TOAST_CONTENT = {
+  title: 'Looksmaxx CZ/SK',
+  textHtml: '<strong>KOROLEV_88</strong> tě zmínil v <strong>#foto-rating</strong>'
+};
 function showToastNotification() {
   const toast = document.getElementById('toast-notification');
+  document.getElementById('toast-title').textContent = TOAST_CONTENT.title;
+  document.getElementById('toast-text').innerHTML = TOAST_CONTENT.textHtml;
   toast.classList.remove('hidden');
   requestAnimationFrame(() => toast.classList.add('show'));
   setTimeout(() => {
@@ -3011,7 +3045,6 @@ function showToastNotification() {
     setTimeout(() => toast.classList.add('hidden'), 300);
   }, 3000);
 }
-setTimeout(showToastNotification, 900);
 
 // ── Taskbar (shows currently open app windows) ──
 const TASKBAR_APPS = [
@@ -3075,3 +3108,424 @@ function openApp(app) {
       break;
   }
 }
+
+// ══════════════════════════════════════════════════════════════════════════
+// Content editor — hidden dev tool for Nat (Ctrl+Shift+E). Lets her edit every
+// piece of text and swap every placeholder image across the whole simulation,
+// without touching code. Not part of the in-fiction desktop.
+// ══════════════════════════════════════════════════════════════════════════
+
+function isPlainObject(v) { return !!v && typeof v === 'object' && !Array.isArray(v); }
+
+const EDITOR_PROTECTED_KEYS = new Set(['type', 'preview', 'id', 'favicon', 'icon', 'activeChannel']);
+
+function isImageSlotObject(obj) {
+  if (!isPlainObject(obj)) return false;
+  if (obj.photo === true) return true; // chatgpt message with an uploaded photo
+  if (obj.type === 'image-blur' || obj.type === 'image-missing') return true; // recycle bin
+  if (typeof obj.preview === 'string' && 'date' in obj && 'size' in obj) return true; // Photos file card
+  if ((obj.type === 'blur' || obj.type === 'sensitive') && 'filename' in obj) return true; // Discord attachment
+  return false;
+}
+
+function fieldLabel(key) {
+  const spaced = key.replace(/([A-Z])/g, ' $1').replace(/[_-]/g, ' ').trim();
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+}
+
+function escapeForAttr(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;'); }
+function escapeForTextarea(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+function renderImageSlotControl(path, currentImage) {
+  return `
+    <div class="editor-image-slot" data-image-path="${path}">
+      <div class="editor-image-preview">${currentImage ? `<img src="${currentImage}" alt="" />` : '<span class="editor-image-empty">bez obrázku</span>'}</div>
+      <div class="editor-image-actions">
+        <label class="editor-upload-btn">Nahrát obrázek<input type="file" accept="image/*" class="hidden editor-image-input" data-image-path="${path}" /></label>
+        ${currentImage ? `<button class="editor-image-clear" data-image-path="${path}">Odebrat</button>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function editorHeadingFor(item, i) {
+  if (!isPlainObject(item)) return `#${i + 1}`;
+  const candidate = item.title || item.name || item.author || item.subject || item.sender || item.date || item.label || item.text;
+  return typeof candidate === 'string' ? candidate.slice(0, 70) : `#${i + 1}`;
+}
+
+function renderEditorNode(node, path, forceImageSlot) {
+  if (Array.isArray(node)) {
+    return node.map((item, i) => {
+      const itemPath = `${path}.${i}`;
+      if (typeof item === 'string') {
+        return `<div class="editor-field"><label>#${i + 1}</label><input type="text" data-path="${itemPath}" value="${escapeForAttr(item)}" /></div>`;
+      }
+      if (typeof item === 'number') {
+        return `<div class="editor-field"><label>#${i + 1}</label><input type="text" data-numeric="1" data-path="${itemPath}" value="${item}" /></div>`;
+      }
+      return `
+        <div class="editor-array-item">
+          <div class="editor-array-item-heading">${editorHeadingFor(item, i)}</div>
+          ${renderEditorNode(item, itemPath, forceImageSlot)}
+        </div>
+      `;
+    }).join('');
+  }
+  if (isPlainObject(node)) {
+    const showImageSlot = forceImageSlot || isImageSlotObject(node);
+    let html = showImageSlot ? renderImageSlotControl(`${path}.image`, node.image) : '';
+    Object.keys(node).forEach(key => {
+      if (key === 'image') return;
+      if (EDITOR_PROTECTED_KEYS.has(key)) return;
+      const val = node[key];
+      const fieldPath = `${path}.${key}`;
+      if (val === null || val === undefined) return;
+      if (typeof val === 'string') {
+        const isLong = val.length > 70 || val.includes('\n') || /<[a-z]/i.test(val);
+        html += `
+          <div class="editor-field">
+            <label>${fieldLabel(key)}</label>
+            ${isLong
+              ? `<textarea data-path="${fieldPath}" rows="4">${escapeForTextarea(val)}</textarea>`
+              : `<input type="text" data-path="${fieldPath}" value="${escapeForAttr(val)}" />`}
+          </div>
+        `;
+      } else if (typeof val === 'number') {
+        html += `
+          <div class="editor-field">
+            <label>${fieldLabel(key)}</label>
+            <input type="text" data-numeric="1" data-path="${fieldPath}" value="${val}" />
+          </div>
+        `;
+      } else if (typeof val === 'boolean') {
+        html += `
+          <div class="editor-field editor-field-checkbox">
+            <label><input type="checkbox" data-path="${fieldPath}" data-boolean="1" ${val ? 'checked' : ''} /> ${fieldLabel(key)}</label>
+          </div>
+        `;
+      } else if (Array.isArray(val) || isPlainObject(val)) {
+        html += `
+          <div class="editor-nested">
+            <div class="editor-nested-label">${fieldLabel(key)}</div>
+            ${renderEditorNode(val, fieldPath, false)}
+          </div>
+        `;
+      }
+    });
+    return html;
+  }
+  return '';
+}
+
+function resolveEditorPath(fullPath) {
+  const parts = fullPath.split('.');
+  const section = EDITOR_SECTIONS.find(s => s.key === parts[0]);
+  if (!section) return null;
+  let node = section.data;
+  for (let i = 1; i < parts.length - 1; i++) {
+    if (node == null) return null;
+    node = node[parts[i]];
+  }
+  if (node == null) return null;
+  return { parent: node, key: parts[parts.length - 1] };
+}
+function setEditorValueAtPath(fullPath, value) {
+  const resolved = resolveEditorPath(fullPath);
+  if (resolved) resolved.parent[resolved.key] = value;
+}
+
+function fileToResizedDataUrl(file, maxDim, quality) {
+  maxDim = maxDim || 900;
+  quality = quality || 0.82;
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let width = img.width, height = img.height;
+        if (width > maxDim || height > maxDim) {
+          const scale = maxDim / Math.max(width, height);
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = reject;
+      img.src = reader.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function refreshOpenWindowsAfterEdit() {
+  if (!chromeWindow.classList.contains('hidden')) renderActivePage();
+  if (!discordWindow.classList.contains('hidden')) {
+    if (discordView === 'dm') renderDMConversation(); else renderServerChannel();
+  }
+  if (!photosWindow.classList.contains('hidden')) renderPhotos();
+  if (!recycleWindow.classList.contains('hidden')) renderRecycleList();
+  if (!cs2Window.classList.contains('hidden')) document.getElementById('cs2-body').innerHTML = buildCs2BodyHTML();
+  if (!haloWindow.classList.contains('hidden')) document.getElementById('halo-body').innerHTML = buildHaloBodyHTML();
+}
+
+const CONTENT_STORAGE_KEY = 'lukas-pc-content-overrides-v1';
+
+function deepMergeContentInto(target, source) {
+  if (Array.isArray(target) && Array.isArray(source)) {
+    source.forEach((val, i) => {
+      if (i >= target.length) return;
+      if (val && typeof val === 'object' && target[i] && typeof target[i] === 'object') deepMergeContentInto(target[i], val);
+      else target[i] = val;
+    });
+  } else if (isPlainObject(target) && isPlainObject(source)) {
+    Object.keys(source).forEach(k => {
+      const val = source[k];
+      if (val && typeof val === 'object' && target[k] && typeof target[k] === 'object' && Array.isArray(val) === Array.isArray(target[k])) {
+        deepMergeContentInto(target[k], val);
+      } else {
+        target[k] = val;
+      }
+    });
+  }
+}
+
+let editorDefaultsSnapshot = null;
+function snapshotEditorDefaults() {
+  const dump = {};
+  EDITOR_SECTIONS.forEach(s => { dump[s.key] = JSON.parse(JSON.stringify(s.data)); });
+  editorDefaultsSnapshot = dump;
+}
+
+function loadContentOverrides() {
+  try {
+    const raw = localStorage.getItem(CONTENT_STORAGE_KEY);
+    if (!raw) return;
+    const saved = JSON.parse(raw);
+    EDITOR_SECTIONS.forEach(s => {
+      if (saved[s.key] !== undefined) deepMergeContentInto(s.data, saved[s.key]);
+    });
+  } catch (e) {
+    console.warn('Nepodařilo se načíst uložený obsah editoru:', e);
+  }
+}
+
+function setEditorStatus(text) {
+  const status = document.getElementById('editor-statusbar');
+  if (status) status.textContent = text;
+}
+
+let saveContentTimer = null;
+function scheduleSaveContentOverrides() {
+  setEditorStatus('Ukládání…');
+  clearTimeout(saveContentTimer);
+  saveContentTimer = setTimeout(saveContentOverrides, 400);
+}
+function saveContentOverrides() {
+  const dump = {};
+  EDITOR_SECTIONS.forEach(s => { dump[s.key] = s.data; });
+  try {
+    localStorage.setItem(CONTENT_STORAGE_KEY, JSON.stringify(dump));
+    setEditorStatus('Uloženo do tohoto prohlížeče · ' + new Date().toLocaleTimeString('cs-CZ'));
+  } catch (e) {
+    setEditorStatus('Uložení selhalo (úložiště prohlížeče je asi plné) — stáhni si zálohu přes „Exportovat JSON“.');
+  }
+}
+
+function exportContentJSON() {
+  const dump = {};
+  EDITOR_SECTIONS.forEach(s => { dump[s.key] = s.data; });
+  const blob = new Blob([JSON.stringify(dump, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'lukas-pc-content.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importContentJSONFile(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const saved = JSON.parse(reader.result);
+      EDITOR_SECTIONS.forEach(s => {
+        if (saved[s.key] !== undefined) deepMergeContentInto(s.data, saved[s.key]);
+      });
+      saveContentOverrides();
+      renderEditorPanel(currentEditorSectionKey);
+      refreshOpenWindowsAfterEdit();
+    } catch (e) {
+      alert('Nepodařilo se načíst soubor: ' + e.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function resetContentToDefaults() {
+  if (!editorDefaultsSnapshot) return;
+  if (!confirm('Opravdu chceš vrátit VŠECHNY texty a obrázky na výchozí hodnoty? Tato akce se nedá vzít zpět.')) return;
+  EDITOR_SECTIONS.forEach(s => {
+    const defaults = JSON.parse(JSON.stringify(editorDefaultsSnapshot[s.key]));
+    if (Array.isArray(s.data)) {
+      s.data.length = 0;
+      s.data.push(...defaults);
+    } else if (isPlainObject(s.data)) {
+      Object.keys(s.data).forEach(k => delete s.data[k]);
+      Object.assign(s.data, defaults);
+    }
+  });
+  localStorage.removeItem(CONTENT_STORAGE_KEY);
+  setEditorStatus('Vráceno na výchozí hodnoty.');
+  renderEditorPanel(currentEditorSectionKey);
+  refreshOpenWindowsAfterEdit();
+}
+
+let currentEditorSectionKey = null;
+
+function buildEditorNavHTML() {
+  return EDITOR_SECTIONS.map(s => `<div class="editor-nav-item" data-key="${s.key}">${s.label}</div>`).join('');
+}
+
+function renderEditorPanel(sectionKey) {
+  const section = EDITOR_SECTIONS.find(s => s.key === sectionKey);
+  const panel = document.getElementById('editor-panel');
+  if (!section) { panel.innerHTML = ''; return; }
+  panel.innerHTML = `<h2 class="editor-section-title">${section.label}</h2>${renderEditorNode(section.data, section.key, !!section.forceImageSlot)}`;
+}
+
+function selectEditorSection(key) {
+  currentEditorSectionKey = key;
+  document.querySelectorAll('.editor-nav-item').forEach(n => n.classList.toggle('active', n.dataset.key === key));
+  renderEditorPanel(key);
+}
+
+function attachEditorPanelHandlers() {
+  const panel = document.getElementById('editor-panel');
+  panel.addEventListener('input', e => {
+    const el = e.target;
+    if (!el.dataset.path) return;
+    let val = el.value;
+    if (el.dataset.numeric) {
+      const n = parseFloat(val);
+      val = isNaN(n) ? val : n;
+    }
+    setEditorValueAtPath(el.dataset.path, val);
+    scheduleSaveContentOverrides();
+    refreshOpenWindowsAfterEdit();
+  });
+  panel.addEventListener('change', e => {
+    const el = e.target;
+    if (el.dataset.boolean) {
+      setEditorValueAtPath(el.dataset.path, el.checked);
+      scheduleSaveContentOverrides();
+      refreshOpenWindowsAfterEdit();
+      return;
+    }
+    if (el.classList.contains('editor-image-input') && el.files && el.files[0]) {
+      const path = el.dataset.imagePath;
+      fileToResizedDataUrl(el.files[0]).then(dataUrl => {
+        setEditorValueAtPath(path, dataUrl);
+        scheduleSaveContentOverrides();
+        const slot = el.closest('.editor-image-slot');
+        if (slot) {
+          slot.querySelector('.editor-image-preview').innerHTML = `<img src="${dataUrl}" alt="" />`;
+          if (!slot.querySelector('.editor-image-clear')) {
+            const clearBtn = document.createElement('button');
+            clearBtn.className = 'editor-image-clear';
+            clearBtn.dataset.imagePath = path;
+            clearBtn.textContent = 'Odebrat';
+            slot.querySelector('.editor-image-actions').appendChild(clearBtn);
+          }
+        }
+        refreshOpenWindowsAfterEdit();
+      });
+    }
+  });
+  panel.addEventListener('click', e => {
+    if (e.target.classList.contains('editor-image-clear')) {
+      const path = e.target.dataset.imagePath;
+      setEditorValueAtPath(path, null);
+      scheduleSaveContentOverrides();
+      const slot = e.target.closest('.editor-image-slot');
+      slot.querySelector('.editor-image-preview').innerHTML = '<span class="editor-image-empty">bez obrázku</span>';
+      e.target.remove();
+      refreshOpenWindowsAfterEdit();
+    }
+  });
+}
+
+function openContentEditor() {
+  const overlay = document.getElementById('content-editor');
+  document.getElementById('editor-nav').innerHTML = buildEditorNavHTML();
+  document.querySelectorAll('.editor-nav-item').forEach(n => {
+    n.addEventListener('click', () => selectEditorSection(n.dataset.key));
+  });
+  selectEditorSection(currentEditorSectionKey || EDITOR_SECTIONS[0].key);
+  overlay.classList.remove('hidden');
+}
+function closeContentEditor() {
+  document.getElementById('content-editor').classList.add('hidden');
+}
+
+document.getElementById('editor-close-btn').addEventListener('click', closeContentEditor);
+document.getElementById('editor-export-btn').addEventListener('click', exportContentJSON);
+document.getElementById('editor-reset-btn').addEventListener('click', resetContentToDefaults);
+document.getElementById('editor-import-btn').addEventListener('click', () => document.getElementById('editor-import-input').click());
+document.getElementById('editor-import-input').addEventListener('change', e => {
+  if (e.target.files && e.target.files[0]) importContentJSONFile(e.target.files[0]);
+  e.target.value = '';
+});
+attachEditorPanelHandlers();
+
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.shiftKey && (e.key === 'E' || e.key === 'e')) {
+    e.preventDefault();
+    const overlay = document.getElementById('content-editor');
+    if (overlay.classList.contains('hidden')) openContentEditor();
+    else closeContentEditor();
+  }
+});
+
+// ── Register every editable data collection, load saved edits, then start the clock/toast ──
+const EDITOR_SECTIONS = [
+  { key: 'chatgpt', label: 'ChatGPT konverzace', data: CHATGPT_CONVERSATIONS },
+  { key: 'chromeHistory', label: 'Chrome — historie', data: HISTORY_DAYS },
+  { key: 'chromeBookmarks', label: 'Chrome — záložky', data: BOOKMARKS_BAR },
+  { key: 'chromeTabs', label: 'Chrome — výchozí otevřené taby', data: INITIAL_TABS_TEMPLATE },
+  { key: 'discord', label: 'Discord', data: DISCORD },
+  { key: 'recycle', label: 'Koš', data: RECYCLE_ITEMS },
+  { key: 'photos', label: 'Fotky a videa', data: PHOTOS_TREE },
+  { key: 'facerateSubmissions', label: 'facerate.io — Upload', data: FACERATE_SUBMISSIONS, forceImageSlot: true },
+  { key: 'facerateVotes', label: 'facerate.io — Vote', data: FACERATE_VOTES, forceImageSlot: true },
+  { key: 'facerateLeaderboard', label: 'facerate.io — Leaderboard', data: FACERATE_LEADERBOARD },
+  { key: 'facerateGuides', label: 'facerate.io — Guides', data: FACERATE_GUIDES },
+  { key: 'facerateForum', label: 'facerate.io — Forum', data: FACERATE_FORUM },
+  { key: 'youtubeVideos', label: 'YouTube — videa', data: YT_HOME_VIDEOS, forceImageSlot: true },
+  { key: 'youtubeComments', label: 'YouTube — komentáře', data: YT_COMMENTS },
+  { key: 'gmail', label: 'Gmail', data: GMAIL_EMAILS },
+  { key: 'grok', label: 'Grok', data: GROK_CONVERSATIONS },
+  { key: 'googleResults', label: 'Google — výsledky', data: GOOGLE_RESULTS },
+  { key: 'googlePAA', label: 'Google — Lidé se také ptají', data: GOOGLE_PAA },
+  { key: 'cs2Hours', label: 'CS2 — hodiny za měsíc', data: CS2_MONTHLY_HOURS },
+  { key: 'cs2Matches', label: 'CS2 — zápasy', data: CS2_MATCHES },
+  { key: 'cs2Friends', label: 'CS2 — přátelé', data: CS2_FRIENDS },
+  { key: 'cs2Achievements', label: 'CS2 — achievementy', data: CS2_ACHIEVEMENTS },
+  { key: 'haloMatches', label: 'Halo — zápasy', data: HALO_MATCHES },
+  { key: 'haloFriends', label: 'Halo — přátelé (Spartan Company)', data: HALO_FRIENDS },
+  { key: 'haloWeapons', label: 'Halo — oblíbené zbraně', data: HALO_WEAPONS },
+  { key: 'haloMedals', label: 'Halo — medaile', data: HALO_MEDALS },
+  { key: 'desktopClock', label: 'Plocha — hodiny', data: CLOCK_CONTENT },
+  { key: 'desktopToast', label: 'Plocha — Discord notifikace', data: TOAST_CONTENT },
+  { key: 'desktopNotepad', label: 'Plocha — cile.txt', data: NOTEPAD_CONTENT }
+];
+
+snapshotEditorDefaults();
+loadContentOverrides();
+startClock();
+setTimeout(showToastNotification, 900);

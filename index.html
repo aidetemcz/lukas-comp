@@ -100,8 +100,8 @@
     <div id="toast-notification" class="hidden">
       <img class="toast-icon" src="assets/icons/discord.svg" alt="" />
       <div class="toast-body">
-        <div class="toast-title">Looksmaxx CZ/SK</div>
-        <div class="toast-text"><strong>KOROLEV_88</strong> tě zmínil v <strong>#foto-rating</strong></div>
+        <div class="toast-title" id="toast-title"></div>
+        <div class="toast-text" id="toast-text"></div>
       </div>
     </div>
 
@@ -121,14 +121,7 @@
       <span class="notepad-menu-item">Zobrazení</span>
       <span class="notepad-menu-item">Nápověda</span>
     </div>
-    <textarea class="notepad-content" id="notepad-content" spellcheck="false">[Cíl 1 - leden]
-
-[Cíl 2 - březen]
-
-[Cíl 3]
-
-[Cíl 4]
-</textarea>
+    <textarea class="notepad-content" id="notepad-content" spellcheck="false"></textarea>
     <div class="notepad-statusbar">
       <button class="notepad-save-btn" id="notepad-save-btn">Uložit</button>
       <span class="notepad-statusbar-sep"></span>
@@ -287,6 +280,26 @@
       <button class="halo-close" id="halo-close-btn">✕</button>
     </div>
     <div class="halo-body" id="halo-body"></div>
+  </div>
+
+  <!-- Content editor — hidden dev tool for Nat, opened with Ctrl+Shift+E. Not part of the in-fiction desktop. -->
+  <div id="content-editor" class="hidden">
+    <div class="editor-titlebar">
+      <span class="editor-titlebar-name">✎ Editor obsahu</span>
+      <span class="editor-titlebar-hint">Ctrl+Shift+E zavře/otevře</span>
+      <div class="editor-titlebar-actions">
+        <button id="editor-export-btn">Exportovat JSON</button>
+        <button id="editor-import-btn">Importovat JSON</button>
+        <input type="file" id="editor-import-input" accept="application/json" class="hidden" />
+        <button id="editor-reset-btn">Reset na výchozí</button>
+        <button id="editor-close-btn">✕</button>
+      </div>
+    </div>
+    <div class="editor-body">
+      <nav class="editor-nav" id="editor-nav"></nav>
+      <div class="editor-panel" id="editor-panel"></div>
+    </div>
+    <div class="editor-statusbar" id="editor-statusbar">Změny se ukládají automaticky do tohoto prohlížeče (localStorage).</div>
   </div>
 
   <script src="script.js"></script>
