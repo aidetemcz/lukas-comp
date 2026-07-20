@@ -135,6 +135,34 @@
     </div>
   </div>
 
+  <!-- Photos / File explorer window -->
+  <div id="photos-window" class="hidden">
+    <div class="explorer-titlebar">
+      <img class="explorer-titlebar-icon" src="assets/icons/folder.svg" alt="" />
+      <span class="explorer-titlebar-name">Fotky a videa</span>
+      <button class="explorer-close" id="photos-close-btn">✕</button>
+    </div>
+    <div class="photos-toolbar">
+      <button class="photos-back-btn" id="photos-back-btn">‹</button>
+      <div class="photos-breadcrumb" id="photos-breadcrumb"></div>
+    </div>
+    <div class="photos-grid" id="photos-grid"></div>
+  </div>
+
+  <!-- Photos file-preview modal -->
+  <div id="photos-modal-overlay" class="hidden">
+    <div id="photos-modal">
+      <div class="photos-modal-titlebar">
+        <span id="photos-modal-name"></span>
+        <button class="explorer-close" id="photos-modal-close">✕</button>
+      </div>
+      <div class="photos-modal-body">
+        <div class="photos-modal-preview" id="photos-modal-preview"></div>
+        <div class="photos-modal-meta" id="photos-modal-meta"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Recycle Bin window -->
   <div id="recycle-window" class="hidden">
     <div class="explorer-titlebar">

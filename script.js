@@ -1378,11 +1378,312 @@ function openDiscord() {
   renderServerChannel();
 }
 
+// ── Photos / File explorer ──
+function pFile(name, date, size, dims, preview, desc, extra) {
+  return Object.assign({ type: 'file', name, date, size, dims, preview, desc }, extra || {});
+}
+
+const PHOTOS_TREE = {
+  name: 'Fotky a videa', type: 'folder',
+  children: [
+    {
+      name: 'screenshoty', type: 'folder', children: [
+        pFile('mewing_navod_1.png', '22. 2. 2026', '1,1 MB', '1280 × 720', 'illustration',
+          'Screenshot z looksmaxxing videa: správná pozice jazyka na patře při mewingu (návod).'),
+        pFile('tinder_gini_25022026.png', '25. 2. 2026', '840 KB', '1080 × 1350', 'illustration',
+          'Screenshot grafu Gini koeficientu Tinderu, převzato ze Sneako videa. „Nerovnost pozornosti“ na dating apps.'),
+        pFile('sneako_klip_04032026.jpg', '4. 3. 2026', '620 KB', '1280 × 720', 'illustration',
+          'Screenshot titulku klipu „why women reject you“.'),
+        pFile('sporeni_excel_15032026.png', '15. 3. 2026', '96 KB', '1280 × 800', 'savings',
+          'Spořicí graf (Excel). Cíl 180 000 Kč na operaci čelisti, aktuálně naspořeno 4 212 Kč. Očekávané dosažení červenec 2027.'),
+        pFile('bank_app_17032026.png', '17. 3. 2026', '410 KB', '1080 × 2340', 'bank',
+          'Screenshot bankovní aplikace. Zůstatek 4 212 Kč, poznámka „TRK operace 180k“.'),
+        pFile('duolingo_20032026.png', '20. 3. 2026', '380 KB', '1080 × 2340', 'duolingo',
+          'Screenshot Duolinga: 2denní série. Snaha o disciplínu, která se rozpadá v malých věcech.'),
+        pFile('cs2_stats_marec.png', '31. 3. 2026', '520 KB', '1920 × 1080', 'cs2',
+          'Screenshot statistik CS2: 340 hodin za březen. Prudký nárůst oproti prosinci (40 h) — eskapace.')
+      ]
+    },
+    {
+      name: 'mems', type: 'folder', children: [
+        pFile('wojak_virgin_vs_chad_looksmax.jpg', '10. 3. 2026', '210 KB', '1024 × 640', 'meme',
+          'Wojak srovnání: „Virgin scrolls looksmax before bed vs. Chad has never heard of PSL“.',
+          { figure: '😔🗿', caption: 'virgin scrolls looksmax / chad has never heard of PSL' }),
+        pFile('gigachad_yes_I_mew.jpg', '11. 3. 2026', '180 KB', '1024 × 1024', 'meme',
+          'GigaChad meme: „yes I mew, yes I lift, yes I look like this, how could you tell?“.',
+          { figure: '🗿', caption: 'yes I mew, yes I lift, how could you tell?' }),
+        pFile('doomer_wojak_progres.jpg', '13. 3. 2026', '160 KB', '1024 × 640', 'meme',
+          'Doomer wojak (kápě + cigareta): „another day of failing looksmax“.',
+          { figure: '🚬😞', caption: 'another day of failing looksmax' }),
+        pFile('feelscel_friendzone.jpg', '14. 3. 2026', '150 KB', '900 × 600', 'meme',
+          'Feelscel wojak (pláč): „when the foid says you\'re such a good friend“.',
+          { figure: '😭', caption: "when the foid says 'you're such a good friend'" }),
+        pFile('sigma_grindset_ironie.png', '16. 3. 2026', '240 KB', '1024 × 768', 'meme',
+          'Sigma grindset (ironicky i vážně): „5AM cold shower, ice bath, mewing, 40 pushups, bimax scheduled — sigma“.',
+          { figure: '🥶💪', caption: '5AM cold shower · mewing · bimax scheduled · sigma' }),
+        pFile('reject_modernity.jpg', '18. 3. 2026', '300 KB', '1024 × 768', 'meme',
+          'Chad + hláška „reject modernity, embrace tradition“ — přechod k reakcionářské estetice.',
+          { figure: '🗿', caption: 'reject modernity · embrace tradition' }),
+        pFile('bugs_pods_conspiracy.jpg', '19. 3. 2026', '280 KB', '1024 × 768', 'meme',
+          'Konspirační okraj: „you will eat the bugs, live in the pod“ (WEF / 15-minute city).',
+          { figure: '🐛🏢', caption: 'you will eat the bugs · live in the pod' }),
+        pFile('hunter_eyes_vs_prey_eyes.jpg', '20. 3. 2026', '190 KB', '1024 × 512', 'meme',
+          'Srovnávací meme „hunter eyes vs. prey eyes“.',
+          { figure: '👁️🗿', caption: 'hunter eyes vs. prey eyes' }),
+        pFile('ratio_L_fell_off.png', '21. 3. 2026', '120 KB', '800 × 600', 'meme',
+          'Importované z Twitteru, používané samoironicky: „L + ratio + you fell off“.',
+          { figure: '📉', caption: 'L + ratio + you fell off' }),
+        pFile('wholesome_wojak_09_2025.jpg', '14. 9. 2025', '140 KB', '800 × 600', 'meme',
+          'Nejstarší mem ve složce (září 2025): obyčejný r/wholesomememes wojak. Ostrý kontrast s pozdějším obsahem.',
+          { wholesome: true, figure: '🙂', caption: 'we all gonna make it bros' })
+      ]
+    },
+    {
+      name: 'progres', type: 'folder', children: [
+        pFile('progres_15112025.jpg', '15. 11. 2025', '1,8 MB', '1080 × 1920', 'selfie',
+          'Selfie v zrcadle, bez trička, 15. 11. 2025 — první fotka. Obličej rozostřený.'),
+        pFile('progres_10122025.jpg', '10. 12. 2025', '1,9 MB', '1080 × 1920', 'selfie',
+          'Selfie v zrcadle, bez trička, 10. 12. 2025. Obličej rozostřený.'),
+        pFile('progres_12012026.jpg', '12. 1. 2026', '2,0 MB', '1080 × 1920', 'selfie',
+          'Selfie v zrcadle, bez trička, 12. 1. 2026. Obličej rozostřený.'),
+        pFile('progres_05022026.jpg', '5. 2. 2026', '2,0 MB', '1080 × 1920', 'selfie',
+          'Selfie v zrcadle, bez trička, 5. 2. 2026. Obličej rozostřený.'),
+        pFile('progres_28022026.jpg', '28. 2. 2026', '2,1 MB', '1080 × 1920', 'selfie',
+          'Selfie v zrcadle, bez trička, 28. 2. 2026. Obličej rozostřený.'),
+        pFile('progres_20032026.jpg', '20. 3. 2026', '2,2 MB', '1080 × 1920', 'selfie',
+          'Selfie v zrcadle, bez trička, 20. 3. 2026 — poslední fotka, viditelně muskulárnější než první. Obličej rozostřený.')
+      ]
+    },
+    {
+      name: '_M', type: 'folder', children: [
+        pFile('r9k_greentext_1.png', '9. 3. 2026', '210 KB', '900 × 700', 'greentext',
+          'Screenshot greentext postu z 4chan /r9k. Self-deprecating izolace jako identita.',
+          { lines: ['>be me, 15, framecel, subhuman midface', '>go to school', '>Chad walks by, 6\'2, hunter eyes',
+            '>notice foid staring at him', '>she looks at me for 0.3s, disgusted', '>go home', '>mew for 4 hours',
+            '>nothing changes', '>it\'s over'] }),
+        pFile('r9k_greentext_2.png', '15. 3. 2026', '180 KB', '900 × 640', 'greentext',
+          'Screenshot dalšího greentext postu z /r9k. Melancholie, cope, izolace.',
+          { lines: ['>be me, 15', '>friday night', '>everyone at a party', '>me: mewing, scrolling looksmax',
+            '>tell myself it\'s self improvement', '>deep down know it\'s cope', '>go to sleep', '>tomorrow same'] }),
+        pFile('discord_glow_v3_selfhate.png', '12. 3. 2026', '340 KB', '900 × 500', 'discord',
+          'Screenshot zprávy z Discord kanálu #self-hate-mondays (server Looksmaxx CZ/SK).',
+          { author: 'glow_v3', time: '9. 3. 2026 08:14', lines: ['právě mě mogla holka na tramvaji ktera nedostane na SŠ', 'to byla ta poslední kapka', '💀💀💀'] }),
+        pFile('zensky_kontext_1.png', '10. 3. 2026', '260 KB', '1080 × 720', 'tweet',
+          'Screenshot tweetu sdíleného v komunitě jako „důkaz“ female nature. Handle anonymizován.',
+          { name: 'uživatelka', handle: '@anon', text: '6\'2 minimum for dating, sorry not sorry 💅', badge: 'Twitter / X' }),
+        pFile('zensky_kontext_2.png', '11. 3. 2026', '300 KB', '1080 × 1920', 'tweet',
+          'Screenshot TikTok POV videa sdíleného v komunitě. Handle anonymizován.',
+          { name: 'uživatelka', handle: '@anon', text: 'POV: when he\'s a 6.5/10 and thinks he can date me 😬', badge: 'TikTok POV' }),
+        {
+          name: 'chad_faces', type: 'folder', children: [
+            pFile('kirill_bichutsky_ref.jpg', '18. 3. 2026', '410 KB', '800 × 800', 'faceref',
+              'Referenční „vzorová“ tvář: Kirill Bichutsky (jawline reference). Ukládá si to jako cíl.'),
+            pFile('ryan_gosling_jaw_ref.jpg', '18. 3. 2026', '390 KB', '800 × 800', 'faceref',
+              'Referenční „vzorová“ tvář: Ryan Gosling (jaw reference).'),
+            pFile('christian_bale_ref.jpg', '19. 3. 2026', '430 KB', '800 × 800', 'faceref',
+              'Referenční „vzorová“ tvář: Christian Bale (American Psycho reference).')
+          ]
+        }
+      ]
+    },
+    pFile('plan_leden.jpg', '3. 1. 2026', '1,4 MB', '3024 × 4032', 'note',
+      'Screenshot / fotka ručně psaného plánu z ledna 2026. Nikdy neprovedeno.',
+      { title: 'LEDEN — plán', lines: ['— chodit na florbal', '— přihlásit se na Erasmus', '— začít brzo vstávat'] }),
+    pFile('babicka_narozeniny_kartka.jpg', '12. 2. 2026', '2,6 MB', '2480 × 3508', 'card',
+      'Návrh přání k narozeninám pro babičku. Nikdy nevytištěné.',
+      { text: 'Všechno nejlepší, babi ♥\nmáš mě ráda a já tebe' })
+  ]
+};
+
+// preview builders
+function pvGreentext(f) {
+  return `<div class="pv pv-greentext"><div class="gt-head">/r9k/ — anon</div>${f.lines.map(l => `<div>${l}</div>`).join('')}</div>`;
+}
+function pvMeme(f) {
+  return `<div class="pv pv-meme${f.wholesome ? ' wholesome' : ''}"><div class="meme-figure">${f.figure}</div><div class="meme-caption">${f.caption}</div></div>`;
+}
+function pvBank() {
+  return `<div class="pv pv-bank"><div class="bank-top">Můj účet · běžný</div><div class="bank-balance">4 212 Kč</div><div class="bank-note">Poznámka: TRK operace 180k</div></div>`;
+}
+function pvDuo() {
+  return `<div class="pv pv-duo"><div class="duo-header">duolingo</div><div class="duo-streak">🔥 2</div><div class="duo-label">denní série</div><span class="cz-flag"></span></div>`;
+}
+function pvCs2() {
+  return `<div class="pv pv-cs2"><div class="cs2-title">Counter-Strike 2 · březen 2026</div><div class="cs2-hours">340 h</div><div class="cs2-sub">prosinec: 40 h &nbsp;·&nbsp; rank: DMG</div></div>`;
+}
+function pvNote(f) {
+  return `<div class="pv pv-note"><div class="note-title">${f.title}</div>${f.lines.map(l => `<div>${l}</div>`).join('')}</div>`;
+}
+function pvCard(f) {
+  return `<div class="pv pv-card"><div class="card-heart">🎂♥</div><div class="card-text">${f.text.replace(/\n/g, '<br/>')}</div></div>`;
+}
+function pvTweet(f) {
+  return `<div class="pv pv-tweet"><div class="tw-head"><span class="tw-avatar"></span><span><div class="tw-name">${f.name}</div><div class="tw-handle">${f.handle}</div></span></div><div class="tw-text">${f.text}</div><div class="tw-badge">${f.badge}</div></div>`;
+}
+function pvDiscord(f) {
+  return `<div class="pv pv-discord"><div class="dc-head"><span class="dc-name">${f.author}</span><span class="dc-time">${f.time}</span></div>${f.lines.map(l => `<div class="dc-line">${l}</div>`).join('')}</div>`;
+}
+function pvFaceref(f) {
+  const label = f.desc.split(':')[1] ? f.desc.split(':')[1].split('.')[0].trim() : f.name;
+  return `<div class="pv pv-faceref"><svg viewBox="0 0 64 64"><path fill="#6b7079" d="M32 8a12 12 0 0 1 12 12c0 6-3 10-6 12 8 2 14 8 14 18v4H12v-4c0-10 6-16 14-18-3-2-6-6-6-12A12 12 0 0 1 32 8z"/></svg><div class="fr-label">${label}</div></div>`;
+}
+function pvSelfie() {
+  return `<div class="pv pv-selfie"></div>`;
+}
+function pvIllustration(f) {
+  return `<div class="pv pv-illustration"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="M4 18l5-5 4 4 3-3 4 4"/></svg><div class="il-label">${f.name}</div></div>`;
+}
+
+function buildPhotoPreview(f) {
+  switch (f.preview) {
+    case 'greentext': return pvGreentext(f);
+    case 'meme': return pvMeme(f);
+    case 'bank': return pvBank();
+    case 'duolingo': return pvDuo();
+    case 'cs2': return pvCs2();
+    case 'savings': return pvSavings();
+    case 'note': return pvNote(f);
+    case 'card': return pvCard(f);
+    case 'tweet': return pvTweet(f);
+    case 'discord': return pvDiscord(f);
+    case 'faceref': return pvFaceref(f);
+    case 'selfie': return pvSelfie();
+    default: return pvIllustration(f);
+  }
+}
+
+function pvSavings() {
+  const goal = 180000, actual = 4212;
+  const w = 300, h = 200, padL = 34, padR = 10, padT = 16, padB = 22;
+  const plotW = w - padL - padR, plotH = h - padT - padB;
+  const months = ['úno','bře','dub','kvě','čvn','čvc','srp','zář','říj','lis','pro','led','úno','bře','dub','kvě','čvn','čvc'];
+  const n = months.length;
+  const slot = plotW / n, barW = slot * 0.62;
+  let bars = '';
+  for (let i = 0; i < n; i++) {
+    const val = goal * (i + 1) / n;
+    const bh = (val / goal) * plotH;
+    const x = padL + slot * i + (slot - barW) / 2;
+    const y = padT + plotH - bh;
+    bars += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${bh.toFixed(1)}" fill="#4472c4" opacity="0.55"/>`;
+  }
+  const actualH = (actual / goal) * plotH;
+  const ay = padT + plotH - actualH;
+  const ax = padL + (slot - barW) / 2;
+  const gridlines = [0, 0.25, 0.5, 0.75, 1].map(t => {
+    const y = padT + plotH - t * plotH;
+    return `<line x1="${padL}" y1="${y}" x2="${w - padR}" y2="${y}" stroke="#e5e5e5" stroke-width="0.6"/>` +
+      `<text x="${padL - 4}" y="${y + 3}" font-size="6" fill="#999" text-anchor="end">${Math.round(t * goal / 1000)}k</text>`;
+  }).join('');
+  return `<div class="pv pv-savings"><svg viewBox="0 0 ${w} ${h}">
+    <text x="${padL}" y="10" font-size="8" font-weight="700" fill="#333">Spoření na operaci čelisti</text>
+    ${gridlines}
+    ${bars}
+    <rect x="${ax.toFixed(1)}" y="${ay.toFixed(1)}" width="${barW.toFixed(1)}" height="${actualH.toFixed(1)}" fill="#e5484d"/>
+    <text x="${(ax + barW + 3).toFixed(1)}" y="${(ay + 4).toFixed(1)}" font-size="6.5" fill="#e5484d">teď 4 212 Kč</text>
+    <line x1="${padL}" y1="${padT}" x2="${w - padR}" y2="${padT}" stroke="#2e7d32" stroke-width="1" stroke-dasharray="3 2"/>
+    <text x="${w - padR}" y="${padT - 3}" font-size="6.5" fill="#2e7d32" text-anchor="end">cíl 180 000 Kč</text>
+  </svg></div>`;
+}
+
+const photosWindow = document.getElementById('photos-window');
+const photosGrid = document.getElementById('photos-grid');
+const photosBreadcrumb = document.getElementById('photos-breadcrumb');
+const photosBackBtn = document.getElementById('photos-back-btn');
+const photosModalOverlay = document.getElementById('photos-modal-overlay');
+const photosModalName = document.getElementById('photos-modal-name');
+const photosModalPreview = document.getElementById('photos-modal-preview');
+const photosModalMeta = document.getElementById('photos-modal-meta');
+
+let photosPath = [PHOTOS_TREE];
+
+document.getElementById('photos-close-btn').addEventListener('click', () => {
+  photosWindow.classList.add('hidden');
+});
+document.getElementById('photos-modal-close').addEventListener('click', closePhotoModal);
+photosModalOverlay.addEventListener('click', e => { if (e.target === photosModalOverlay) closePhotoModal(); });
+photosBackBtn.addEventListener('click', () => {
+  if (photosPath.length > 1) { photosPath.pop(); renderPhotos(); }
+});
+
+function currentFolder() { return photosPath[photosPath.length - 1]; }
+
+function renderPhotosBreadcrumb() {
+  photosBreadcrumb.innerHTML = photosPath.map((node, i) => {
+    const isCurrent = i === photosPath.length - 1;
+    const sep = i > 0 ? '<span class="photos-crumb-sep">›</span>' : '';
+    return `${sep}<span class="photos-crumb${isCurrent ? ' current' : ''}" data-depth="${i}">${node.name}</span>`;
+  }).join('');
+  photosBreadcrumb.querySelectorAll('.photos-crumb').forEach(node => {
+    node.addEventListener('click', () => {
+      const depth = Number(node.dataset.depth);
+      if (depth < photosPath.length - 1) { photosPath = photosPath.slice(0, depth + 1); renderPhotos(); }
+    });
+  });
+  photosBackBtn.disabled = photosPath.length <= 1;
+}
+
+function renderPhotos() {
+  renderPhotosBreadcrumb();
+  const folder = currentFolder();
+  const folders = folder.children.filter(c => c.type === 'folder');
+  const files = folder.children.filter(c => c.type === 'file');
+  const ordered = folders.concat(files);
+  photosGrid.innerHTML = ordered.map((item, i) => {
+    if (item.type === 'folder') {
+      return `<div class="photos-card" data-idx="${i}">
+        <div class="photos-thumb photos-folder-thumb"><img src="assets/icons/folder.svg" alt="" /></div>
+        <div class="photos-card-name">${item.name}</div>
+        <div class="photos-card-date">${item.children.length} položek</div>
+      </div>`;
+    }
+    return `<div class="photos-card" data-idx="${i}">
+      <div class="photos-thumb">${buildPhotoPreview(item)}</div>
+      <div class="photos-card-name">${item.name}</div>
+      <div class="photos-card-date">${item.date}</div>
+    </div>`;
+  }).join('');
+  photosGrid.querySelectorAll('.photos-card').forEach(card => {
+    const item = ordered[Number(card.dataset.idx)];
+    card.addEventListener('click', () => {
+      if (item.type === 'folder') { photosPath.push(item); renderPhotos(); }
+      else openPhotoModal(item);
+    });
+  });
+  photosGrid.scrollTop = 0;
+}
+
+function openPhotoModal(f) {
+  photosModalName.textContent = f.name;
+  photosModalPreview.innerHTML = buildPhotoPreview(f);
+  photosModalMeta.innerHTML = `
+    <h4>Informace o souboru</h4>
+    <div class="photos-meta-row"><span class="k">Název</span><span class="v">${f.name}</span></div>
+    <div class="photos-meta-row"><span class="k">Datum</span><span class="v">${f.date}</span></div>
+    <div class="photos-meta-row"><span class="k">Velikost</span><span class="v">${f.size}</span></div>
+    <div class="photos-meta-row"><span class="k">Rozměry</span><span class="v">${f.dims}</span></div>
+    <div class="photos-modal-desc">${f.desc}</div>
+  `;
+  photosModalOverlay.classList.remove('hidden');
+}
+function closePhotoModal() {
+  photosModalOverlay.classList.add('hidden');
+}
+
+function openPhotos() {
+  photosPath = [PHOTOS_TREE];
+  photosWindow.classList.remove('hidden');
+  renderPhotos();
+}
+
 // ── App launcher ──
 function openApp(app) {
   switch (app) {
     case 'chrome':
       openChrome();
+      break;
+    case 'folder-photos':
+      openPhotos();
       break;
     case 'discord':
       openDiscord();
