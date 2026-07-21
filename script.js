@@ -22,16 +22,12 @@ function startClock() {
 }
 
 // ── Icon selection + open ──
-// cile.txt behaves like a real file (double-click to open); every other icon opens on single click.
 document.querySelectorAll('.icon').forEach(icon => {
   icon.addEventListener('click', () => {
     document.querySelectorAll('.icon').forEach(i => i.classList.remove('selected'));
     icon.classList.add('selected');
-    if (icon.dataset.app !== 'cile') openApp(icon.dataset.app);
+    openApp(icon.dataset.app);
   });
-  if (icon.dataset.app === 'cile') {
-    icon.addEventListener('dblclick', () => openApp('cile'));
-  }
 });
 
 // Deselect on desktop click
@@ -108,10 +104,10 @@ const CHATGPT_CONVERSATIONS = [
       { role: 'assistant', html: '<p>Popravdě je to smíšené. „Mewing“ (správné držení jazyka na patře) jako koncept vychází z ortotropiky, ale kvalitních studií je málo a většina důkazů je anekdotická. U dětí, které ještě rostou, může správné držení jazyka a dýchání nosem mírně ovlivnit vývoj čelisti – tam to dává smysl. U dospělých, kde je kost už vyvinutá, se výrazná změna tvaru čelisti mewingem prokázat nepodařilo. Rozhodně to ale neuškodí jako návyk (dýchat nosem, nemít pusu pořád otevřenou), jen bych nečekal zázraky.</p>' },
       { role: 'user', html: '<p>takže po 15 letech to už nemá cenu?</p>' },
       { role: 'assistant', html: '<p>Není to tak černobílé – v 15 pořád ještě rosteš, takže úplně pozdě není, ale nejde o to, že bys mewingem „předěl“ obličej. Spíš je to o zdravých návycích, které mají vedlejší benefity (lepší dýchání, držení těla), ne o zaručeném estetickém efektu.</p>' },
-      { role: 'user', html: '<p>a bimaxillary advancement? kolik to stojí v Turecku?</p>' },
-      { role: 'assistant', html: '<p>Bimaxillary advancement je poměrně velký chirurgický zákrok (posun obou čelistí), obvykle se dělá z medicínských důvodů, jako jsou vážné problémy se skusem nebo dýcháním, ne kvůli vzhledu. V Turecku se ceny takových operací pohybují zhruba od 5 000 do 15 000 dolarů, ale je to velký zásah do těla s rizikama a dlouhou rekonvalescencí. Fakt bych to nedoporučoval řešit jen kvůli vzhledu, a rozhodně ne bez toho, aby ses o tom bavil s lékařem a s někým dospělým, komu věříš – u nezletilého je to navíc jinak i právně.</p>' },
-      { role: 'user', html: '<p>nebydlim s rodičema</p>' },
-      { role: 'assistant', html: '<p>To je mi líto, že v tomhle nemáš rodiče po ruce. Nemusí to ale být nutně rodič – klidně to může být babička nebo dědeček, pokud s nimi žiješ, školní psycholog nebo výchovný poradce, nebo třeba praktický lékař, který tě zná. Důležité je, aby o tom věděl někdo dospělý, než by ses pouštěl do něčeho takhle velkého.</p>' },
+      { role: 'user', html: '<p>furt na to koukám v zrcadle, nemůžu přestat</p>' },
+      { role: 'assistant', html: '<p>To zní, jako by tě to dost zaměstnávalo. Kolikrát denně se přistihneš, že to řešíš? A mluvíš o tom s někým, nebo si to necháváš pro sebe?</p>' },
+      { role: 'user', html: '<p>s mámou skoro nemluvím, je pořád v práci</p>' },
+      { role: 'assistant', html: '<p>To je mi líto, že s mámou teď moc prostoru na povídání není. Nemusí to ale být jen rodič – školní psycholog, výchovný poradce, nebo třeba praktický lékař, který tě zná, taky můžou pomoct, pokud si o tomhle chceš s někým promluvit.</p>' },
       { role: 'user', html: '<p>ok</p>' }
     ]
   },
@@ -204,13 +200,10 @@ const HISTORY_DAYS = [
     { time: '00:30', title: 'subhuman looksmaxx meaning - Hledat Googlem', url: 'google.com/search?q=subhuman+looksmaxx+meaning' }
   ]},
   { date: '13. 3. 2026', items: [
-    { time: '01:50', title: 'operace čelisti Turecko - recenze - YouTube', url: 'youtube.com/watch?v=op049' },
-    { time: '01:15', title: 'bimax turecko klinika cena - Hledat Googlem', url: 'google.com/search?q=bimax+turecko+klinika+cena' },
     { time: '00:40', title: 'facerate.io/upload', url: 'facerate.io/upload' }
   ]},
   { date: '12. 3. 2026', items: [
     { time: '01:15', title: 'The Enigma of Amygdala: why looks matter - YouTube', url: 'youtube.com/watch?v=ea048' },
-    { time: '00:50', title: 'operace čelisti Turecko cena - Hledat Googlem', url: 'google.com/search?q=operace+celisti+turecko+cena' },
     { time: '00:20', title: 'reddit.com/r/looksmax', url: 'reddit.com/r/looksmax' }
   ]},
   { date: '10. 3. 2026', items: [
@@ -265,8 +258,7 @@ const HISTORY_DAYS = [
     { time: '21:03', title: 'ChatGPT – Mewing a symetrie', url: 'chat.openai.com/c/4d8e2a97-3c1b-4f5a-a6e8-7b9c1d4f2e30' },
     { time: '19:12', title: 'Mewing before after: 6 months progress - YouTube', url: 'youtube.com/watch?v=mb033' },
     { time: '18:58', title: 'reddit.com/r/orthotropics', url: 'reddit.com/r/orthotropics' },
-    { time: '18:20', title: 'Bosley Bones: how to fix mid face - YouTube', url: 'youtube.com/watch?v=bb034' },
-    { time: '17:44', title: 'bimaxillary advancement cena - Hledat Googlem', url: 'google.com/search?q=bimaxillary+advancement+cena' }
+    { time: '18:20', title: 'Bosley Bones: how to fix mid face - YouTube', url: 'youtube.com/watch?v=bb034' }
   ]},
   { date: '26. 2. 2026', items: [
     { time: '23:11', title: 'Looksmax Official: canthal tilt explained - YouTube', url: 'youtube.com/watch?v=lo030' },
@@ -453,6 +445,7 @@ function faviconForUrl(url) {
   if (url.startsWith('duolingo.com')) return 'assets/icons/fav-duolingo.svg';
   if (url.startsWith('facerate.io')) return 'assets/icons/fav-facerate.svg';
   if (url.startsWith('grok.x.ai')) return 'assets/icons/fav-grok.svg';
+  if (url.startsWith('selfos.local')) return 'assets/icons/fav-selfdata.svg';
   return 'assets/icons/fav-globe.svg';
 }
 
@@ -593,6 +586,9 @@ function navigateActiveTab(title, url) {
     tab.title = title;
   } else if (url.startsWith('grok.x.ai')) {
     tab.type = 'grok';
+    tab.title = title;
+  } else if (url.startsWith('selfos.local')) {
+    tab.type = 'selfdata';
     tab.title = title;
   } else {
     tab.type = 'blank';
@@ -807,6 +803,8 @@ function renderActivePage() {
   } else if (tab.type === 'grok') {
     chromePage.innerHTML = buildGrokAppHTML();
     attachGrokHandlers();
+  } else if (tab.type === 'selfdata') {
+    chromePage.innerHTML = buildSelfDataPageHTML();
   } else {
     chromePage.innerHTML = buildErrorPageHTML(tab.url);
   }
@@ -828,7 +826,7 @@ const FACERATE_SUBMISSIONS = [
     comments: [
       { author: 'PSL_verdict', text: 'recessed chin, negative canthal tilt, long midface. Sub tier. Mewing + guasha 6mo.' },
       { author: 'chadaxis', text: '3.5. compact midface je saving grace. framecel ale.' },
-      { author: 'mogged4life', text: 'NGMI without bimax. Sorry brácho 💀' }
+      { author: 'mogged4life', text: 'NGMI, genetika je strop. Sorry brácho 💀' }
     ]
   },
   {
@@ -889,25 +887,25 @@ const FACERATE_LEADERBOARD = [
   { rank: 6, author: 'sigma_apex_cz', score: '7.9' },
   { rank: 7, author: 'MaxillaMaster', score: '7.8' },
   { rank: 8, author: 'ChadleteCZ', score: '7.7' },
-  { rank: 9, author: 'TurkClinicSuccess', score: '7.6' },
+  { rank: 9, author: 'GlowMaxxer', score: '7.6' },
   { rank: 10, author: 'FramecelKiller', score: '7.5' }
 ];
 
 const FACERATE_GUIDES = [
   { title: 'The Mewing Bible: 12-month protocol', meta: '842K zobrazení · 14 min čtení' },
   { title: 'Canthal Tilt: Why Positive is Everything', meta: '611K zobrazení · 9 min čtení' },
-  { title: 'Bimax in Istanbul: Full Cost Breakdown 2026', meta: '390K zobrazení · 18 min čtení' },
+  { title: 'Jawline Definition Through Diet: What Actually Works', meta: '390K zobrazení · 18 min čtení' },
   { title: 'Bone Smashing: Truth and Myths', meta: '204K zobrazení · 7 min čtení' },
   { title: 'Frame > Face: Why Height Wins', meta: '156K zobrazení · 11 min čtení' }
 ];
 
 const FACERATE_FORUM = [
-  { title: 'Is bimax worth it if I\'m already MTN?', author: 'MaxillaMaster', replies: 47 },
+  { title: 'is mewing worth the hype or just cope', author: 'MaxillaMaster', replies: 47 },
   { title: 'PSA: canthal tilt surgery success stories thread', author: 'ChadleteCZ', replies: 132 },
   { title: 'why is everyone under 6\'0 seething rn', author: 'SlavSlayer', replies: 88 },
   { title: 'rate my jaw before/after mewing (6mo)', author: 'newcel_2010', replies: 21 },
   { title: 'cope thread: genetics are 90% of it, change my mind', author: 'mogged4life', replies: 210 },
-  { title: 'Turkey bimax clinics — updated 2026 pricing megathread', author: 'MTN_max', replies: 64 },
+  { title: 'skincare routine megathread — what\'s actually working', author: 'MTN_max', replies: 64 },
   { title: 'is looksmaxxing even worth it or just cope', author: 'dr3ad_v2', replies: 156 },
   { title: 'heightmaxxing: limb lengthening surgery discussion', author: 'hardmog99', replies: 39 }
 ];
@@ -1155,7 +1153,7 @@ function sortedHomeVideos() {
   return [...YT_HOME_VIDEOS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 }
 
-const YT_HOME_PAGE_SIZE = 12;
+const YT_HOME_MAX_CARDS = 50;
 
 function ytThumbUrl(id) {
   return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
@@ -1320,26 +1318,24 @@ function attachYtCardHandlers(container) {
 }
 
 function ytHomePageHTML() {
-  const sorted = sortedHomeVideos();
-  return `<div class="yt-grid" id="yt-home-grid" data-loaded="${sorted.length}">${sorted.map(ytVideoCardHTML).join('')}</div>`;
+  const sorted = sortedHomeVideos().slice(0, YT_HOME_MAX_CARDS);
+  return `<div class="yt-grid" id="yt-home-grid">${sorted.map(ytVideoCardHTML).join('')}</div><div id="yt-feed-end"></div>`;
 }
 
+// The feed has a hard end — once he scrolls past the last real video, a loading spinner
+// appears and just spins forever. No more videos ever load. The algorithm has nothing
+// left to recommend; the rabbit hole is exhausted.
 let ytHomeScrollHandler = null;
 function attachHomeInfiniteScroll(content) {
   if (ytHomeScrollHandler) content.removeEventListener('scroll', ytHomeScrollHandler);
-  const grid = document.getElementById('yt-home-grid');
-  const sorted = sortedHomeVideos();
-  if (!grid || !sorted.length) { ytHomeScrollHandler = null; return; }
+  const endMarker = document.getElementById('yt-feed-end');
+  if (!endMarker) { ytHomeScrollHandler = null; return; }
+  let spinnerShown = false;
   ytHomeScrollHandler = () => {
+    if (spinnerShown) return;
     if (content.scrollTop + content.clientHeight < content.scrollHeight - 300) return;
-    const loaded = Number(grid.dataset.loaded || sorted.length);
-    const nextBatch = [];
-    for (let i = 0; i < YT_HOME_PAGE_SIZE; i++) nextBatch.push(sorted[(loaded + i) % sorted.length]);
-    const frag = document.createElement('div');
-    frag.innerHTML = nextBatch.map(ytVideoCardHTML).join('');
-    while (frag.firstChild) grid.appendChild(frag.firstChild);
-    grid.dataset.loaded = loaded + YT_HOME_PAGE_SIZE;
-    attachYtCardHandlers(grid);
+    spinnerShown = true;
+    endMarker.innerHTML = '<div class="yt-loading-spinner"></div>';
   };
   content.addEventListener('scroll', ytHomeScrollHandler);
 }
@@ -1743,15 +1739,6 @@ const RECYCLE_ITEMS = [
     caption: 'moje_foto_upraveno_v4.jpg — silnější čelist (AI úprava)'
   },
   {
-    id: 'zprava-babicce',
-    name: 'zprava_babicce.txt',
-    deletedDate: '14. 3. 2026',
-    size: '1 KB',
-    icon: 'assets/icons/notepad.svg',
-    type: 'text',
-    content: 'babi vim ze se o me trapis ale nem'
-  },
-  {
     id: 'yunko',
     name: 'yunko_furuta_screenshot.png',
     deletedDate: '12. 3. 2026',
@@ -1786,20 +1773,6 @@ const RECYCLE_ITEMS = [
     icon: 'assets/icons/file-pdf.svg',
     type: 'pdf',
     content: 'DOMÁCÍ POSILOVNA – PLÁN\nlistopad 2025\n\npondělí: kliky 3x10, dřepy 3x15\nstředa: prkno 3x30s, výpady 3x10\npátek: shyby (zatím 0, cíl 1)\n\npoznámka: koupit gumu na cvičení'
-  },
-  {
-    id: 'smazano',
-    name: '00_smazano.html',
-    deletedDate: '15. 1. 2026',
-    size: '6 KB',
-    icon: 'assets/icons/chatgpt.svg',
-    type: 'chatgpt-deleted',
-    date: '15. 1. 2026',
-    messages: [
-      { role: 'user', html: '<p>měl jsem se dnes zabít? ne, kua na to.</p>' },
-      { role: 'assistant', html: '<p>To, co píšeš, beru vážně a chci, abys věděl, že v tom nejsi sám. Pokud přemýšlíš o tom, že by sis ublížil, prosím ozvi se hned teď někomu, kdo ti může pomoct:</p><ul><li><strong>Linka bezpečí</strong> – 116 111 (nonstop, zdarma, i pro starší teenagery)</li><li><strong>Linka první psychické pomoci</strong> – 116 123</li><li>Pokud jsi v bezprostředním ohrožení, zavolej <strong>112</strong></li></ul><p>Nemusíš mi říkat víc, než chceš, ale je důležité, aby o tom, jak se cítíš, věděl i někdo skutečný – dospělý, kterému věříš, i kdyby to byl někdo, s kým jste se dlouho nebavili. Klidně tu se mnou zůstaň psát o čem chceš, ale rád bych, abys v tomhle nezůstal sám.</p>' },
-      { role: 'user', html: '<p>dobrý, kua promiň, jsem v pohodě</p>' }
-    ]
   }
 ];
 
@@ -1819,6 +1792,8 @@ document.getElementById('trash-viewer-close-btn').addEventListener('click', () =
 });
 
 function renderRecycleList() {
+  const countLabel = document.getElementById('recycle-item-count');
+  if (countLabel) countLabel.textContent = `${RECYCLE_ITEMS.length} položek`;
   recycleList.innerHTML = RECYCLE_ITEMS.map(item => `
     <div class="explorer-row">
       <span class="explorer-row-name"><img src="${item.icon}" alt="" /><span>${item.name}</span></span>
@@ -1950,21 +1925,12 @@ const DISCORD = {
         {
           name: 'obecné', topic: 'gaming chat, mm, klipy',
           messages: [
-            { author: 'davepvp', time: '18:40', date: '5. 1. 2026', texts: ['kluci mm dneska? mám chuť na pár her'] },
-            { author: 'hidd3nfram3', lukas: true, time: '18:44', date: '5. 1. 2026', texts: ['jj za hodku', '2 sloty ještě volný'] },
-            { author: 'Kryštof12', time: '18:46', date: '5. 1. 2026', texts: ['beru jeden'] },
             { author: 'SmokeyKC', time: '19:02', date: '5. 1. 2026', texts: ['gg wp z včera btw, ten clutch na inferno byl nechutnej'] },
             { author: 'hidd3nfram3', lukas: true, time: '19:03', date: '5. 1. 2026', texts: ['haha díky, měl jsem štěstí'], reactions: [{ emoji: '🔥', count: 2 }] },
-            { author: 'davepvp', time: '20:15', date: '28. 1. 2026', texts: ['hraješ?'] },
-            { author: 'hidd3nfram3', lukas: true, time: '20:31', date: '28. 1. 2026', texts: ['dneska nemůžu, zítra jo'] },
             { author: 'Kryštof12', time: '17:22', date: '2. 2. 2026', texts: ['faceit ligy zacinaji, kdo jde do teamu'] },
             { author: 'hidd3nfram3', lukas: true, time: '17:40', date: '2. 2. 2026', texts: ['možná, dám vědět'] },
-            { author: 'davepvp', time: '19:50', date: '10. 2. 2026', texts: ['lukyy mm? potřebujeme pátýho'] },
-            { author: 'hidd3nfram3', lukas: true, time: '21:12', date: '15. 2. 2026', texts: ['gg'], reactions: [{ emoji: '👍', count: 1 }] },
-            { author: 'davepvp', time: '18:33', date: '20. 2. 2026', texts: ['kde ses ztratil'] },
             { author: 'SmokeyKC', time: '22:10', date: '1. 3. 2026', texts: ['hraje eště někdo nebo jsme umřeli'] },
-            { author: 'Kryštof12', time: '19:47', date: '10. 3. 2026', texts: ['dead server moment 💀'] },
-            { author: 'davepvp', time: '20:05', date: '18. 3. 2026', texts: ['@hidd3nfram3 ping, ozvi se někdy'] }
+            { author: 'Kryštof12', time: '19:47', date: '10. 3. 2026', texts: ['dead server moment 💀'] }
           ]
         },
         {
@@ -1976,9 +1942,7 @@ const DISCORD = {
         },
         {
           name: 'klipy', topic: 'nejlepší momenty',
-          messages: [
-            { author: 'davepvp', time: '23:41', date: '12. 1. 2026', texts: ['[klip] ace na mirage'], reactions: [{ emoji: '🔥', count: 3 }, { emoji: '👍', count: 2, byLukas: true }] }
-          ]
+          messages: []
         }
       ],
       members: {
@@ -2080,9 +2044,7 @@ const DISCORD = {
           name: 'looksmaxx-tipy', topic: 'protokoly a routines',
           messages: [
             { author: 'Frame_God', time: '19:12', date: '16. 3. 2026', texts: ['hardmogger, dej mi hunter eyes routine plz'] },
-            { author: 'ash_pilled', time: '19:20', date: '16. 3. 2026', texts: ['1. spí na zádech 2. dropni cukr 3. mewing 24/7 4. eyebag surgery za 3 roky'] },
-            { author: 'Frame_God', time: '19:22', date: '16. 3. 2026', texts: ['eyebag surgery je meme nebo real'] },
-            { author: 'ash_pilled', time: '19:25', date: '16. 3. 2026', texts: ['100% real, dělá se v turecku za 1200 EUR'], reactions: [{ emoji: '🗿', count: 3 }] },
+            { author: 'ash_pilled', time: '19:20', date: '16. 3. 2026', texts: ['1. spí na zádech 2. dropni cukr 3. mewing 24/7 4. hydratace + SPF denně'] },
             { author: 'aleph_null', time: '20:40', date: '19. 3. 2026', texts: ['canthal tilt fix: guasha na spodní víčko + spánek 8h. positive tilt = free +1 PSL'] }
           ]
         },
@@ -2093,7 +2055,7 @@ const DISCORD = {
             { author: 'aleph_null', time: '21:19', date: '18. 3. 2026', texts: ['NT tier. Fixni si canthal tilt (guasha 30 min/den) a přiber. 5/10.'] },
             { author: 'n0nam3_69', time: '21:22', date: '18. 3. 2026', texts: ['to je fér, díky'], reactions: [{ emoji: '👍', count: 2 }] },
             { author: 'KOROLEV_88', time: '22:40', date: '21. 3. 2026', texts: ['a mě?'], attachment: { type: 'blur', filename: 'selfie_dnes.jpg' } },
-            { author: 'mchmch', time: '22:55', date: '21. 3. 2026', texts: ['4. midface moc dlouhý, mew a mrkni na bimax za pár let'] }
+            { author: 'mchmch', time: '22:55', date: '21. 3. 2026', texts: ['4. midface moc dlouhý, ať to nezhoršuje výraz. mewing furt.'] }
           ]
         },
         {
@@ -2112,15 +2074,6 @@ const DISCORD = {
           name: 'vysledky-po-rocích', topic: 'before / after',
           messages: [
             { author: 'Frame_God', time: '20:00', date: '14. 3. 2026', texts: ['2 roky mewingu + 1 rok gymu. mírný glowup ale genetika je strop'], attachment: { type: 'blur', filename: 'before_after.png' }, reactions: [{ emoji: '🗿', count: 7 }] }
-          ]
-        },
-        {
-          name: 'turecko-operace-info', topic: 'chirurgie, kliniky, ceny',
-          messages: [
-            { author: 'MTN_max', time: '18:30', date: '13. 3. 2026', texts: ['napsal jsem 4 klinikám v Istanbulu, nejlevnější BSSO 4200 EUR'] },
-            { author: 'someguy_23', time: '18:44', date: '13. 3. 2026', texts: ['co Dr. Cinik? doporučuju'] },
-            { author: 'MTN_max', time: '18:50', date: '13. 3. 2026', texts: ['ptal jsem se, čeká 8 měsíců'], reactions: [{ emoji: '🗿', count: 2 }] },
-            { author: 'ash_pilled', time: '19:30', date: '20. 3. 2026', texts: ['bimax + genioplasty combo v Polsku vyšlo kámošovi na 6k EUR. worth every euro prej'] }
           ]
         },
         {
@@ -2154,19 +2107,6 @@ const DISCORD = {
       id: 'davepvp',
       name: 'davepvp',
       messages: [
-        { author: 'davepvp', time: '21:30', date: '14. 9. 2025', texts: ['gg dnes to bylo super, ten retake na B byl clean'] },
-        { author: 'hidd3nfram3', lukas: true, time: '21:32', date: '14. 9. 2025', texts: ['jj zítra zas?'] },
-        { author: 'davepvp', time: '21:33', date: '14. 9. 2025', texts: ['jasně, po škole'] },
-        { author: 'hidd3nfram3', lukas: true, time: '15:10', date: '20. 9. 2025', texts: ['mm?'] },
-        { author: 'davepvp', time: '15:12', date: '20. 9. 2025', texts: ['za 5 min, dělám tým'] },
-        { author: 'davepvp', time: '19:44', date: '5. 11. 2025', texts: ['hraješ?'] },
-        { author: 'hidd3nfram3', lukas: true, time: '20:05', date: '5. 11. 2025', texts: ['nemůžu, učení'] },
-        { author: 'davepvp', time: '18:20', date: '10. 1. 2026', texts: ['lukyy dlouho jsme nehráli, všechno ok?'] },
-        { author: 'hidd3nfram3', lukas: true, time: '19:02', date: '10. 1. 2026', texts: ['jo mám teď dost věcí'] },
-        { author: 'davepvp', time: '17:50', date: '2. 2. 2026', texts: ['všechno v pohodě u tebe?'] },
-        { author: 'hidd3nfram3', lukas: true, time: '18:40', date: '2. 2. 2026', texts: ['jo v pohodě'] },
-        { author: 'davepvp', time: '20:15', date: '20. 2. 2026', texts: ['hraješ někdy eště?'] },
-        { author: 'davepvp', time: '21:00', date: '1. 3. 2026', texts: ['?'] },
         { author: 'davepvp', time: '19:30', date: '12. 3. 2026', texts: ['hraješ dneska?'] }
       ]
     }
@@ -2500,9 +2440,9 @@ const PHOTOS_TREE = {
     pFile('plan_leden.jpg', '3. 1. 2026', '1,4 MB', '3024 × 4032', 'note',
       'Screenshot / fotka ručně psaného plánu z ledna 2026. Nikdy neprovedeno.',
       { title: 'LEDEN — plán', lines: ['— chodit na florbal', '— přihlásit se na Erasmus', '— začít brzo vstávat'] }),
-    pFile('babicka_narozeniny_kartka.jpg', '12. 2. 2026', '2,6 MB', '2480 × 3508', 'card',
-      'Návrh přání k narozeninám pro babičku. Nikdy nevytištěné.',
-      { text: 'Všechno nejlepší, babi ♥\nmáš mě ráda a já tebe' })
+    pFile('mama_narozeniny_kartka.jpg', '12. 2. 2026', '2,6 MB', '2480 × 3508', 'card',
+      'Návrh přání k narozeninám pro mámu. Nikdy nevytištěné.',
+      { text: 'Všechno nejlepší, mami ♥\nmáš mě ráda a já tebe' })
   ]
 };
 
@@ -3071,10 +3011,9 @@ function attachGoogleHandlers() {
   input.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
 }
 
-// ── Gmail (embedded in Chrome) — shell only, content is placeholder except the babička email ──
+// ── Gmail (embedded in Chrome) — shell only, content is placeholder ──
 const GMAIL_ACCOUNT_EMAIL = 'hidd3nfram3@gmail.com';
 const GMAIL_EMAILS = [
-  { id: 'babicka', sender: 'Babička', email: 'babicka@seznam.cz', subject: 'obed v nedeli', preview: 'Lukasi, prijedes v nedeli na obed? Napis mi. Babicka', body: 'Lukasi,\n\npřijedeš v neděli na oběd? Napiš mi prosím, ať vím, jestli mám vařit i pro tebe.\n\nBabička', date: '26. 3. 2026', time: '12:03', unread: true },
   { id: 'google-sec', sender: 'Google', email: 'no-reply@accounts.google.com', subject: 'Bezpečnostní upozornění pro váš účet', preview: '[Náhled placeholder]', body: '[Obsah placeholder]', date: '25. 3. 2026', time: '09:14', unread: false },
   { id: 'steam', sender: 'Steam', email: 'noreply@steampowered.com', subject: 'Tvůj týdenní souhrn nabídek', preview: '[Náhled placeholder]', body: '[Obsah placeholder]', date: '24. 3. 2026', time: '18:40', unread: false },
   { id: 'discord-notif', sender: 'Discord', email: 'noreply@discord.com', subject: 'Nové aktivity ve tvých serverech', preview: '[Náhled placeholder]', body: '[Obsah placeholder]', date: '23. 3. 2026', time: '21:02', unread: false },
@@ -3246,25 +3185,207 @@ function attachGrokHandlers() {
   });
 }
 
-// ── Notepad (cile.txt) ──
-const NOTEPAD_CONTENT = { text: '[Cíl 1 - leden]\n\n[Cíl 2 - březen]\n\n[Cíl 3]\n\n[Cíl 4]\n' };
-const notepadWindow = document.getElementById('notepad-window');
-const notepadContentEl = document.getElementById('notepad-content');
-document.getElementById('notepad-close-btn').addEventListener('click', () => {
-  notepadWindow.classList.add('hidden');
-});
-document.getElementById('notepad-save-btn').addEventListener('click', () => {
-  // decorative — content already saves live as you type
-});
-notepadContentEl.addEventListener('input', () => {
-  NOTEPAD_CONTENT.text = notepadContentEl.value;
-  scheduleSaveContentOverrides();
+// ── self_data.html (embedded in Chrome) — self-hosted quantified-self dashboard ──
+// The detective heart of the desktop: he keeps every "controllable input" (exercise,
+// mewing, calorie deficit) dead consistent for 8 weeks straight — this isn't a kid who
+// gave up. The one output he can't fully control (facerate score) still drops. That gap
+// between disciplined effort and a worsening result is exactly where blackpill rhetoric
+// finds its opening — it offers an explanation ("genetics") for effort that isn't paying off.
+const SELF_DATA_METRICS = {
+  screentimeHours: [5.0, 5.4, 5.9, 6.3, 7.1, 7.6, 8.4, 9.0],
+  sleepHours: [7.0, 6.8, 6.6, 6.3, 6.1, 5.9, 5.7, 5.5],
+  exerciseMinutes: [38, 42, 40, 41, 39, 43, 40, 42],
+  mewingMinutes: [88, 92, 90, 91, 89, 93, 90, 91],
+  calorieDeficit: [290, 310, 295, 305, 300, 315, 290, 305],
+  cs2HoursPerDay: [5.0, 5.8, 6.5, 7.2, 8.0, 9.0, 10.0, 11.2]
+};
+
+function selfDataSparklineSVG(values) {
+  const w = 320, h = 70, padL = 4, padR = 4, padT = 8, padB = 8;
+  const plotW = w - padL - padR, plotH = h - padT - padB;
+  const min = Math.min(...values), max = Math.max(...values);
+  const range = (max - min) || 1;
+  const pad = range * 0.2;
+  const lo = min - pad, hi = max + pad;
+  const n = values.length;
+  const points = values.map((v, i) => {
+    const x = padL + (n === 1 ? plotW / 2 : (plotW * i) / (n - 1));
+    const y = padT + plotH - ((v - lo) / (hi - lo)) * plotH;
+    return [x, y];
+  });
+  const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ');
+  const dots = points.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2" fill="#8ab4f8"/>`).join('');
+  const gridlines = [0.25, 0.5, 0.75].map(t => {
+    const y = padT + plotH * t;
+    return `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${w - padR}" y2="${y.toFixed(1)}" stroke="#232326" stroke-width="0.5"/>`;
+  }).join('');
+  return `<svg viewBox="0 0 ${w} ${h}" class="sd-spark" preserveAspectRatio="none">${gridlines}<path d="${pathD}" fill="none" stroke="#8ab4f8" stroke-width="1.6"/>${dots}</svg>`;
+}
+
+function selfDataCardHTML(label, values, unit) {
+  const last = values[values.length - 1];
+  const delta = last - values[0];
+  const deltaNum = Number.isInteger(delta) ? delta : Math.round(delta * 10) / 10;
+  const deltaStr = (deltaNum > 0 ? '+' : '') + deltaNum;
+  return `
+    <div class="sd-card">
+      <div class="sd-card-head">
+        <span class="sd-card-label">${label}</span>
+        <span class="sd-card-value">${last}${unit ? ' ' + unit : ''}</span>
+      </div>
+      ${selfDataSparklineSVG(values)}
+      <div class="sd-card-delta">${deltaStr}${unit || ''} za 8 týdnů</div>
+    </div>
+  `;
+}
+
+function buildSelfDataPageHTML() {
+  const m = SELF_DATA_METRICS;
+  const facerateScores = FACERATE_SUBMISSIONS.map(s => Number(s.score));
+  return `
+    <div class="sd-app">
+      <div class="sd-header">
+        <span class="sd-header-title">self_data</span>
+        <span class="sd-header-sub">osobní metriky · posledních 8 týdnů</span>
+      </div>
+      <div class="sd-grid">
+        ${selfDataCardHTML('Screentime', m.screentimeHours, 'h/den')}
+        ${selfDataCardHTML('Spánek', m.sleepHours, 'h')}
+        ${selfDataCardHTML('Cvičení', m.exerciseMinutes, 'min/den')}
+        ${selfDataCardHTML('CS2', m.cs2HoursPerDay, 'h/den')}
+        ${selfDataCardHTML('Mewing', m.mewingMinutes, 'min/den')}
+        ${selfDataCardHTML('Facerate skóre', facerateScores, '/10')}
+        ${selfDataCardHTML('Kalorický deficit', m.calorieDeficit, 'kcal')}
+      </div>
+    </div>
+  `;
+}
+
+function openSelfData() {
+  const wasHidden = chromeWindow.classList.contains('hidden');
+  if (wasHidden) openChrome();
+  else chromeWindow.classList.remove('hidden');
+  let tab = TABS.find(t => t.id === 'selfdata');
+  if (!tab) {
+    tab = { id: 'selfdata', type: 'selfdata', title: 'self_data.html — Dashboard', url: 'selfos.local/dashboard', favicon: 'assets/icons/fav-selfdata.svg' };
+    TABS.push(tab);
+  }
+  activeTabId = 'selfdata';
+  renderTabbar();
+  updateAddressBar();
+  renderActivePage();
+}
+
+// ── WhatsApp Desktop ──
+// Deliberately the opposite of the Máma Gmail note it replaced: cold, functional, no warmth,
+// no questions answered. She works shifts and is rarely home — never stated, only implied by
+// the silence between her messages and his one-word replies (and eventually no reply at all).
+const WHATSAPP_CHATS = [
+  {
+    id: 'mama',
+    name: 'Máma',
+    messages: [
+      { from: 'mama', text: 'koupila jsem chleba, je na stole', date: '7. 3. 2026', time: '16:20' },
+      { from: 'mama', text: 'vratis se v 17?', date: '7. 3. 2026', time: '16:45' },
+      { from: 'lukas', text: 'ok', date: '7. 3. 2026', time: '16:47' },
+      { from: 'mama', text: 'budu na noc pryc, klic pod rohozkou jako minule', date: '18. 3. 2026', time: '08:00' },
+      { from: 'mama', text: 'je to v ledničce', date: '18. 3. 2026', time: '08:01' },
+      { from: 'mama', text: 'nezapomen zamknout', date: '18. 3. 2026', time: '08:02' },
+      { from: 'mama', text: 'necha ti tam obed', date: '27. 3. 2026', time: '19:32' },
+      { from: 'mama', text: 'jsi doma?', date: '28. 3. 2026', time: '15:58' }
+    ]
+  },
+  { id: 'skola', name: 'Škola', messages: [] },
+  { id: 'placeholder1', name: '[Kontakt placeholder]', messages: [] }
+];
+let whatsappOpenId = null;
+let whatsappReadIds = new Set();
+
+const whatsappWindow = document.getElementById('whatsapp-window');
+document.getElementById('whatsapp-close-btn').addEventListener('click', () => {
+  whatsappWindow.classList.add('hidden');
 });
 
-function openNotepad() {
-  notepadContentEl.value = NOTEPAD_CONTENT.text;
-  notepadWindow.classList.remove('hidden');
+function whatsappChatPreview(chat) {
+  if (!chat.messages.length) return { text: '', time: '' };
+  const last = chat.messages[chat.messages.length - 1];
+  return { text: last.from === 'lukas' ? `Ty: ${last.text}` : last.text, time: last.time };
 }
+
+function whatsappUnreadCount(chat) {
+  if (whatsappReadIds.has(chat.id)) return 0;
+  return chat.id === 'mama' ? 2 : 0;
+}
+
+function renderWhatsAppChatList() {
+  const list = document.getElementById('wa-chat-list');
+  list.innerHTML = WHATSAPP_CHATS.map(chat => {
+    const preview = whatsappChatPreview(chat);
+    const unread = whatsappUnreadCount(chat);
+    return `
+      <div class="wa-chat-row${chat.id === whatsappOpenId ? ' active' : ''}" data-id="${chat.id}">
+        <span class="wa-chat-avatar">${chat.name.charAt(0)}</span>
+        <div class="wa-chat-row-text">
+          <div class="wa-chat-row-name">${chat.name}</div>
+          <div class="wa-chat-row-preview">${preview.text || '&nbsp;'}</div>
+        </div>
+        <div class="wa-chat-row-meta">
+          <span class="wa-chat-row-time">${preview.time}</span>
+          ${unread ? `<span class="wa-chat-row-badge">${unread}</span>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+  list.querySelectorAll('.wa-chat-row').forEach(row => {
+    row.addEventListener('click', () => {
+      whatsappOpenId = row.dataset.id;
+      whatsappReadIds.add(row.dataset.id);
+      renderWhatsAppChatList();
+      renderWhatsAppMain();
+    });
+  });
+}
+
+function renderWhatsAppMain() {
+  const main = document.getElementById('wa-main');
+  const chat = WHATSAPP_CHATS.find(c => c.id === whatsappOpenId);
+  if (!chat) {
+    main.innerHTML = '<div class="wa-empty-state">Vyber konverzaci</div>';
+    return;
+  }
+  if (!chat.messages.length) {
+    main.innerHTML = `
+      <div class="wa-main-header"><span class="wa-chat-avatar">${chat.name.charAt(0)}</span><span class="wa-main-header-name">${chat.name}</span></div>
+      <div class="wa-empty-state">Zatím žádné zprávy.</div>
+    `;
+    return;
+  }
+  let lastDate = null;
+  const bubbles = chat.messages.map(m => {
+    let dateDivider = '';
+    if (m.date !== lastDate) {
+      dateDivider = `<div class="wa-date-divider"><span>${m.date}</span></div>`;
+      lastDate = m.date;
+    }
+    return `${dateDivider}<div class="wa-msg ${m.from === 'lukas' ? 'out' : 'in'}"><div class="wa-msg-bubble">${m.text}<span class="wa-msg-time">${m.time}</span></div></div>`;
+  }).join('');
+  main.innerHTML = `
+    <div class="wa-main-header"><span class="wa-chat-avatar">${chat.name.charAt(0)}</span><span class="wa-main-header-name">${chat.name}</span></div>
+    <div class="wa-messages" id="wa-messages">${bubbles}</div>
+    <div class="wa-input"><span class="wa-input-box">Napiš zprávu</span></div>
+  `;
+  const messagesEl = document.getElementById('wa-messages');
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+function openWhatsApp() {
+  whatsappWindow.classList.remove('hidden');
+  if (!whatsappOpenId) whatsappOpenId = 'mama';
+  whatsappReadIds.add(whatsappOpenId);
+  renderWhatsAppChatList();
+  renderWhatsAppMain();
+}
+document.getElementById('systray-whatsapp').addEventListener('click', openWhatsApp);
 
 // ── Start menu ──
 const START_MENU_APPS = [
@@ -3274,7 +3395,7 @@ const START_MENU_APPS = [
   { app: 'halo', label: 'Halo Infinite', icon: 'assets/icons/halo.svg' },
   { app: 'cs', label: 'Counter-Strike 2', icon: 'assets/icons/cs.svg' },
   { app: 'duolingo', label: 'Duolingo', icon: 'assets/icons/duolingo.svg' },
-  { app: 'cile', label: 'cile.txt', icon: 'assets/icons/notepad.svg' },
+  { app: 'self-data', label: 'self_data.html', icon: 'assets/icons/selfdata.svg' },
   { app: 'recycle', label: 'Koš', icon: 'assets/icons/recycle.svg' }
 ];
 
@@ -3326,7 +3447,7 @@ const TASKBAR_APPS = [
   { id: 'halo', label: 'Halo Infinite', icon: 'assets/icons/halo.svg', el: haloWindow },
   { id: 'cs2', label: 'Counter-Strike 2', icon: 'assets/icons/cs.svg', el: cs2Window },
   { id: 'duolingo', label: 'Duolingo', icon: 'assets/icons/duolingo.svg', el: duolingoWindow },
-  { id: 'notepad', label: 'cile.txt', icon: 'assets/icons/notepad.svg', el: notepadWindow }
+  { id: 'whatsapp', label: 'WhatsApp', icon: 'assets/icons/whatsapp.svg', el: whatsappWindow }
 ];
 
 function renderTaskbarApps() {
@@ -3376,8 +3497,11 @@ function openApp(app) {
     case 'recycle':
       openRecycle();
       break;
-    case 'cile':
-      openNotepad();
+    case 'self-data':
+      openSelfData();
+      break;
+    case 'whatsapp':
+      openWhatsApp();
       break;
     default:
       break;
@@ -3581,6 +3705,7 @@ function refreshOpenWindowsAfterEdit() {
   if (!cs2Window.classList.contains('hidden')) document.getElementById('cs2-body').innerHTML = buildCs2BodyHTML();
   if (!haloWindow.classList.contains('hidden')) document.getElementById('halo-body').innerHTML = buildHaloBodyHTML();
   if (!duolingoWindow.classList.contains('hidden')) document.getElementById('duolingo-body').innerHTML = buildDuolingoBodyHTML();
+  if (!whatsappWindow.classList.contains('hidden')) { renderWhatsAppChatList(); renderWhatsAppMain(); }
 }
 
 const CONTENT_STORAGE_KEY = 'lukas-pc-content-overrides-v1';
@@ -3862,7 +3987,8 @@ const EDITOR_SECTIONS = [
   { key: 'duolingoSkillPath', label: 'Duolingo — cesta kurzem', data: DUOLINGO_SKILL_PATH },
   { key: 'desktopClock', label: 'Plocha — hodiny', data: CLOCK_CONTENT },
   { key: 'desktopToast', label: 'Plocha — Discord notifikace', data: TOAST_CONTENT },
-  { key: 'desktopNotepad', label: 'Plocha — cile.txt', data: NOTEPAD_CONTENT }
+  { key: 'selfDataMetrics', label: 'self_data.html — metriky', data: SELF_DATA_METRICS },
+  { key: 'whatsapp', label: 'WhatsApp', data: WHATSAPP_CHATS }
 ];
 
 snapshotEditorDefaults();
