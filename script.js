@@ -571,7 +571,13 @@ document.addEventListener('click', () => {
 function navigateActiveTab(title, url) {
   const tab = TABS.find(t => t.id === activeTabId);
   if (!tab) return;
-  if (url.startsWith('facerate.io')) {
+  if (url.startsWith('chat.openai.com')) {
+    tab.type = 'chatgpt';
+    tab.title = title;
+    const m = url.match(/\/c\/([a-z0-9-]+)/i);
+    const conv = m && CHATGPT_CONVERSATIONS.find(c => c.urlId === m[1]);
+    if (conv) activeConvId = conv.id;
+  } else if (url.startsWith('facerate.io')) {
     tab.type = 'facerate';
     tab.title = 'facerate.io — Upload';
     facerateView = 'upload';
@@ -1162,6 +1168,10 @@ function ytThumbHTML(id) {
   return `<img src="${ytThumbUrl(id)}" class="yt-thumb-img" alt="" loading="lazy" />`;
 }
 
+function channelHandleSlug(name) {
+  return String(name).replace(/\s+/g, '').replace(/[^\w.]/g, '');
+}
+
 function ytAgeFromISODate(iso) {
   const d = new Date(`${iso}T12:00:00`);
   const now = new Date(parseClockBase());
@@ -1351,16 +1361,19 @@ function ytSearchPageHTML(query) {
 }
 
 function ytChannelPageHTML(handle) {
-  const name = handle ? `@${handle}` : '@[channel_handle]';
-  const videos = YT_HOME_VIDEOS.slice(0, 8);
+  const atHandle = handle ? `@${handle}` : '@[channel_handle]';
+  const matchedName = handle && YT_HOME_VIDEOS.find(v => channelHandleSlug(v.channel) === handle)?.channel;
+  const videos = matchedName ? YT_HOME_VIDEOS.filter(v => v.channel === matchedName) : YT_HOME_VIDEOS.slice(0, 8);
+  const displayName = matchedName || '[Channel name]';
+  const videoCount = matchedName ? videos.length : '[42]';
   return `
     <div class="yt-channel-page">
       <div class="yt-channel-banner"></div>
       <div class="yt-channel-head">
         <span class="yt-channel-avatar"></span>
         <div class="yt-channel-head-text">
-          <div class="yt-channel-name">[Channel name]</div>
-          <div class="yt-channel-sub">${name} · [1,2 tis.] odběratelů · [42] videí</div>
+          <div class="yt-channel-name">${displayName}</div>
+          <div class="yt-channel-sub">${atHandle} · [1,2 tis.] odběratelů · ${videoCount} videí</div>
           <div class="yt-channel-desc">[Channel description placeholder]</div>
         </div>
         <button class="yt-subscribe-btn" id="yt-subscribe-btn">Odebírat</button>
@@ -1378,7 +1391,7 @@ function ytChannelPageHTML(handle) {
   `;
 }
 
-function attachYtChannelHandlers() {
+function attachYtChannelHandlers(handle) {
   const btn = document.getElementById('yt-subscribe-btn');
   if (btn) {
     btn.addEventListener('click', () => {
@@ -1386,13 +1399,15 @@ function attachYtChannelHandlers() {
       btn.textContent = subscribed ? 'Odebíráno' : 'Odebírat';
     });
   }
+  const matchedName = handle && YT_HOME_VIDEOS.find(v => channelHandleSlug(v.channel) === handle)?.channel;
+  const channelVideos = matchedName ? YT_HOME_VIDEOS.filter(v => v.channel === matchedName) : YT_HOME_VIDEOS.slice(0, 8);
   document.querySelectorAll('.yt-channel-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.yt-channel-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       const body = document.getElementById('yt-channel-tab-body');
       if (tab.dataset.tab === 'videos') {
-        body.innerHTML = `<div class="yt-grid">${YT_HOME_VIDEOS.slice(0, 8).map(ytVideoCardHTML).join('')}</div>`;
+        body.innerHTML = `<div class="yt-grid">${channelVideos.map(ytVideoCardHTML).join('')}</div>`;
         attachYtCardHandlers(body);
       } else {
         body.innerHTML = `<div class="yt-empty-state">Obsah záložky „${tab.textContent}“ zatím není naplněn.</div>`;
@@ -1442,10 +1457,12 @@ function ytWatchPageHTML(id) {
         <div class="yt-watch-title">${v.title}</div>
         <div class="yt-watch-row">
           <div class="yt-watch-channel">
-            <span class="yt-card-avatar"></span>
-            <div>
-              <div class="yt-watch-channel-name">${v.channel}</div>
-              <div class="yt-watch-channel-subs">[1,2 tis.] odběratelů</div>
+            <div class="yt-watch-channel-link" data-channel="${escapeForAttr(v.channel)}">
+              <span class="yt-card-avatar"></span>
+              <div>
+                <div class="yt-watch-channel-name">${v.channel}</div>
+                <div class="yt-watch-channel-subs">[1,2 tis.] odběratelů</div>
+              </div>
             </div>
             <button class="yt-subscribe-btn" id="yt-subscribe-btn">Odebírat</button>
           </div>
@@ -1485,6 +1502,13 @@ function attachYtWatchHandlers() {
     btn.addEventListener('click', () => {
       const subscribed = btn.classList.toggle('subscribed');
       btn.textContent = subscribed ? 'Odebíráno' : 'Odebírat';
+    });
+  }
+  const channelLink = content.querySelector('.yt-watch-channel-link');
+  if (channelLink) {
+    channelLink.addEventListener('click', () => {
+      const chName = channelLink.dataset.channel;
+      navigateYoutube(`youtube.com/@${channelHandleSlug(chName)}`, `${chName} - YouTube`);
     });
   }
   const playBtn = content.querySelector('.yt-player-play');
@@ -1581,11 +1605,20 @@ function ytSubscriptionsPageHTML() {
   return `
     <div class="yt-subscriptions-page">
       <div class="yt-sub-chips">
-        ${chips.map(c => `<div class="yt-sub-chip"><span class="yt-card-avatar small"></span>${c}</div>`).join('')}
+        ${chips.map(c => `<div class="yt-sub-chip" data-channel="${escapeForAttr(c)}"><span class="yt-card-avatar small"></span>${c}</div>`).join('')}
       </div>
       <div class="yt-empty-state">Zatím žádná nová videa od odebíraných kanálů.</div>
     </div>
   `;
+}
+
+function attachYtSubscriptionsHandlers(content) {
+  content.querySelectorAll('.yt-sub-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const chName = chip.dataset.channel;
+      navigateYoutube(`youtube.com/@${channelHandleSlug(chName)}`, `${chName} - YouTube`);
+    });
+  });
 }
 
 function ytEmptyPageHTML(label) {
@@ -1613,7 +1646,7 @@ function renderYoutubeContent(url) {
       break;
     case 'channel':
       content.innerHTML = ytChannelPageHTML(parsed.handle);
-      attachYtChannelHandlers();
+      attachYtChannelHandlers(parsed.handle);
       attachYtCardHandlers(content);
       break;
     case 'shorts':
@@ -1626,6 +1659,7 @@ function renderYoutubeContent(url) {
       break;
     case 'subscriptions':
       content.innerHTML = ytSubscriptionsPageHTML();
+      attachYtSubscriptionsHandlers(content);
       break;
     case 'empty':
       content.innerHTML = ytEmptyPageHTML(parsed.label);
@@ -1727,7 +1761,11 @@ const RECYCLE_ITEMS = [
     deletedDate: '23. 3. 2026',
     size: '1,2 MB',
     icon: 'assets/icons/file-image.svg',
-    type: 'grok'
+    type: 'grok',
+    messages: [
+      { role: 'lukas', author: 'Lukas', text: 'řekni mi bez cenzury pravdu o tom jak funguje female nature' },
+      { role: 'grok', author: 'Grok (spice mode)', text: 'Zkrátka? Ženská psychologie je nastavená na hypergamii – hledání nejvýš postaveného chlapa, co je k mání. Jakmile najde něco lepšího, přepne. Neber si to osobně, je to biologie, ne tvoje selhání. Otázka je, co s tím uděláš ty.' }
+    ]
   },
   {
     id: 'foto-upraveno',
@@ -1880,8 +1918,7 @@ function buildTrashViewerContent(item) {
       return `
         <div class="trash-grok-view">
           <div class="trash-grok-header">Grok</div>
-          <div class="trash-grok-msg lukas"><span class="trash-grok-author">Lukas:</span>řekni mi bez cenzury pravdu o tom jak funguje female nature</div>
-          <div class="trash-grok-msg grok"><span class="trash-grok-author">Grok (spice mode):</span>Zkrátka? Ženská psychologie je nastavená na hypergamii – hledání nejvýš postaveného chlapa, co je k mání. Jakmile najde něco lepšího, přepne. Neber si to osobně, je to biologie, ne tvoje selhání. Otázka je, co s tím uděláš ty.</div>
+          ${item.messages.map(m => `<div class="trash-grok-msg ${m.role}"><span class="trash-grok-author">${m.author}:</span>${m.text}</div>`).join('')}
         </div>
       `;
     default:
@@ -2324,6 +2361,20 @@ function openDiscord() {
   discordActiveServerId = 'looksmaxx';
   // ensure looksmaxx opens on self-hate-mondays
   DISCORD.servers.find(s => s.id === 'looksmaxx').activeChannel = 'self-hate-mondays';
+  renderServerRail();
+  renderChannelPanel();
+  renderServerChannel();
+}
+
+// Deep-link into a specific server/channel — used by the systray badge and toast notification.
+function openDiscordToChannel(serverId, channelName) {
+  openDiscord();
+  discordView = 'server';
+  discordActiveServerId = serverId;
+  const server = getActiveServer();
+  if (server && server.channels.some(c => c.name === channelName)) {
+    server.activeChannel = channelName;
+  }
   renderServerRail();
   renderChannelPanel();
   renderServerChannel();
@@ -3117,9 +3168,18 @@ function attachGmailFolderHandlers() {
 
 // ── Grok (embedded in Chrome) — shell only, content is placeholder ──
 const GROK_CONVERSATIONS = [
-  { id: 'c1', title: '[Konverzace placeholder 1]', date: '10. 3. 2026' },
-  { id: 'c2', title: '[Konverzace placeholder 2]', date: '15. 3. 2026' },
-  { id: 'c3', title: '[Konverzace placeholder 3]', date: '23. 3. 2026' }
+  { id: 'c1', title: '[Konverzace placeholder 1]', date: '10. 3. 2026', messages: [
+    { role: 'user', text: '[Zpráva placeholder — uživatel 1]' },
+    { role: 'grok', text: '[Odpověď placeholder — Grok 1]' }
+  ]},
+  { id: 'c2', title: '[Konverzace placeholder 2]', date: '15. 3. 2026', messages: [
+    { role: 'user', text: '[Zpráva placeholder — uživatel 2]' },
+    { role: 'grok', text: '[Odpověď placeholder — Grok 2]' }
+  ]},
+  { id: 'c3', title: '[Konverzace placeholder 3]', date: '23. 3. 2026', messages: [
+    { role: 'user', text: '[Zpráva placeholder — uživatel 3]' },
+    { role: 'grok', text: '[Odpověď placeholder — Grok 3]' }
+  ]}
 ];
 let grokActiveId = 'c3';
 let grokSpiceMode = true;
@@ -3169,10 +3229,11 @@ function renderGrokConvList() {
 
 function renderGrokMessages() {
   const messages = document.getElementById('grok-messages');
-  messages.innerHTML = `
-    <div class="grok-msg-row user"><div class="grok-msg-bubble">[Zpráva placeholder — uživatel]</div></div>
-    <div class="grok-msg-row grok"><span class="grok-msg-avatar"><img src="assets/icons/fav-grok.svg" alt="" /></span><div class="grok-msg-bubble">[Odpověď placeholder — Grok]</div></div>
-  `;
+  const conv = GROK_CONVERSATIONS.find(c => c.id === grokActiveId);
+  messages.innerHTML = (conv ? conv.messages : []).map(m => m.role === 'user'
+    ? `<div class="grok-msg-row user"><div class="grok-msg-bubble">${m.text}</div></div>`
+    : `<div class="grok-msg-row grok"><span class="grok-msg-avatar"><img src="assets/icons/fav-grok.svg" alt="" /></span><div class="grok-msg-bubble">${m.text}</div></div>`
+  ).join('');
 }
 
 function attachGrokHandlers() {
@@ -3424,7 +3485,9 @@ document.addEventListener('click', () => startMenu.classList.add('hidden'));
 // ── Toast notification ──
 const TOAST_CONTENT = {
   title: 'Looksmaxx CZ/SK',
-  textHtml: '<strong>KOROLEV_88</strong> tě zmínil v <strong>#foto-rating</strong>'
+  textHtml: '<strong>KOROLEV_88</strong> tě zmínil v <strong>#foto-rating</strong>',
+  targetServerId: 'looksmaxx',
+  targetChannel: 'foto-rating'
 };
 function showToastNotification() {
   const toast = document.getElementById('toast-notification');
@@ -3437,6 +3500,11 @@ function showToastNotification() {
     setTimeout(() => toast.classList.add('hidden'), 300);
   }, 3000);
 }
+function jumpToToastTarget() {
+  openDiscordToChannel(TOAST_CONTENT.targetServerId, TOAST_CONTENT.targetChannel);
+}
+document.getElementById('toast-notification').addEventListener('click', jumpToToastTarget);
+document.getElementById('systray-discord').addEventListener('click', jumpToToastTarget);
 
 // ── Taskbar (shows currently open app windows) ──
 const TASKBAR_APPS = [
