@@ -2077,6 +2077,124 @@ body {
 .halo-medal-icon { font-size: 20px; }
 .halo-medal-name { font-size: 10px; color: #c9d6dc; line-height: 1.3; }
 
+/* ── Duolingo (Chess course dashboard) ── */
+#duolingo-window {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(680px, 94vw);
+  height: min(720px, 88vh);
+  background: #fff;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  z-index: 905;
+  box-shadow: 0 16px 56px rgba(0,0,0,0.5);
+  overflow: hidden;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  color: #3c3c3c;
+}
+#duolingo-window.hidden { display: none; }
+.duolingo-titlebar {
+  height: 40px;
+  flex-shrink: 0;
+  background: #58cc02;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+}
+.duolingo-titlebar-icon { width: 20px; height: 20px; border-radius: 5px; }
+.duolingo-titlebar-name { flex: 1; font-size: 13px; color: #fff; font-weight: 700; letter-spacing: 0.3px; }
+.duolingo-close {
+  width: 26px; height: 24px;
+  background: none; border: none; border-radius: 4px;
+  color: #fff; cursor: pointer; font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+}
+.duolingo-close:hover { background: rgba(0,0,0,0.15); }
+
+.duolingo-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 28px 44px;
+  background: #fff;
+}
+
+.duo-header-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e5e5e5;
+  margin-bottom: 20px;
+}
+.duo-avatar {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #58cc02;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; color: #fff; flex-shrink: 0;
+}
+.duo-username { font-size: 18px; font-weight: 700; color: #3c3c3c; }
+.duo-course-sub { font-size: 13px; color: #777; margin-top: 3px; }
+.duo-streak-badge {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff7e6;
+  border: 1px solid #ffc800;
+  border-radius: 10px;
+  padding: 8px 14px;
+  flex-shrink: 0;
+}
+.duo-flame { font-size: 20px; }
+.duo-streak-num { font-size: 20px; font-weight: 800; color: #ff9600; }
+.duo-streak-label { font-size: 11px; color: #9c7a1f; text-transform: uppercase; letter-spacing: 0.3px; }
+
+.duo-stats-row { display: flex; gap: 14px; margin-bottom: 22px; }
+.duo-stat-card {
+  flex: 1;
+  background: #f7f7f7;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 14px 12px;
+  text-align: center;
+}
+.duo-stat-value { font-size: 24px; font-weight: 800; color: #1cb0f6; }
+.duo-stat-label { font-size: 11px; color: #999; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
+
+.duo-banner {
+  background: linear-gradient(135deg, #58cc02, #46a302);
+  color: #fff;
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  margin-bottom: 28px;
+}
+
+.duo-section-title { font-size: 14px; color: #3c3c3c; font-weight: 700; margin-bottom: 16px; }
+
+.duo-skill-path { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 10px 0 20px; }
+.duo-skill-node { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; }
+.duo-skill-node:nth-child(3n+1) { align-items: flex-start; padding-left: 12%; }
+.duo-skill-node:nth-child(3n+2) { align-items: center; }
+.duo-skill-node:nth-child(3n) { align-items: flex-end; padding-right: 12%; }
+.duo-skill-circle {
+  width: 56px; height: 56px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.15);
+}
+.duo-skill-node.done .duo-skill-circle { background: #ffc800; color: #fff; box-shadow: 0 4px 0 #c79400; }
+.duo-skill-node.active .duo-skill-circle { background: #58cc02; color: #fff; box-shadow: 0 4px 0 #46a302; animation: duo-pulse 1.8s ease-in-out infinite; }
+.duo-skill-node.locked .duo-skill-circle { background: #e5e5e5; color: #afafaf; box-shadow: 0 4px 0 #cfcfcf; }
+.duo-skill-label { font-size: 11.5px; color: #777; max-width: 130px; text-align: center; }
+.duo-skill-node.locked .duo-skill-label { color: #afafaf; }
+@keyframes duo-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
 /* ── YouTube (embedded in Chrome) ── */
 .yt-app {
   height: 100%;

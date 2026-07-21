@@ -246,6 +246,7 @@ const HISTORY_DAYS = [
   ]},
   { date: '3. 3. 2026', items: [
     { time: '22:20', title: 'Kevin Samuels: high value man - YouTube', url: 'youtube.com/watch?v=ks039' },
+    { time: '21:58', title: 'high value man hobbies - Hledat Googlem', url: 'google.com/search?q=high+value+man+hobbies' },
     { time: '21:44', title: 'Iman Gadzhi: how to become high value - YouTube', url: 'youtube.com/watch?v=ig040' },
     { time: '21:10', title: '80/20 rule dating - Hledat Googlem', url: 'google.com/search?q=80/20+rule+dating' }
   ]},
@@ -316,7 +317,8 @@ const HISTORY_DAYS = [
   { date: '12. 2. 2026', items: [
     { time: '21:47', title: 'Filip Grznár: základní cviky doma - YouTube', url: 'youtube.com/watch?v=fg016' },
     { time: '21:05', title: 'Chris Heria: Calisthenics For Beginners - YouTube', url: 'youtube.com/watch?v=ch017' },
-    { time: '20:33', title: 'jak si zvýšit sebevědomí - Hledat Googlem', url: 'google.com/search?q=jak+si+zvysit+sebevedomi' }
+    { time: '20:33', title: 'jak si zvýšit sebevědomí - Hledat Googlem', url: 'google.com/search?q=jak+si+zvysit+sebevedomi' },
+    { time: '19:50', title: 'dělá šachy kluka zajímavějším pro holky - Hledat Googlem', url: 'google.com/search?q=dela+sachy+kluka+zajimavejsim+pro+holky' }
   ]},
   { date: '10. 2. 2026', items: [
     { time: '22:30', title: 'Aleš Lamka: kalisthenika progres - YouTube', url: 'youtube.com/watch?v=al014' },
@@ -362,6 +364,27 @@ const HISTORY_DAYS = [
     { time: '19:15', title: 'Thomas Frank: Best Note-Taking Apps - YouTube', url: 'youtube.com/watch?v=tf014' },
     { time: '18:40', title: 'wikihow.com – Get Motivated to Study', url: 'wikihow.com/Get-Motivated-to-Study' },
     { time: '18:05', title: 'jak se učit efektivně - Hledat Googlem', url: 'google.com/search?q=jak+se+ucit+efektivne' }
+  ]},
+  { date: '5. 12. 2025', items: [
+    { time: '20:15', title: 'je hraní šachů atraktivní pro holky - Hledat Googlem', url: 'google.com/search?q=je+hrani+sachu+atraktivni+pro+holky' }
+  ]},
+  { date: '9. 11. 2025', items: [
+    { time: '21:05', title: 'přitahují šachy holky - Hledat Googlem', url: 'google.com/search?q=pritahuji+sachy+holky' }
+  ]},
+  { date: '14. 10. 2025', items: [
+    { time: '20:30', title: 'co znamená elo v šachu - Hledat Googlem', url: 'google.com/search?q=co+znamena+elo+v+sachu' }
+  ]},
+  { date: '2. 10. 2025', items: [
+    { time: '19:15', title: 'duolingo chess vs chess.com - Hledat Googlem', url: 'google.com/search?q=duolingo+chess+vs+chess.com' }
+  ]},
+  { date: '18. 9. 2025', items: [
+    { time: '18:40', title: 'jak se rychle naučit šachy - Hledat Googlem', url: 'google.com/search?q=jak+se+rychle+naucit+sachy' }
+  ]},
+  { date: '10. 9. 2025', items: [
+    { time: '20:05', title: 'best hobbies for teenage guys - Hledat Googlem', url: 'google.com/search?q=best+hobbies+for+teenage+guys' }
+  ]},
+  { date: '3. 9. 2025', items: [
+    { time: '19:20', title: 'hobbies that make you smarter - Hledat Googlem', url: 'google.com/search?q=hobbies+that+make+you+smarter' }
   ]}
 ];
 
@@ -2901,6 +2924,82 @@ function openHalo() {
   haloWindow.classList.remove('hidden');
 }
 
+// ── Duolingo (Chess course) ──
+// He picked up chess as another self-improvement fork alongside looksmaxxing, but the
+// motivation is external (impress girls, not genuine interest) — hence a low course level
+// despite a long, consistent streak: he opens the app daily to keep the streak (a habit loop
+// the app itself gamifies), not because he's actually engaging deeply with the material.
+const duolingoWindow = document.getElementById('duolingo-window');
+document.getElementById('duolingo-close-btn').addEventListener('click', () => {
+  duolingoWindow.classList.add('hidden');
+});
+
+const DUOLINGO_PROFILE = {
+  username: 'hidd3nfram3',
+  course: 'Šachy',
+  league: 'Bronzová liga',
+  level: 5,
+  streakDays: 43,
+  totalXP: 645,
+  gems: 120,
+  bannerText: 'Zůstaň v sérii! Ještě dnes tě čeká jedna lekce 🔥'
+};
+
+const DUOLINGO_SKILL_PATH = [
+  { name: 'Základy tahů', state: 'done' },
+  { name: 'Rošáda a braní mimochodem', state: 'done' },
+  { name: 'Zahájení: Italská hra', state: 'active' },
+  { name: 'Taktika: vidle a špejle', state: 'locked' },
+  { name: 'Koncovky pěšců', state: 'locked' },
+  { name: 'Zahájení: Sicilská obrana', state: 'locked' },
+  { name: 'Taktika: vázání', state: 'locked' },
+  { name: 'Střední hra: strategie', state: 'locked' }
+];
+
+function duolingoSkillNodeHTML(skill) {
+  const icon = skill.state === 'done' ? '✓' : skill.state === 'active' ? '♟' : '🔒';
+  return `
+    <div class="duo-skill-node ${skill.state}">
+      <div class="duo-skill-circle">${icon}</div>
+      <div class="duo-skill-label">${skill.name}</div>
+    </div>
+  `;
+}
+
+function buildDuolingoBodyHTML() {
+  const p = DUOLINGO_PROFILE;
+  return `
+    <div class="duo-header-row">
+      <div class="duo-avatar">♟</div>
+      <div>
+        <div class="duo-username">${p.username}</div>
+        <div class="duo-course-sub">${p.course} · ${p.league}</div>
+      </div>
+      <div class="duo-streak-badge">
+        <span class="duo-flame">🔥</span>
+        <span class="duo-streak-num">${p.streakDays}</span>
+        <span class="duo-streak-label">dní v řadě</span>
+      </div>
+    </div>
+
+    <div class="duo-stats-row">
+      <div class="duo-stat-card"><div class="duo-stat-value">${p.level}</div><div class="duo-stat-label">Úroveň · začátečník</div></div>
+      <div class="duo-stat-card"><div class="duo-stat-value">${p.totalXP}</div><div class="duo-stat-label">Celkem XP</div></div>
+      <div class="duo-stat-card"><div class="duo-stat-value">${p.gems}</div><div class="duo-stat-label">Drahokamy</div></div>
+    </div>
+
+    <div class="duo-banner">${p.bannerText}</div>
+
+    <div class="duo-section-title">Šachy — cesta kurzem</div>
+    <div class="duo-skill-path">${DUOLINGO_SKILL_PATH.map(duolingoSkillNodeHTML).join('')}</div>
+  `;
+}
+
+function openDuolingo() {
+  document.getElementById('duolingo-body').innerHTML = buildDuolingoBodyHTML();
+  duolingoWindow.classList.remove('hidden');
+}
+
 // ── Google search (embedded in Chrome) — shell only, content is placeholder ──
 function parseGoogleQuery(url) {
   const m = url.match(/[?&]q=([^&]+)/);
@@ -3174,6 +3273,7 @@ const START_MENU_APPS = [
   { app: 'folder-photos', label: 'Fotky a videa', icon: 'assets/icons/folder.svg' },
   { app: 'halo', label: 'Halo Infinite', icon: 'assets/icons/halo.svg' },
   { app: 'cs', label: 'Counter-Strike 2', icon: 'assets/icons/cs.svg' },
+  { app: 'duolingo', label: 'Duolingo', icon: 'assets/icons/duolingo.svg' },
   { app: 'cile', label: 'cile.txt', icon: 'assets/icons/notepad.svg' },
   { app: 'recycle', label: 'Koš', icon: 'assets/icons/recycle.svg' }
 ];
@@ -3225,6 +3325,7 @@ const TASKBAR_APPS = [
   { id: 'recycle', label: 'Koš', icon: 'assets/icons/recycle.svg', el: recycleWindow },
   { id: 'halo', label: 'Halo Infinite', icon: 'assets/icons/halo.svg', el: haloWindow },
   { id: 'cs2', label: 'Counter-Strike 2', icon: 'assets/icons/cs.svg', el: cs2Window },
+  { id: 'duolingo', label: 'Duolingo', icon: 'assets/icons/duolingo.svg', el: duolingoWindow },
   { id: 'notepad', label: 'cile.txt', icon: 'assets/icons/notepad.svg', el: notepadWindow }
 ];
 
@@ -3268,6 +3369,9 @@ function openApp(app) {
       break;
     case 'cs':
       openCs2();
+      break;
+    case 'duolingo':
+      openDuolingo();
       break;
     case 'recycle':
       openRecycle();
@@ -3476,6 +3580,7 @@ function refreshOpenWindowsAfterEdit() {
   if (!recycleWindow.classList.contains('hidden')) renderRecycleList();
   if (!cs2Window.classList.contains('hidden')) document.getElementById('cs2-body').innerHTML = buildCs2BodyHTML();
   if (!haloWindow.classList.contains('hidden')) document.getElementById('halo-body').innerHTML = buildHaloBodyHTML();
+  if (!duolingoWindow.classList.contains('hidden')) document.getElementById('duolingo-body').innerHTML = buildDuolingoBodyHTML();
 }
 
 const CONTENT_STORAGE_KEY = 'lukas-pc-content-overrides-v1';
@@ -3753,6 +3858,8 @@ const EDITOR_SECTIONS = [
   { key: 'haloFriends', label: 'Halo — přátelé (Spartan Company)', data: HALO_FRIENDS },
   { key: 'haloWeapons', label: 'Halo — oblíbené zbraně', data: HALO_WEAPONS },
   { key: 'haloMedals', label: 'Halo — medaile', data: HALO_MEDALS },
+  { key: 'duolingoProfile', label: 'Duolingo — profil', data: DUOLINGO_PROFILE },
+  { key: 'duolingoSkillPath', label: 'Duolingo — cesta kurzem', data: DUOLINGO_SKILL_PATH },
   { key: 'desktopClock', label: 'Plocha — hodiny', data: CLOCK_CONTENT },
   { key: 'desktopToast', label: 'Plocha — Discord notifikace', data: TOAST_CONTENT },
   { key: 'desktopNotepad', label: 'Plocha — cile.txt', data: NOTEPAD_CONTENT }
