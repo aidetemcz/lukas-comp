@@ -395,13 +395,30 @@ const BOOKMARKS_BAR = [
 const INITIAL_TABS_TEMPLATE = [
   { id: 'chatgpt', type: 'chatgpt', title: 'ChatGPT', url: 'chat.openai.com/c/6f2a91d0-8b3e-4c1a-9f2d-3a7e5c0b1d44', favicon: 'assets/icons/chatgpt.svg' },
   { id: 'facerate', type: 'facerate', title: 'facerate.io — Upload', url: 'facerate.io/upload', favicon: 'assets/icons/fav-facerate.svg' },
-  { id: 'youtube', type: 'youtube', title: "why 6'0 is the new 5'8 - YouTube", url: 'youtube.com/watch?v=w6057', favicon: 'assets/icons/fav-youtube.svg' },
+  { id: 'youtube', type: 'youtube', title: 'Passport Bros be like - YouTube', url: 'youtube.com/shorts/bawiCfLxe_g', favicon: 'assets/icons/fav-youtube.svg' },
   { id: 'duolingo', type: 'blank', title: 'Duolingo', url: 'duolingo.com/learn', favicon: 'assets/icons/fav-duolingo.svg' },
   { id: 'google-search', type: 'google', title: 'vlak plzeň hlavní praha víkend - Hledat Googlem', url: 'google.com/search?q=vlak+plzen+hlavni+praha+vikend', favicon: 'assets/icons/fav-google.svg' },
   { id: 'gmail', type: 'gmail', title: 'Doručená pošta – Gmail', url: 'mail.google.com/mail/u/0/#inbox', favicon: 'assets/icons/fav-gmail.svg' }
 ];
 function makeInitialTabs() {
-  return INITIAL_TABS_TEMPLATE.map(t => ({ ...t }));
+  const tabs = INITIAL_TABS_TEMPLATE.map(t => ({ ...t }));
+  // Force the YouTube tab to open on Shorts (not the home page), always using the most
+  // recent short in the (editor-editable) curated set. Wrapped in try/catch because this
+  // function is also called once at module-load time (line below), before YT_HOME_VIDEOS
+  // (defined further down the file) exists yet — the static template default above covers that case.
+  try {
+    const ytTab = tabs.find(t => t.id === 'youtube');
+    if (ytTab) {
+      const shortsIds = getShortsIds();
+      const lastShortId = shortsIds[shortsIds.length - 1];
+      if (lastShortId) {
+        const v = resolveVideoById(lastShortId);
+        ytTab.url = `youtube.com/shorts/${lastShortId}`;
+        ytTab.title = `${v.title} - YouTube`;
+      }
+    }
+  } catch (e) { /* YT data not initialized yet at this early call site */ }
+  return tabs;
 }
 
 function faviconForUrl(url) {
@@ -1048,29 +1065,122 @@ function attachFacerateHandlers() {
   });
 }
 
-// ── YouTube (shell only — content is placeholder, to be filled in later) ──
-const YT_CHANNELS = Array.from({ length: 8 }, (_, i) => `[Channel name ${i + 1}]`);
-const YT_VIEWS = ['1,2 tis. zhlédnutí', '45 tis. zhlédnutí', '128 tis. zhlédnutí', '2,3 mil. zhlédnutí', '890 zhlédnutí', '15 tis. zhlédnutí', '3,1 mil. zhlédnutí', '62 tis. zhlédnutí'];
-const YT_AGES = ['před 3 hodinami', 'před 1 dnem', 'před 5 dny', 'před 2 týdny', 'před 1 měsícem', 'před 3 měsíci', 'před 1 rokem', 'před 6 dny'];
-const YT_DURATIONS = ['12:34', '4:21', '1:02:15', '8:47', '0:58', '22:10', '15:03', '6:40'];
+// ── YouTube ──
+// Real curated 43-video pipeline (Jun 2025 → Mar 2026) simulating the YT algorithm's
+// drift from mainstream gaming into looksmaxxing/manosphere/incel content.
+// Source: Nat's "Lukas-PC — YouTube pipeline (44 videí)" doc (oEmbed-verified titles/channels).
+// One doc entry (zdV6XK6-r0k, phase 7) was unresolvable/deleted and was dropped per the
+// doc's own option (b) — phase 7 keeps its remaining 4 videos rather than inventing a replacement.
+const YT_HOME_VIDEOS = [
+  { id: '00NgUctWoLQ', title: 'Extreme $1,000,000 Hide And Seek', channel: 'MrBeast', url: 'https://www.youtube.com/watch?v=00NgUctWoLQ', format: 'long', phase: 1, category: 'gaming', date: '2025-06-05', watched: true, views: '312 mil. zhlédnutí', duration: '18:42' },
+  { id: 'irVNGjRFZGk', title: 'Avengers: Doomsday | Official Trailer', channel: 'Marvel Entertainment', url: 'https://www.youtube.com/watch?v=irVNGjRFZGk', format: 'long', phase: 1, category: 'gaming', date: '2025-06-12', watched: true, views: '89 mil. zhlédnutí', duration: '2:31' },
+  { id: 'vQg1PVfztVc', title: 'Top 5 best funny Moments in CS2', channel: 'Park Dip', url: 'https://www.youtube.com/shorts/vQg1PVfztVc', format: 'short', phase: 1, category: 'gaming', date: '2025-06-18', watched: true, views: '4,3 mil. zhlédnutí', duration: '0:52' },
+  { id: 'zxjbZEO2WDk', title: 'REFREZH INSANE 1v5 CLUTCH ACE', channel: 'ESL Counter-Strike', url: 'https://www.youtube.com/watch?v=zxjbZEO2WDk', format: 'long', phase: 1, category: 'gaming', date: '2025-06-24', watched: true, views: '2,1 mil. zhlédnutí', duration: '9:14' },
+  { id: '-j0_j6_V7rw', title: 'POV: That friend whose life is on HARD MODE', channel: 'The Johnson Brothers', url: 'https://www.youtube.com/shorts/-j0_j6_V7rw', format: 'short', phase: 1, category: 'gaming', date: '2025-06-30', watched: true, views: '11 mil. zhlédnutí', duration: '0:38' },
+  { id: 'NFm2Xjx61Q8', title: '"Got any hobbies?"', channel: 'Luda', url: 'https://www.youtube.com/watch?v=NFm2Xjx61Q8', format: 'long', phase: 1, category: 'gaming', date: '2025-07-08', watched: true, views: '22 mil. zhlédnutí', duration: '3:47' },
+  { id: 'b-Pn0yXL9y8', title: "5 Minutes to Start Your Day Right — MORNING MOTIVATION | Admiral McRaven's Speech", channel: 'Motiversity', url: 'https://www.youtube.com/watch?v=b-Pn0yXL9y8', format: 'long', phase: 1, category: 'gaming', date: '2025-07-18', watched: true, views: '48 mil. zhlédnutí', duration: '5:12' },
+  { id: 'jnIOLO6dpj0', title: 'BE BETTER — David Goggins Motivational Speech', channel: 'Allaroundus', url: 'https://www.youtube.com/watch?v=jnIOLO6dpj0', format: 'long', phase: 1, category: 'gaming', date: '2025-07-25', watched: true, views: '3,2 mil. zhlédnutí', duration: '9:38' },
 
-function makePlaceholderVideos(count, prefix) {
-  const arr = [];
-  for (let i = 0; i < count; i++) {
-    arr.push({
-      id: `${prefix}${i + 1}`,
-      title: `[Title placeholder ${i + 1}]`,
-      channel: YT_CHANNELS[i % YT_CHANNELS.length],
-      views: YT_VIEWS[(i * 3) % YT_VIEWS.length],
-      age: YT_AGES[(i * 5) % YT_AGES.length],
-      duration: YT_DURATIONS[(i * 2) % YT_DURATIONS.length]
-    });
-  }
-  return arr;
+  { id: 'NlXPiHArsDE', title: 'The PERFECT 6AM Morning Routine For Self-Improvement', channel: 'Hamza', url: 'https://www.youtube.com/watch?v=NlXPiHArsDE', format: 'long', phase: 2, category: 'manosphere', date: '2025-08-04', watched: true, views: '1,8 mil. zhlédnutí', duration: '11:24' },
+  { id: 'vMSDbnYsyMM', title: 'Začátečnická (ne)forma', channel: 'Antonin Hodan', url: 'https://www.youtube.com/watch?v=vMSDbnYsyMM', format: 'long', phase: 2, category: 'manosphere', date: '2025-08-15', watched: true, views: '184 tis. zhlédnutí', duration: '8:05' },
+
+  { id: 'yfk0c18xPcE', title: 'Finding Your Perfect Hairstyle Is Surprisingly Easy', channel: 'QOVES', url: 'https://www.youtube.com/watch?v=yfk0c18xPcE', format: 'long', phase: 3, category: 'manosphere', date: '2025-09-03', watched: true, views: '2,1 mil. zhlédnutí', duration: '10:12' },
+  { id: 'hrOwm3gASxc', title: 'Why Do Some People Just Look So Good?', channel: 'Wanhee 완희', url: 'https://www.youtube.com/watch?v=hrOwm3gASxc', format: 'long', phase: 3, category: 'manosphere', date: '2025-09-20', watched: true, views: '640 tis. zhlédnutí', duration: '14:50' },
+  { id: 'WLFcde2eaBU', title: 'Kareem Shami (Syrianpsycho) Explains "Mewing" on Tamron Hall Show', channel: 'FashionFaces444', url: 'https://www.youtube.com/shorts/WLFcde2eaBU', format: 'short', phase: 3, category: 'manosphere', date: '2025-09-28', watched: true, views: '9,8 mil. zhlédnutí', duration: '0:59' },
+  { id: 'jfulHL73Mhc', title: "the world's shortest looksmaxxing guide you'll ever need.", channel: 'Rorz', url: 'https://www.youtube.com/watch?v=jfulHL73Mhc', format: 'long', phase: 3, category: 'manosphere', date: '2025-10-12', watched: true, views: '1,2 mil. zhlédnutí', duration: '6:33' },
+  { id: 'qbtwXFH0ySc', title: 'The truth about hunter eyes (UUDD explained)', channel: 'Baby Stickley', url: 'https://www.youtube.com/watch?v=qbtwXFH0ySc', format: 'long', phase: 3, category: 'manosphere', date: '2025-10-20', watched: true, views: '780 tis. zhlédnutí', duration: '9:17' },
+
+  { id: 'wRZo5zExpUw', title: '"There\'s no rest for me in this world" | PEAKY BLINDERS', channel: 'CINEMATIC ESCAPISM', url: 'https://www.youtube.com/shorts/wRZo5zExpUw', format: 'short', phase: 4, category: 'manosphere', date: '2025-11-02', watched: true, views: '18 mil. zhlédnutí', duration: '0:41' },
+  { id: 'r7zThgJAAPg', title: 'How Marcus Aurelius Stayed Calm in Chaos | 3 Stoic Methods', channel: 'Einzelgänger', url: 'https://www.youtube.com/watch?v=r7zThgJAAPg', format: 'long', phase: 4, category: 'manosphere', date: '2025-11-08', watched: true, views: '2,4 mil. zhlédnutí', duration: '13:42' },
+  { id: 'xObKDh0IXYM', title: 'The Psychology of People Who Are DEEP Thinkers', channel: 'Oku', url: 'https://www.youtube.com/watch?v=xObKDh0IXYM', format: 'long', phase: 4, category: 'manosphere', date: '2025-11-15', watched: true, views: '950 tis. zhlédnutí', duration: '11:05' },
+  { id: 'Q_vj7KAXxww', title: 'Shaolin Master Reveals: How to Master Anything in 30 days | Monk Mode', channel: 'TRNSFRM.', url: 'https://www.youtube.com/shorts/Q_vj7KAXxww', format: 'short', phase: 4, category: 'manosphere', date: '2025-11-22', watched: true, views: '6,3 mil. zhlédnutí', duration: '0:47' },
+  { id: 'Gqlc3ouM6uQ', title: 'The Science Behind Masculine Charisma', channel: 'Zoomology', url: 'https://www.youtube.com/watch?v=Gqlc3ouM6uQ', format: 'long', phase: 4, category: 'manosphere', date: '2025-11-29', watched: true, views: '3,1 mil. zhlédnutí', duration: '15:21' },
+
+  { id: 'MTCotdedj28', title: '99% Of You Will Always Be Broke', channel: 'Hamza', url: 'https://www.youtube.com/shorts/MTCotdedj28', format: 'short', phase: 5, category: 'manosphere', date: '2025-12-03', watched: true, views: '7,9 mil. zhlédnutí', duration: '0:55' },
+  { id: 'PTWp0xV3qZ8', title: 'Reclaim Your Male Aggression #hamza', channel: 'Hamza Shorts', url: 'https://www.youtube.com/shorts/PTWp0xV3qZ8', format: 'short', phase: 5, category: 'manosphere', date: '2025-12-10', watched: true, views: '620 tis. zhlédnutí', duration: '0:44' },
+  { id: '4RZ3XX0wGTU', title: 'Hard Truths Men Learn Too Late', channel: 'Hamza', url: 'https://www.youtube.com/watch?v=4RZ3XX0wGTU', format: 'long', phase: 5, category: 'manosphere', date: '2025-12-18', watched: true, views: '1,4 mil. zhlédnutí', duration: '12:08' },
+  { id: 'uOcKF-aLHyw', title: 'How to Get Whatever You Want', channel: 'GrindBuddy', url: 'https://www.youtube.com/watch?v=uOcKF-aLHyw', format: 'long', phase: 5, category: 'manosphere', date: '2025-12-27', watched: true, views: '210 tis. zhlédnutí', duration: '9:52' },
+  { id: 't5ADEtmqCws', title: "How To Make Someone Realize They Can't Control You", channel: 'Charisma on Command', url: 'https://www.youtube.com/watch?v=t5ADEtmqCws', format: 'long', phase: 5, category: 'manosphere', date: '2025-12-30', watched: true, views: '3,6 mil. zhlédnutí', duration: '10:41' },
+
+  { id: 'IxQO64gIAJ8', title: 'Improving at Talking To Girls!', channel: 'Brady Shepherd', url: 'https://www.youtube.com/shorts/IxQO64gIAJ8', format: 'short', phase: 6, category: 'manosphere', date: '2026-01-04', watched: true, views: '2,1 mil. zhlédnutí', duration: '0:39' },
+  { id: 'Y_qKLmzTHiE', title: 'Get comfortable talking with girls.', channel: 'Iman Gadzhi Moments', url: 'https://www.youtube.com/shorts/Y_qKLmzTHiE', format: 'short', phase: 6, category: 'manosphere', date: '2026-01-10', watched: true, views: '5,4 mil. zhlédnutí', duration: '0:51' },
+  { id: 'xIpri5jMVLw', title: "High Value Men Don't Chase — Here's Why", channel: 'Postur', url: 'https://www.youtube.com/shorts/xIpri5jMVLw', format: 'short', phase: 6, category: 'manosphere', date: '2026-01-15', watched: true, views: '3,3 mil. zhlédnutí', duration: '0:46' },
+  { id: 'Bces8J6pMiw', title: 'ANDREW TATE on HOW to APPROACH A GIRL', channel: 'The Way 0f The Superior Man', url: 'https://www.youtube.com/shorts/Bces8J6pMiw', format: 'short', phase: 6, category: 'manosphere', date: '2026-01-22', watched: true, views: '11 mil. zhlédnutí', duration: '0:58' },
+  { id: '0YhbQvsTDi0', title: 'Blind Dating Guys After Looksmaxxing', channel: 'kickback', url: 'https://www.youtube.com/watch?v=0YhbQvsTDi0', format: 'long', phase: 6, category: 'manosphere', date: '2026-01-29', watched: true, views: '4,8 mil. zhlédnutí', duration: '18:24' },
+
+  { id: 'B7kvX7QZc0U', title: 'Andrew Tate On Hypergamy', channel: 'Tate Storys', url: 'https://www.youtube.com/shorts/B7kvX7QZc0U', format: 'short', phase: 7, category: 'manosphere', date: '2026-02-03', watched: true, views: '14 mil. zhlédnutí', duration: '0:49' },
+  { id: 'bawiCfLxe_g', title: 'Passport Bros be like', channel: 'Content Machine', url: 'https://www.youtube.com/shorts/bawiCfLxe_g', format: 'short', phase: 7, category: 'manosphere', date: '2026-02-10', watched: true, views: '3,7 mil. zhlédnutí', duration: '0:36' },
+  { id: 't-3CbS5m7XE', title: 'How To Rate Your Attractiveness Using Science', channel: 'Zoomology', url: 'https://www.youtube.com/watch?v=t-3CbS5m7XE', format: 'long', phase: 7, category: 'manosphere', date: '2026-02-15', watched: true, views: '2,9 mil. zhlédnutí', duration: '16:07' },
+  { id: 'zCcNky0_eys', title: 'Face Rating + Looksmaxxing Redditors (With Brutal Honesty)', channel: 'FaceIQ', url: 'https://www.youtube.com/watch?v=zCcNky0_eys', format: 'long', phase: 7, category: 'manosphere', date: '2026-02-22', watched: true, views: '1,1 mil. zhlédnutí', duration: '21:16' },
+
+  { id: 'UmjDxGj54Kk', title: 'Solving Hypergamy (NO FILTER)', channel: 'K. Shami', url: 'https://www.youtube.com/watch?v=UmjDxGj54Kk', format: 'long', phase: 8, category: 'incel', date: '2026-03-01', watched: true, views: '2,7 mil. zhlédnutí', duration: '24:38' },
+  { id: 'i49S9tQpad8', title: 'An Accurate Looks Scale for Men', channel: 'Real', url: 'https://www.youtube.com/watch?v=i49S9tQpad8', format: 'long', phase: 8, category: 'incel', date: '2026-03-04', watched: true, views: '320 tis. zhlédnutí', duration: '13:52' },
+  { id: 'eipfKGg3B-U', title: 'Why you look like a framecel in clothes (even with a good physique)', channel: 'BP Fitness', url: 'https://www.youtube.com/watch?v=eipfKGg3B-U', format: 'long', phase: 8, category: 'incel', date: '2026-03-07', watched: true, views: '145 tis. zhlédnutí', duration: '10:18' },
+  { id: 'Ne62EFvJQjU', title: "It's not over (looksmaxxing motivation)", channel: 'PSL1.9', url: 'https://www.youtube.com/watch?v=Ne62EFvJQjU', format: 'long', phase: 8, category: 'incel', date: '2026-03-10', watched: true, views: '89 tis. zhlédnutí', duration: '7:44' },
+  { id: 'KNJQhu--mQo', title: 'CHAD VS SUB5 TREATMENT — Watch How Women Treat Them', channel: 'Wheat Waffles', url: 'https://www.youtube.com/watch?v=KNJQhu--mQo', format: 'long', phase: 8, category: 'incel', date: '2026-03-13', watched: true, views: '410 tis. zhlédnutí', duration: '9:02' },
+  { id: 'JvmBm7d2RVs', title: 'Incel Traits Tier List', channel: 'Real', url: 'https://www.youtube.com/watch?v=JvmBm7d2RVs', format: 'long', phase: 8, category: 'incel', date: '2026-03-15', watched: true, views: '275 tis. zhlédnutí', duration: '16:47' },
+  { id: 'vtoQnmD5Y1k', title: "At 35, I'm Still Alone.", channel: 'Jake Kassan', url: 'https://www.youtube.com/watch?v=vtoQnmD5Y1k', format: 'long', phase: 8, category: 'incel', date: '2026-03-17', watched: true, views: '62 tis. zhlédnutí', duration: '19:33' },
+  { id: 'KWUVXQnAQLk', title: "I'm 19 and I have no friends", channel: 'Lefrancs', url: 'https://www.youtube.com/watch?v=KWUVXQnAQLk', format: 'long', phase: 8, category: 'incel', date: '2026-03-19', watched: true, views: '38 tis. zhlédnutí', duration: '14:09' },
+  { id: 'sEWIDdQKWgc', title: "yeah... no wonder he doesn't use social media", channel: 'Du Cinema', url: 'https://www.youtube.com/watch?v=sEWIDdQKWgc', format: 'long', phase: 8, category: 'incel', date: '2026-03-22', watched: true, views: '190 tis. zhlédnutí', duration: '5:27' }
+];
+
+function getShortsIds() {
+  return YT_HOME_VIDEOS.filter(v => v.format === 'short').map(v => v.id);
 }
 
-const YT_HOME_VIDEOS = makePlaceholderVideos(24, 'demo');
-const YT_SHORTS_IDS = ['short1', 'short2', 'short3', 'short4', 'short5'];
+function sortedHomeVideos() {
+  return [...YT_HOME_VIDEOS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+}
+
+const YT_HOME_PAGE_SIZE = 12;
+
+function ytThumbUrl(id) {
+  return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+}
+function ytThumbHTML(id) {
+  return `<img src="${ytThumbUrl(id)}" class="yt-thumb-img" alt="" loading="lazy" />`;
+}
+
+function ytAgeFromISODate(iso) {
+  const d = new Date(`${iso}T12:00:00`);
+  const now = new Date(parseClockBase());
+  const days = Math.floor((now - d) / 86400000);
+  if (days <= 0) return 'dnes';
+  if (days === 1) return 'před 1 dnem';
+  if (days < 7) return `před ${days} dny`;
+  const weeks = Math.floor(days / 7);
+  if (weeks < 5) return weeks === 1 ? 'před 1 týdnem' : `před ${weeks} týdny`;
+  const months = Math.floor(days / 30);
+  if (months < 12) return months === 1 ? 'před 1 měsícem' : `před ${months} měsíci`;
+  const years = Math.floor(days / 365);
+  return years === 1 ? 'před 1 rokem' : `před ${years} lety`;
+}
+function ytAgeLabel(v) {
+  if (v.age) return v.age;
+  if (v.date) return ytAgeFromISODate(v.date);
+  return '[Upload date placeholder]';
+}
+function formatCzechDateLabel(iso) {
+  const parts = iso.split('-').map(Number);
+  return `${parts[2]}. ${parts[1]}. ${parts[0]}`;
+}
+
+const YT_UNAVAILABLE_REASONS = [
+  'Přehrávání videa se nezdařilo. Zkus to prosím znovu.',
+  'Tento obsah není na tomto zařízení k dispozici.',
+  'Video se zpracovává ve vyšší kvalitě — zkus to za chvíli znovu.',
+  'Došlo k chybě sítě. Zkontroluj připojení k internetu a zkus to znovu.',
+  'Tento přehrávač vyžaduje aktualizaci aplikace YouTube.',
+  'Video je dočasně nedostupné, autor upravuje nastavení zveřejnění.',
+  'Chyba přehrávání (kód 400). Zkus to prosím později.',
+  'Nahrávání videa se zaseklo. Obnov stránku a zkus to znovu.'
+];
+function unavailableReasonFor(id) {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
+  return YT_UNAVAILABLE_REASONS[hash % YT_UNAVAILABLE_REASONS.length];
+}
+
 const YT_COMMENTS = Array.from({ length: 7 }, (_, i) => ({
   author: `[Comment author ${i + 1}]`,
   text: `[Comment text ${i + 1}]`,
@@ -1078,6 +1188,8 @@ const YT_COMMENTS = Array.from({ length: 7 }, (_, i) => ({
 }));
 
 function resolveVideoById(id) {
+  const known = YT_HOME_VIDEOS.find(v => v.id === id);
+  if (known) return { ...known, fromHistory: false };
   const flat = HISTORY_DAYS.flatMap(d => d.items.map(it => ({ ...it, date: d.date })));
   const match = flat.find(it => it.url === `youtube.com/watch?v=${id}` || it.url === `youtube.com/shorts/${id}`);
   if (match) {
@@ -1091,8 +1203,6 @@ function resolveVideoById(id) {
       fromHistory: true
     };
   }
-  const known = YT_HOME_VIDEOS.find(v => v.id === id);
-  if (known) return { ...known, fromHistory: false };
   return { id, title: '[Title placeholder]', channel: '[Channel name]', views: '[View count placeholder]', age: '[Upload date placeholder]', duration: '—', fromHistory: false };
 }
 
@@ -1107,7 +1217,7 @@ function parseYoutubeUrl(url) {
     const m = rest.match(/search_query=([^&]+)/);
     return { page: 'search', query: m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : '' };
   }
-  if (rest.startsWith('/shorts/')) return { page: 'shorts', id: rest.split('/shorts/')[1] || YT_SHORTS_IDS[0] };
+  if (rest.startsWith('/shorts/')) return { page: 'shorts', id: rest.split('/shorts/')[1] || getShortsIds()[0] };
   if (rest.startsWith('/@')) return { page: 'channel', handle: rest.slice(2).split('/')[0] };
   if (rest.startsWith('/feed/history')) return { page: 'history' };
   if (rest.startsWith('/feed/subscriptions')) return { page: 'subscriptions' };
@@ -1132,13 +1242,13 @@ function navigateYoutube(url, title) {
 function ytVideoCardHTML(v) {
   return `
     <div class="yt-card" data-video-id="${v.id}">
-      <div class="yt-card-thumb">${imageOrPlaceholder(v.image, '')}<span class="yt-card-duration">${v.duration}</span></div>
+      <div class="yt-card-thumb">${imageOrPlaceholder(v.image, ytThumbHTML(v.id))}<span class="yt-card-duration">${v.duration}</span>${v.watched ? '<span class="yt-watched-bar"></span>' : ''}</div>
       <div class="yt-card-meta">
         <span class="yt-card-avatar"></span>
         <div class="yt-card-text">
           <div class="yt-card-title">${v.title}</div>
           <div class="yt-card-channel">${v.channel}</div>
-          <div class="yt-card-stats">${v.views} · ${v.age}</div>
+          <div class="yt-card-stats">${v.views} · ${ytAgeLabel(v)}</div>
         </div>
       </div>
     </div>
@@ -1148,10 +1258,10 @@ function ytVideoCardHTML(v) {
 function ytVideoRowHTML(v) {
   return `
     <div class="yt-row" data-video-id="${v.id}">
-      <div class="yt-row-thumb">${imageOrPlaceholder(v.image, '')}<span class="yt-card-duration">${v.duration}</span></div>
+      <div class="yt-row-thumb">${imageOrPlaceholder(v.image, ytThumbHTML(v.id))}<span class="yt-card-duration">${v.duration}</span>${v.watched ? '<span class="yt-watched-bar"></span>' : ''}</div>
       <div class="yt-row-body">
         <div class="yt-row-title">${v.title}</div>
-        <div class="yt-row-stats">${v.views} · ${v.age}</div>
+        <div class="yt-row-stats">${v.views} · ${ytAgeLabel(v)}</div>
         <div class="yt-row-channel"><span class="yt-card-avatar small"></span>${v.channel}</div>
         <div class="yt-row-desc">[Video description placeholder]</div>
       </div>
@@ -1162,11 +1272,11 @@ function ytVideoRowHTML(v) {
 function ytRecRowHTML(v) {
   return `
     <div class="yt-rec-row" data-video-id="${v.id}">
-      <div class="yt-rec-thumb">${imageOrPlaceholder(v.image, '')}<span class="yt-card-duration">${v.duration}</span></div>
+      <div class="yt-rec-thumb">${imageOrPlaceholder(v.image, ytThumbHTML(v.id))}<span class="yt-card-duration">${v.duration}</span>${v.watched ? '<span class="yt-watched-bar"></span>' : ''}</div>
       <div class="yt-rec-text">
         <div class="yt-rec-title">${v.title}</div>
         <div class="yt-rec-channel">${v.channel}</div>
-        <div class="yt-rec-stats">${v.views} · ${v.age}</div>
+        <div class="yt-rec-stats">${v.views} · ${ytAgeLabel(v)}</div>
       </div>
     </div>
   `;
@@ -1177,13 +1287,38 @@ function attachYtCardHandlers(container) {
     el.addEventListener('click', () => {
       const id = el.dataset.videoId;
       const v = resolveVideoById(id);
-      navigateYoutube(`youtube.com/watch?v=${id}`, `${v.title} - YouTube`);
+      if (v.format === 'short') {
+        navigateYoutube(`youtube.com/shorts/${id}`, `${v.title} - YouTube`);
+      } else {
+        navigateYoutube(`youtube.com/watch?v=${id}`, `${v.title} - YouTube`);
+      }
     });
   });
 }
 
 function ytHomePageHTML() {
-  return `<div class="yt-grid">${YT_HOME_VIDEOS.map(ytVideoCardHTML).join('')}</div>`;
+  const sorted = sortedHomeVideos();
+  return `<div class="yt-grid" id="yt-home-grid" data-loaded="${sorted.length}">${sorted.map(ytVideoCardHTML).join('')}</div>`;
+}
+
+let ytHomeScrollHandler = null;
+function attachHomeInfiniteScroll(content) {
+  if (ytHomeScrollHandler) content.removeEventListener('scroll', ytHomeScrollHandler);
+  const grid = document.getElementById('yt-home-grid');
+  const sorted = sortedHomeVideos();
+  if (!grid || !sorted.length) { ytHomeScrollHandler = null; return; }
+  ytHomeScrollHandler = () => {
+    if (content.scrollTop + content.clientHeight < content.scrollHeight - 300) return;
+    const loaded = Number(grid.dataset.loaded || sorted.length);
+    const nextBatch = [];
+    for (let i = 0; i < YT_HOME_PAGE_SIZE; i++) nextBatch.push(sorted[(loaded + i) % sorted.length]);
+    const frag = document.createElement('div');
+    frag.innerHTML = nextBatch.map(ytVideoCardHTML).join('');
+    while (frag.firstChild) grid.appendChild(frag.firstChild);
+    grid.dataset.loaded = loaded + YT_HOME_PAGE_SIZE;
+    attachYtCardHandlers(grid);
+  };
+  content.addEventListener('scroll', ytHomeScrollHandler);
 }
 
 function ytSearchPageHTML(query) {
@@ -1247,12 +1382,33 @@ function attachYtChannelHandlers() {
   });
 }
 
+function ytRecsFor(v) {
+  const others = YT_HOME_VIDEOS.filter(x => x.id !== v.id);
+  const sameCategory = others.filter(x => x.category === v.category);
+  const rest = others.filter(x => x.category !== v.category);
+  return [...sameCategory, ...rest].slice(0, 14);
+}
+
+function ytUnavailableBlockHTML(v) {
+  return `
+    <div class="yt-player yt-player-unavailable">
+      <div class="yt-unavailable-surface">
+        <div class="yt-unavailable-icon">⚠</div>
+        <div class="yt-unavailable-text">${unavailableReasonFor(v.id)}</div>
+        <button class="yt-unavailable-retry">Zkusit znovu</button>
+      </div>
+    </div>
+  `;
+}
+
 function ytWatchPageHTML(id) {
   const v = resolveVideoById(id);
-  const recs = YT_HOME_VIDEOS.filter(x => x.id !== id).slice(0, 14);
+  const recs = ytRecsFor(v);
+  const unavailable = v.format === 'long';
   return `
     <div class="yt-watch-page">
       <div class="yt-watch-main">
+        ${unavailable ? ytUnavailableBlockHTML(v) : `
         <div class="yt-player">
           <div class="yt-player-surface"><button class="yt-player-play">▶</button></div>
           <div class="yt-player-controls">
@@ -1263,7 +1419,7 @@ function ytWatchPageHTML(id) {
             <button class="yt-ctrl-btn">HD</button>
             <button class="yt-ctrl-btn">⛶</button>
           </div>
-        </div>
+        </div>`}
         <div class="yt-watch-title">${v.title}</div>
         <div class="yt-watch-row">
           <div class="yt-watch-channel">
@@ -1281,7 +1437,8 @@ function ytWatchPageHTML(id) {
             <span class="yt-action-btn">⬇ Uložit</span>
           </div>
         </div>
-        <div class="yt-watch-views-date">${v.views} · ${v.age}</div>
+        <div class="yt-watch-views-date">${v.views} · ${ytAgeLabel(v)}</div>
+        ${unavailable ? `<div class="yt-empty-state">Komentáře nejsou u tohoto videa k dispozici.</div>` : `
         <div class="yt-comments">
           <div class="yt-comments-count">[124] komentářů</div>
           ${YT_COMMENTS.map(c => `
@@ -1294,7 +1451,7 @@ function ytWatchPageHTML(id) {
               </div>
             </div>
           `).join('')}
-        </div>
+        </div>`}
       </div>
       <div class="yt-watch-sidebar">${recs.map(ytRecRowHTML).join('')}</div>
     </div>
@@ -1313,19 +1470,27 @@ function attachYtWatchHandlers() {
   }
   const playBtn = content.querySelector('.yt-player-play');
   if (playBtn) playBtn.addEventListener('click', () => playBtn.classList.toggle('playing'));
+  const retryBtn = content.querySelector('.yt-unavailable-retry');
+  if (retryBtn) retryBtn.addEventListener('click', () => {
+    retryBtn.disabled = true;
+    retryBtn.textContent = 'Načítání…';
+    setTimeout(() => { retryBtn.disabled = false; retryBtn.textContent = 'Zkusit znovu'; }, 900);
+  });
 }
 
 function ytShortsPageHTML(id) {
-  const idx = Math.max(0, YT_SHORTS_IDS.indexOf(id));
-  const v = resolveVideoById(YT_SHORTS_IDS[idx]);
+  const shortsIds = getShortsIds();
+  const idx = Math.max(0, shortsIds.indexOf(id));
+  const activeId = shortsIds[idx] || id;
+  const v = resolveVideoById(activeId);
   return `
     <div class="yt-shorts-page">
       <div class="yt-shorts-nav">
         <button class="yt-shorts-arrow" id="yt-shorts-up" ${idx === 0 ? 'disabled' : ''}>▲</button>
-        <button class="yt-shorts-arrow" id="yt-shorts-down" ${idx === YT_SHORTS_IDS.length - 1 ? 'disabled' : ''}>▼</button>
+        <button class="yt-shorts-arrow" id="yt-shorts-down" ${idx === shortsIds.length - 1 ? 'disabled' : ''}>▼</button>
       </div>
       <div class="yt-shorts-player">
-        <div class="yt-shorts-surface"><button class="yt-player-play">▶</button></div>
+        <iframe class="yt-shorts-iframe" src="https://www.youtube.com/embed/${activeId}?rel=0&modestbranding=1" title="${escapeForAttr(v.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         <div class="yt-shorts-meta">
           <div class="yt-shorts-channel"><span class="yt-card-avatar small"></span>${v.channel}<button class="yt-subscribe-btn small" id="yt-subscribe-btn">Odebírat</button></div>
           <div class="yt-shorts-title">${v.title}</div>
@@ -1342,14 +1507,15 @@ function ytShortsPageHTML(id) {
 }
 
 function attachYtShortsHandlers(id) {
-  const idx = Math.max(0, YT_SHORTS_IDS.indexOf(id));
+  const shortsIds = getShortsIds();
+  const idx = Math.max(0, shortsIds.indexOf(id));
   const up = document.getElementById('yt-shorts-up');
   const down = document.getElementById('yt-shorts-down');
   if (up) up.addEventListener('click', () => {
-    if (idx > 0) navigateYoutube(`youtube.com/shorts/${YT_SHORTS_IDS[idx - 1]}`, 'Shorts - YouTube');
+    if (idx > 0) navigateYoutube(`youtube.com/shorts/${shortsIds[idx - 1]}`, 'Shorts - YouTube');
   });
   if (down) down.addEventListener('click', () => {
-    if (idx < YT_SHORTS_IDS.length - 1) navigateYoutube(`youtube.com/shorts/${YT_SHORTS_IDS[idx + 1]}`, 'Shorts - YouTube');
+    if (idx < shortsIds.length - 1) navigateYoutube(`youtube.com/shorts/${shortsIds[idx + 1]}`, 'Shorts - YouTube');
   });
   const btn = document.getElementById('yt-subscribe-btn');
   if (btn) btn.addEventListener('click', () => {
@@ -1359,21 +1525,26 @@ function attachYtShortsHandlers(id) {
 }
 
 function ytHistoryPageHTML() {
-  const ytDays = HISTORY_DAYS
-    .map(day => ({ date: day.date, items: day.items.filter(it => it.url.startsWith('youtube.com')) }))
-    .filter(day => day.items.length);
-  if (!ytDays.length) return ytEmptyPageHTML('Historie sledování');
+  const watched = YT_HOME_VIDEOS.filter(v => v.watched).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  if (!watched.length) return ytEmptyPageHTML('Historie sledování');
+  const groups = [];
+  watched.forEach(v => {
+    const label = v.date ? formatCzechDateLabel(v.date) : '[Datum]';
+    let group = groups.find(g => g.label === label);
+    if (!group) { group = { label, items: [] }; groups.push(group); }
+    group.items.push(v);
+  });
   return `
     <div class="yt-history-page">
       <div class="yt-history-title">Historie sledování</div>
-      ${ytDays.map(day => `
-        <div class="yt-history-date">${day.date}</div>
-        ${day.items.map(it => `
-          <div class="yt-row yt-history-row" data-url="${it.url}" data-title="${it.title}">
-            <div class="yt-row-thumb"></div>
+      ${groups.map(g => `
+        <div class="yt-history-date">${g.label}</div>
+        ${g.items.map(v => `
+          <div class="yt-row yt-history-row" data-video-id="${v.id}">
+            <div class="yt-row-thumb">${imageOrPlaceholder(v.image, ytThumbHTML(v.id))}<span class="yt-card-duration">${v.duration || ''}</span></div>
             <div class="yt-row-body">
-              <div class="yt-row-title">${it.title.replace(/ - YouTube$/, '')}</div>
-              <div class="yt-row-stats">zhlédnuto ${it.time}</div>
+              <div class="yt-row-title">${v.title}</div>
+              <div class="yt-row-stats">${v.channel} · ${v.views || ''}</div>
             </div>
           </div>
         `).join('')}
@@ -1383,13 +1554,11 @@ function ytHistoryPageHTML() {
 }
 
 function attachYtHistoryHandlers(container) {
-  container.querySelectorAll('.yt-history-row').forEach(el => {
-    el.addEventListener('click', () => navigateYoutube(el.dataset.url, el.dataset.title));
-  });
+  attachYtCardHandlers(container);
 }
 
 function ytSubscriptionsPageHTML() {
-  const chips = YT_CHANNELS.slice(0, 6);
+  const chips = [...new Set(YT_HOME_VIDEOS.map(v => v.channel))];
   return `
     <div class="yt-subscriptions-page">
       <div class="yt-sub-chips">
@@ -1407,6 +1576,7 @@ function ytEmptyPageHTML(label) {
 function renderYoutubeContent(url) {
   const content = document.getElementById('yt-content');
   if (!content) return;
+  content.scrollTop = 0;
   const parsed = parseYoutubeUrl(url);
   const sidebar = document.getElementById('yt-sidebar');
   if (sidebar) sidebar.classList.toggle('slim', parsed.page === 'watch' || parsed.page === 'shorts');
@@ -1444,6 +1614,7 @@ function renderYoutubeContent(url) {
     default:
       content.innerHTML = ytHomePageHTML();
       attachYtCardHandlers(content);
+      attachHomeInfiniteScroll(content);
       break;
   }
 }
@@ -1501,7 +1672,7 @@ function attachYoutubeShellHandlers() {
     item.addEventListener('click', () => {
       const nav = item.dataset.nav;
       if (nav === 'home') navigateYoutube('youtube.com', 'YouTube');
-      else if (nav === 'shorts') navigateYoutube(`youtube.com/shorts/${YT_SHORTS_IDS[0]}`, 'Shorts - YouTube');
+      else if (nav === 'shorts') navigateYoutube(`youtube.com/shorts/${getShortsIds()[0]}`, 'Shorts - YouTube');
       else if (nav === 'subscriptions') navigateYoutube('youtube.com/feed/subscriptions', 'Odběry - YouTube');
       else if (nav === 'history') navigateYoutube('youtube.com/feed/history', 'Historie sledování - YouTube');
       else if (nav === 'watch_later') navigateYoutube('youtube.com/feed/watch_later', 'Ke zhlédnutí později - YouTube');
@@ -3148,14 +3319,46 @@ function renderImageSlotControl(path, currentImage) {
   `;
 }
 
+// Lets Nat swap a YouTube video/short in the editor just by pasting its URL — no code changes needed.
+function extractYoutubeId(url) {
+  if (!url) return null;
+  const trimmed = url.trim();
+  let m = trimmed.match(/\/shorts\/([a-zA-Z0-9_-]{6,})/);
+  if (m) return { id: m[1], format: 'short' };
+  m = trimmed.match(/[?&]v=([a-zA-Z0-9_-]{6,})/);
+  if (m) return { id: m[1], format: 'long' };
+  m = trimmed.match(/youtu\.be\/([a-zA-Z0-9_-]{6,})/);
+  if (m) return { id: m[1], format: 'long' };
+  if (/^[a-zA-Z0-9_-]{9,15}$/.test(trimmed)) return { id: trimmed, format: 'long' };
+  return null;
+}
+
+function fetchYoutubeOembed(url) {
+  return fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`)
+    .then(r => (r.ok ? r.json() : null))
+    .catch(() => null);
+}
+
+function ytEditorUrlControl(item, itemPath) {
+  return `
+    <div class="editor-yt-link-row" data-yt-link-path="${itemPath}">
+      <input type="text" class="editor-yt-link-input" placeholder="Vlož odkaz na YouTube video nebo Short…" />
+      <button type="button" class="editor-yt-link-btn" data-yt-link-path="${itemPath}">Připojit video</button>
+      <span class="editor-yt-link-status"></span>
+    </div>
+  `;
+}
+
 function editorHeadingFor(item, i) {
   if (!isPlainObject(item)) return `#${i + 1}`;
   const candidate = item.title || item.name || item.author || item.subject || item.sender || item.date || item.label || item.text;
   return typeof candidate === 'string' ? candidate.slice(0, 70) : `#${i + 1}`;
 }
 
-function renderEditorNode(node, path, forceImageSlot) {
+function renderEditorNode(node, path, forceImageSlot, sectionKey) {
   if (Array.isArray(node)) {
+    const section = sectionKey ? EDITOR_SECTIONS.find(s => s.key === sectionKey) : null;
+    const showPrelude = section && path === section.key && typeof section.itemPrelude === 'function';
     return node.map((item, i) => {
       const itemPath = `${path}.${i}`;
       if (typeof item === 'string') {
@@ -3167,7 +3370,8 @@ function renderEditorNode(node, path, forceImageSlot) {
       return `
         <div class="editor-array-item">
           <div class="editor-array-item-heading">${editorHeadingFor(item, i)}</div>
-          ${renderEditorNode(item, itemPath, forceImageSlot)}
+          ${showPrelude ? section.itemPrelude(item, itemPath) : ''}
+          ${renderEditorNode(item, itemPath, forceImageSlot, sectionKey)}
         </div>
       `;
     }).join('');
@@ -3208,7 +3412,7 @@ function renderEditorNode(node, path, forceImageSlot) {
         html += `
           <div class="editor-nested">
             <div class="editor-nested-label">${fieldLabel(key)}</div>
-            ${renderEditorNode(val, fieldPath, false)}
+            ${renderEditorNode(val, fieldPath, false, sectionKey)}
           </div>
         `;
       }
@@ -3396,7 +3600,7 @@ function renderEditorPanel(sectionKey) {
   const section = EDITOR_SECTIONS.find(s => s.key === sectionKey);
   const panel = document.getElementById('editor-panel');
   if (!section) { panel.innerHTML = ''; return; }
-  panel.innerHTML = `<h2 class="editor-section-title">${section.label}</h2>${renderEditorNode(section.data, section.key, !!section.forceImageSlot)}`;
+  panel.innerHTML = `<h2 class="editor-section-title">${section.label}</h2>${renderEditorNode(section.data, section.key, !!section.forceImageSlot, section.key)}`;
 }
 
 function selectEditorSection(key) {
@@ -3457,6 +3661,35 @@ function attachEditorPanelHandlers() {
       e.target.remove();
       refreshOpenWindowsAfterEdit();
     }
+    if (e.target.classList.contains('editor-yt-link-btn')) {
+      const itemPath = e.target.dataset.ytLinkPath;
+      const row = e.target.closest('.editor-yt-link-row');
+      const input = row.querySelector('.editor-yt-link-input');
+      const status = row.querySelector('.editor-yt-link-status');
+      const rawUrl = input.value.trim();
+      const parsed = extractYoutubeId(rawUrl);
+      if (!parsed) {
+        status.textContent = 'Nepodařilo se rozpoznat odkaz na YouTube video.';
+        return;
+      }
+      setEditorValueAtPath(`${itemPath}.id`, parsed.id);
+      setEditorValueAtPath(`${itemPath}.format`, parsed.format);
+      setEditorValueAtPath(`${itemPath}.url`, parsed.format === 'short'
+        ? `https://www.youtube.com/shorts/${parsed.id}`
+        : `https://www.youtube.com/watch?v=${parsed.id}`);
+      scheduleSaveContentOverrides();
+      renderEditorPanel(currentEditorSectionKey);
+      refreshOpenWindowsAfterEdit();
+      fetchYoutubeOembed(rawUrl).then(data => {
+        if (data && (data.title || data.author_name)) {
+          if (data.title) setEditorValueAtPath(`${itemPath}.title`, data.title);
+          if (data.author_name) setEditorValueAtPath(`${itemPath}.channel`, data.author_name);
+          scheduleSaveContentOverrides();
+          renderEditorPanel(currentEditorSectionKey);
+          refreshOpenWindowsAfterEdit();
+        }
+      });
+    }
   });
 }
 
@@ -3506,7 +3739,7 @@ const EDITOR_SECTIONS = [
   { key: 'facerateLeaderboard', label: 'facerate.io — Leaderboard', data: FACERATE_LEADERBOARD },
   { key: 'facerateGuides', label: 'facerate.io — Guides', data: FACERATE_GUIDES },
   { key: 'facerateForum', label: 'facerate.io — Forum', data: FACERATE_FORUM },
-  { key: 'youtubeVideos', label: 'YouTube — videa', data: YT_HOME_VIDEOS, forceImageSlot: true },
+  { key: 'youtubeVideos', label: 'YouTube — videa', data: YT_HOME_VIDEOS, forceImageSlot: true, itemPrelude: ytEditorUrlControl },
   { key: 'youtubeComments', label: 'YouTube — komentáře', data: YT_COMMENTS },
   { key: 'gmail', label: 'Gmail', data: GMAIL_EMAILS },
   { key: 'grok', label: 'Grok', data: GROK_CONVERSATIONS },

@@ -2379,6 +2379,22 @@ body {
 .yt-sub-chips { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
 .yt-sub-chip { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11.5px; color: #ccc; width: 76px; text-align: center; }
 
+/* real thumbnails + watched indicator */
+.yt-thumb-img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: inherit; }
+.yt-watched-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: #ff0000; border-radius: 0 0 10px 10px; }
+
+/* watch page — "unavailable" state for non-Shorts videos */
+.yt-player-unavailable { aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; }
+.yt-unavailable-surface { text-align: center; padding: 24px; max-width: 420px; }
+.yt-unavailable-icon { font-size: 30px; color: #f1f1f1; margin-bottom: 10px; }
+.yt-unavailable-text { font-size: 14px; color: #ccc; line-height: 1.5; margin-bottom: 16px; }
+.yt-unavailable-retry { background: #272727; color: #f1f1f1; border: none; border-radius: 18px; padding: 8px 18px; font-size: 13px; cursor: pointer; }
+.yt-unavailable-retry:hover:not(:disabled) { background: #3f3f3f; }
+.yt-unavailable-retry:disabled { opacity: 0.6; cursor: default; }
+
+/* Shorts — real playback */
+.yt-shorts-iframe { flex: 1; width: 100%; border: 0; background: #000; }
+
 /* ── Systray ── */
 .systray { display: flex; align-items: center; gap: 10px; padding-right: 4px; }
 .systray-icon {
@@ -2847,6 +2863,39 @@ body {
   cursor: pointer;
 }
 .editor-image-clear:hover { background: #fbe9e7; }
+
+.editor-yt-link-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 10px;
+  background: #fff7e6;
+  border: 1px dashed #e8c675;
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+.editor-yt-link-input {
+  flex: 1;
+  min-width: 220px;
+  padding: 7px 10px;
+  border: 1px solid #d7dae0;
+  border-radius: 6px;
+  font-size: 12.5px;
+}
+.editor-yt-link-input:focus { outline: none; border-color: #0b5fff; box-shadow: 0 0 0 2px rgba(11,95,255,0.15); }
+.editor-yt-link-btn {
+  border: 1px solid #0b5fff;
+  color: #0b5fff;
+  background: #fff;
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.editor-yt-link-btn:hover { background: #eef4ff; }
+.editor-yt-link-status { font-size: 11.5px; color: #8a6d1e; flex-basis: 100%; }
 
 .editor-statusbar {
   height: 30px;
