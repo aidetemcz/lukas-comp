@@ -891,7 +891,7 @@ const FACERATE_LEADERBOARD = [
   { rank: 4, author: 'BoneStructureGod', score: '8.3' },
   { rank: 5, author: 'SlavSlayer', score: '8.1' },
   { rank: 6, author: 'sigma_apex_cz', score: '7.9' },
-  { rank: 7, author: 'MaxillaMaster', score: '7.8' },
+  { rank: 7, author: 'FrameMaxxer', score: '7.8' },
   { rank: 8, author: 'ChadleteCZ', score: '7.7' },
   { rank: 9, author: 'GlowMaxxer', score: '7.6' },
   { rank: 10, author: 'FramecelKiller', score: '7.5' }
@@ -906,14 +906,14 @@ const FACERATE_GUIDES = [
 ];
 
 const FACERATE_FORUM = [
-  { title: 'is mewing worth the hype or just cope', author: 'MaxillaMaster', replies: 47 },
-  { title: 'PSA: canthal tilt surgery success stories thread', author: 'ChadleteCZ', replies: 132 },
+  { title: 'is mewing worth the hype or just cope', author: 'FrameMaxxer', replies: 47 },
+  { title: 'PSA: canthal tilt exercises that actually worked thread', author: 'ChadleteCZ', replies: 132 },
   { title: 'why is everyone under 6\'0 seething rn', author: 'SlavSlayer', replies: 88 },
   { title: 'rate my jaw before/after mewing (6mo)', author: 'newcel_2010', replies: 21 },
   { title: 'cope thread: genetics are 90% of it, change my mind', author: 'mogged4life', replies: 210 },
   { title: 'skincare routine megathread — what\'s actually working', author: 'MTN_max', replies: 64 },
   { title: 'is looksmaxxing even worth it or just cope', author: 'dr3ad_v2', replies: 156 },
-  { title: 'heightmaxxing: limb lengthening surgery discussion', author: 'hardmog99', replies: 39 }
+  { title: 'heightmaxxing: shoe lifts and posture tricks discussion', author: 'hardmog99', replies: 39 }
 ];
 
 function frScoreClass(score) {
