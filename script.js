@@ -21,6 +21,57 @@ function startClock() {
   setInterval(updateClock, 10000);
 }
 
+// ── Window manager: draggable windows + click-to-focus stacking (classic desktop behavior) ──
+let topWindowZIndex = 900;
+let focusedWindowEl = null;
+function bringWindowToFront(windowEl) {
+  if (!windowEl) return;
+  topWindowZIndex += 1;
+  windowEl.style.zIndex = topWindowZIndex;
+  focusedWindowEl = windowEl;
+  renderTaskbarApps();
+}
+
+function makeWindowDraggable(windowEl, titlebarEl) {
+  if (!windowEl || !titlebarEl) return;
+  let dragging = false;
+  let startX = 0, startY = 0, startLeft = 0, startTop = 0;
+  titlebarEl.addEventListener('mousedown', e => {
+    if (e.target.closest('button')) return; // don't drag when clicking the close button etc.
+    dragging = true;
+    const rect = windowEl.getBoundingClientRect();
+    startX = e.clientX;
+    startY = e.clientY;
+    startLeft = rect.left;
+    startTop = rect.top;
+    windowEl.style.left = `${startLeft}px`;
+    windowEl.style.top = `${startTop}px`;
+    windowEl.style.transform = 'none';
+    document.body.style.userSelect = 'none';
+    bringWindowToFront(windowEl);
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const margin = 40;
+    let newLeft = startLeft + (e.clientX - startX);
+    let newTop = startTop + (e.clientY - startY);
+    newLeft = Math.max(margin - windowEl.offsetWidth, Math.min(newLeft, window.innerWidth - margin));
+    newTop = Math.max(0, Math.min(newTop, window.innerHeight - margin));
+    windowEl.style.left = `${newLeft}px`;
+    windowEl.style.top = `${newTop}px`;
+  });
+  document.addEventListener('mouseup', () => {
+    if (dragging) { dragging = false; document.body.style.userSelect = ''; }
+  });
+}
+
+// Any interaction inside a window brings it to front, same as clicking into any real OS window.
+function makeWindowFocusable(windowEl) {
+  if (!windowEl) return;
+  windowEl.addEventListener('mousedown', () => bringWindowToFront(windowEl));
+}
+
 // ── Icon selection + open ──
 document.querySelectorAll('.icon').forEach(icon => {
   icon.addEventListener('click', () => {
@@ -1743,14 +1794,18 @@ function attachYoutubeShellHandlers() {
 }
 
 function openChrome() {
+  const wasHidden = chromeWindow.classList.contains('hidden');
   chromeWindow.classList.remove('hidden');
-  TABS = makeInitialTabs();
-  activeTabId = 'chatgpt';
-  activeConvId = 6;
-  renderTabbar();
-  renderBookmarksBar();
-  updateAddressBar();
-  renderActivePage();
+  if (wasHidden) {
+    TABS = makeInitialTabs();
+    activeTabId = 'chatgpt';
+    activeConvId = 6;
+    renderTabbar();
+    renderBookmarksBar();
+    updateAddressBar();
+    renderActivePage();
+  }
+  bringWindowToFront(chromeWindow);
 }
 
 // ── Recycle Bin ──
@@ -1922,11 +1977,13 @@ function openTrashViewer(item) {
   trashViewerName.textContent = item.name;
   trashViewerContent.innerHTML = buildTrashViewerContent(item);
   trashViewerWindow.classList.remove('hidden');
+  bringWindowToFront(trashViewerWindow);
 }
 
 function openRecycle() {
   recycleWindow.classList.remove('hidden');
   renderRecycleList();
+  bringWindowToFront(recycleWindow);
 }
 
 // ── Discord ──
@@ -2345,14 +2402,18 @@ function renderDMConversation() {
 }
 
 function openDiscord() {
+  const wasHidden = discordWindow.classList.contains('hidden');
   discordWindow.classList.remove('hidden');
-  discordView = 'server';
-  discordActiveServerId = 'looksmaxx';
-  // ensure looksmaxx opens on self-hate-mondays
-  DISCORD.servers.find(s => s.id === 'looksmaxx').activeChannel = 'self-hate-mondays';
-  renderServerRail();
-  renderChannelPanel();
-  renderServerChannel();
+  if (wasHidden) {
+    discordView = 'server';
+    discordActiveServerId = 'looksmaxx';
+    // ensure looksmaxx opens on self-hate-mondays
+    DISCORD.servers.find(s => s.id === 'looksmaxx').activeChannel = 'self-hate-mondays';
+    renderServerRail();
+    renderChannelPanel();
+    renderServerChannel();
+  }
+  bringWindowToFront(discordWindow);
 }
 
 // Deep-link into a specific server/channel — used by the systray badge and toast notification.
@@ -2663,9 +2724,13 @@ function closePhotoModal() {
 }
 
 function openPhotos() {
-  photosPath = [PHOTOS_TREE];
+  const wasHidden = photosWindow.classList.contains('hidden');
   photosWindow.classList.remove('hidden');
-  renderPhotos();
+  if (wasHidden) {
+    photosPath = [PHOTOS_TREE];
+    renderPhotos();
+  }
+  bringWindowToFront(photosWindow);
 }
 
 // ── Counter-Strike 2 launcher ──
@@ -2795,6 +2860,7 @@ function buildCs2BodyHTML() {
 function openCs2() {
   document.getElementById('cs2-body').innerHTML = buildCs2BodyHTML();
   cs2Window.classList.remove('hidden');
+  bringWindowToFront(cs2Window);
 }
 
 // ── Halo Infinite launcher ──
@@ -2902,6 +2968,7 @@ function buildHaloBodyHTML() {
 function openHalo() {
   document.getElementById('halo-body').innerHTML = buildHaloBodyHTML();
   haloWindow.classList.remove('hidden');
+  bringWindowToFront(haloWindow);
 }
 
 // ── Duolingo (Chess course) ──
@@ -2978,6 +3045,7 @@ function buildDuolingoBodyHTML() {
 function openDuolingo() {
   document.getElementById('duolingo-body').innerHTML = buildDuolingoBodyHTML();
   duolingoWindow.classList.remove('hidden');
+  bringWindowToFront(duolingoWindow);
 }
 
 // ── Google search (embedded in Chrome) — shell only, content is placeholder ──
@@ -3324,6 +3392,7 @@ function openSelfData() {
   renderTabbar();
   updateAddressBar();
   renderActivePage();
+  bringWindowToFront(chromeWindow);
 }
 
 // ── WhatsApp Desktop ──
@@ -3434,6 +3503,7 @@ function openWhatsApp() {
   whatsappReadIds.add(whatsappOpenId);
   renderWhatsAppChatList();
   renderWhatsAppMain();
+  bringWindowToFront(whatsappWindow);
 }
 document.getElementById('systray-whatsapp').addEventListener('click', openWhatsApp);
 
@@ -3511,12 +3581,21 @@ function renderTaskbarApps() {
   const taskbarApps = document.getElementById('taskbar-apps');
   const open = TASKBAR_APPS.filter(a => a.el && !a.el.classList.contains('hidden'));
   taskbarApps.innerHTML = open.map(a => `
-    <button class="taskbar-app-btn" data-win="${a.id}"><img src="${a.icon}" alt="" />${a.label}</button>
+    <button class="taskbar-app-btn${a.el === focusedWindowEl ? ' active' : ''}" data-win="${a.id}"><img src="${a.icon}" alt="" />${a.label}</button>
   `).join('');
   taskbarApps.querySelectorAll('.taskbar-app-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const found = TASKBAR_APPS.find(a => a.id === btn.dataset.win);
-      if (found) found.el.classList.toggle('hidden');
+      if (!found) return;
+      // Same rule as any real taskbar: click the focused window's button to minimize it,
+      // click a background window's button (or a hidden one) to bring it forward.
+      if (found.el === focusedWindowEl) {
+        found.el.classList.add('hidden');
+        focusedWindowEl = null;
+      } else {
+        found.el.classList.remove('hidden');
+        bringWindowToFront(found.el);
+      }
     });
   });
 }
@@ -4052,3 +4131,20 @@ snapshotEditorDefaults();
 loadContentOverrides();
 startClock();
 setTimeout(showToastNotification, 900);
+
+// Make every app window draggable by its titlebar and focusable on click, like a real desktop.
+[
+  [chromeWindow, '.chrome-titlebar'],
+  [discordWindow, '.discord-titlebar'],
+  [photosWindow, '.explorer-titlebar'],
+  [recycleWindow, '.explorer-titlebar'],
+  [trashViewerWindow, '.explorer-titlebar'],
+  [cs2Window, '.cs2-titlebar'],
+  [haloWindow, '.halo-titlebar'],
+  [duolingoWindow, '.duolingo-titlebar'],
+  [whatsappWindow, '.wa-titlebar']
+].forEach(([win, titlebarSelector]) => {
+  if (!win) return;
+  makeWindowDraggable(win, win.querySelector(titlebarSelector));
+  makeWindowFocusable(win);
+});

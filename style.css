@@ -114,6 +114,15 @@ body {
 }
 .taskbar-app-btn:hover { background: rgba(255,255,255,0.16); }
 .taskbar-app-btn img { width: 18px; height: 18px; }
+.taskbar-app-btn.active { background: rgba(255,255,255,0.28); box-shadow: inset 0 -2px 0 #fff; }
+.taskbar-app-btn.active:hover { background: rgba(255,255,255,0.32); }
+
+/* Draggable window titlebars — classic desktop window behavior */
+.chrome-titlebar, .discord-titlebar, .explorer-titlebar, .cs2-titlebar,
+.halo-titlebar, .duolingo-titlebar, .wa-titlebar {
+  cursor: move;
+  user-select: none;
+}
 
 #taskbar-right {
   display: flex;
