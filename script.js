@@ -1777,15 +1777,6 @@ const RECYCLE_ITEMS = [
     caption: 'moje_foto_upraveno_v4.jpg — silnější čelist (AI úprava)'
   },
   {
-    id: 'yunko',
-    name: 'yunko_furuta_screenshot.png',
-    deletedDate: '12. 3. 2026',
-    size: '890 KB',
-    icon: 'assets/icons/file-image.svg',
-    type: 'image-missing',
-    caption: '[Screenshot z Discord serveru Looksmaxx CZ/SK, kanál #self-hate-mondays, 12. 3. 2026. Zobrazuje článek o Junko Furuta s komentářem od uživatele]'
-  },
-  {
     id: 'dopis-petrovi',
     name: 'dopis_petrovi.txt',
     deletedDate: '8. 2. 2026',
@@ -2101,8 +2092,6 @@ const DISCORD = {
             { author: 'glow_v3', time: '08:14', date: '9. 3. 2026', texts: ['právě mě mogla holka na tramvaji ktera nedostane na SŠ', 'to byla ta poslední kapka', '💀💀💀'], reactions: [{ emoji: '💀', count: 6, byLukas: true }] },
             { author: 'KOROLEV_88', time: '09:20', date: '9. 3. 2026', texts: ['another monday another reminder ze jsem framecel'] },
             { author: 'mchmch', time: '09:31', date: '9. 3. 2026', texts: ['cope harder brácho, aspoň máš vlasy. já mám recessed hairline v 19'], reactions: [{ emoji: '😭', count: 3 }] },
-            { author: 'dr3ad_v2', time: '03:14', date: '12. 3. 2026', texts: ['tohle sem posílám vždycky když si někdo myslí že na tom nezáleží'], attachment: { type: 'sensitive', caption: '[Screenshot – článek o Junko Furuta s komentářem uživatele. Extrémní obsah.]', filename: 'reminder.png' } },
-            { author: 'glow_v3', time: '03:40', date: '12. 3. 2026', texts: ['ježiš vole', 'proč to sem taháš'] },
             { author: 'aleph_null', time: '07:02', date: '16. 3. 2026', texts: ['dnešní blackpill: usmál jsem se na kolegyni v práci, dostal jsem „HR meeting“. it\'s over.'], reactions: [{ emoji: '📉', count: 4 }, { emoji: '🥀', count: 2 }] },
             { author: 'KOROLEV_88', time: '23:55', date: '23. 3. 2026', texts: ['nový týden, stejnej obličej. LDAR režim aktivován'], reactions: [{ emoji: '💀', count: 5, byLukas: true }, { emoji: '🧎', count: 2 }] }
           ]
