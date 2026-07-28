@@ -434,7 +434,7 @@ const HISTORY_DAYS = [
 const INITIAL_TABS_TEMPLATE = [
   { id: 'chatgpt', type: 'chatgpt', title: 'ChatGPT', url: 'chat.openai.com/c/6f2a91d0-8b3e-4c1a-9f2d-3a7e5c0b1d44', favicon: 'assets/icons/chatgpt.svg' },
   { id: 'facerate', type: 'facerate', title: 'facerate.io — Upload', url: 'facerate.io/upload', favicon: 'assets/icons/fav-facerate.svg' },
-  { id: 'youtube', type: 'youtube', title: 'Passport Bros be like - YouTube', url: 'youtube.com/shorts/bawiCfLxe_g', favicon: 'assets/icons/fav-youtube.svg' },
+  { id: 'youtube', type: 'youtube', title: 'Andrew Tate On Hypergamy - YouTube', url: 'youtube.com/shorts/B7kvX7QZc0U', favicon: 'assets/icons/fav-youtube.svg' },
   { id: 'google-search', type: 'google', title: 'vlak plzeň hlavní praha víkend - Hledat Googlem', url: 'google.com/search?q=vlak+plzen+hlavni+praha+vikend', favicon: 'assets/icons/fav-google.svg' },
   { id: 'gmail', type: 'gmail', title: 'Doručená pošta – Gmail', url: 'mail.google.com/mail/u/0/#inbox', favicon: 'assets/icons/fav-gmail.svg' }
 ];
@@ -447,8 +447,9 @@ function makeInitialTabs() {
   try {
     const ytTab = tabs.find(t => t.id === 'youtube');
     if (ytTab) {
+      // getShortsIds() is sorted newest-first, so index 0 is the most recent short.
       const shortsIds = getShortsIds();
-      const lastShortId = shortsIds[shortsIds.length - 1];
+      const lastShortId = shortsIds[0];
       if (lastShortId) {
         const v = resolveVideoById(lastShortId);
         ytTab.url = `youtube.com/shorts/${lastShortId}`;
@@ -1238,7 +1239,6 @@ const YT_HOME_VIDEOS = [
   { id: '0YhbQvsTDi0', title: 'Blind Dating Guys After Looksmaxxing', channel: 'kickback', url: 'https://www.youtube.com/watch?v=0YhbQvsTDi0', format: 'long', phase: 6, category: 'manosphere', date: '2026-01-29', watched: true, views: '4,8 mil. zhlédnutí', duration: '18:24' },
 
   { id: 'B7kvX7QZc0U', title: 'Andrew Tate On Hypergamy', channel: 'Tate Storys', url: 'https://www.youtube.com/shorts/B7kvX7QZc0U', format: 'short', phase: 7, category: 'manosphere', date: '2026-02-03', watched: true, views: '14 mil. zhlédnutí', duration: '0:49' },
-  { id: 'bawiCfLxe_g', title: 'Passport Bros be like', channel: 'Content Machine', url: 'https://www.youtube.com/shorts/bawiCfLxe_g', format: 'short', phase: 7, category: 'manosphere', date: '2026-02-10', watched: true, views: '3,7 mil. zhlédnutí', duration: '0:36' },
   { id: 't-3CbS5m7XE', title: 'How To Rate Your Attractiveness Using Science', channel: 'Zoomology', url: 'https://www.youtube.com/watch?v=t-3CbS5m7XE', format: 'long', phase: 7, category: 'manosphere', date: '2026-02-15', watched: true, views: '2,9 mil. zhlédnutí', duration: '16:07' },
   { id: 'zCcNky0_eys', title: 'Face Rating + Looksmaxxing Redditors (With Brutal Honesty)', channel: 'FaceIQ', url: 'https://www.youtube.com/watch?v=zCcNky0_eys', format: 'long', phase: 7, category: 'manosphere', date: '2026-02-22', watched: true, views: '1,1 mil. zhlédnutí', duration: '21:16' },
 
@@ -1253,8 +1253,14 @@ const YT_HOME_VIDEOS = [
   { id: 'sEWIDdQKWgc', title: "yeah... no wonder he doesn't use social media", channel: 'Du Cinema', url: 'https://www.youtube.com/watch?v=sEWIDdQKWgc', format: 'long', phase: 8, category: 'incel', date: '2026-03-22', watched: true, views: '190 tis. zhlédnutí', duration: '5:27' }
 ];
 
+// Shorts feed order mirrors his actual viewing chronology: newest (hardest blackpill
+// content) at the top, oldest (benign) at the bottom — the direction the algorithm
+// actually pushed him, reversed for a top-to-bottom feed read.
 function getShortsIds() {
-  return YT_HOME_VIDEOS.filter(v => v.format === 'short').map(v => v.id);
+  return YT_HOME_VIDEOS
+    .filter(v => v.format === 'short')
+    .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+    .map(v => v.id);
 }
 
 function sortedHomeVideos() {
