@@ -647,6 +647,10 @@ function navigateActiveTab(title, url) {
   } else if (url.startsWith('selfos.local')) {
     tab.type = 'selfdata';
     tab.title = title;
+  } else if (matchGenericSite(url)) {
+    tab.type = 'genericsite';
+    tab.siteKey = matchGenericSite(url);
+    tab.title = title;
   } else {
     tab.type = 'blank';
     tab.title = title;
@@ -719,6 +723,345 @@ function buildErrorPageHTML(url) {
       </div>
     </div>
   `;
+}
+
+// ── Generic bookmark sites (real content instead of "site can't be reached") ──
+const GENERIC_SITES = {
+  'moodle.skola.cz': {
+    kind: 'schedule',
+    siteName: 'Moodle',
+    className: '1.A',
+    times: ['8:00–8:45', '8:55–9:40', '9:50–10:35', '10:55–11:40', '11:50–12:35', '12:45–13:30'],
+    days: [
+      { day: 'Po', subjects: ['Matematika', 'Český jazyk', 'Angličtina', 'Fyzika', 'Tělesná výchova', 'Dějepis'] },
+      { day: 'Út', subjects: ['Chemie', 'Matematika', 'Český jazyk', 'Biologie', 'Zeměpis', '—'] },
+      { day: 'St', subjects: ['Angličtina', 'Informatika', 'Matematika', 'Tělesná výchova', 'Český jazyk', '—'] },
+      { day: 'Čt', subjects: ['Fyzika', 'Chemie', 'Angličtina', 'Matematika', 'Dějepis', 'Biologie'] },
+      { day: 'Pá', subjects: ['Český jazyk', 'Zeměpis', 'Matematika', 'Informatika', '—', '—'] }
+    ]
+  },
+  'classroom.google.com': {
+    kind: 'classroom',
+    siteName: 'Google Classroom',
+    className: '1.A',
+    posts: [
+      { author: 'Mgr. Nováková (Matematika)', time: 'včera', text: 'Úkol: strana 42, příklady 1–8. Odevzdat do pátku.' },
+      { author: 'Mgr. Svoboda (Fyzika)', time: 'před 2 dny', text: 'Zítra píšeme test na téma mechanika. Zopakujte si vzorce z kapitoly 3.' },
+      { author: 'Mgr. Nováková (Matematika)', time: 'před 4 dny', text: 'Sešity na kontrolu si prosím nechte ve škole.' },
+      { author: 'Třídní učitelka', time: 'před týdnem', text: 'Připomínka: příští čtvrtek třídní schůzky od 17:00.' }
+    ]
+  },
+  'homegym-plan.cz': {
+    kind: 'article',
+    siteName: 'homegym-plan.cz',
+    theme: 'light',
+    title: 'Kalisthenika pro začátečníky – plán',
+    byline: 'Domácí tréninkový plán · 4 týdny',
+    paragraphs: [
+      'Nepotřebuješ posilovnu ani činky. Stačí vlastní váha, trocha místa na podlaze a disciplína. Tenhle plán je pro úplné začátečníky — cíl je vydržet 4 týdny bez vynechání.'
+    ],
+    list: [
+      'Týden 1: kliky 3×8, dřepy 3×15, prkno 3×20 s',
+      'Týden 2: kliky 3×10, dřepy 3×18, prkno 3×25 s, výpady 3×10',
+      'Týden 3: kliky 3×12, dřepy 3×20, prkno 3×30 s, výpady 3×12',
+      'Týden 4: kliky 4×12, dřepy 4×20, prkno 4×30 s, výpady 4×12, + první shyby (i s pomocí)'
+    ]
+  },
+  'streetworkout.cz': {
+    kind: 'article',
+    siteName: 'streetworkout.cz',
+    theme: 'light',
+    title: 'Street workout progression guide',
+    byline: 'Progression roadmap · od nuly po muscle-up',
+    paragraphs: [
+      'Street workout není o tom, kolik zvedneš — je o tom, co dokážeš se svým vlastním tělem. Tahle cesta trvá měsíce, ne týdny. Nepřeskakuj kroky.'
+    ],
+    list: [
+      'Fáze 1 — základ: kliky, dřepy, australské shyby (nízká hrazda)',
+      'Fáze 2 — síla: negativní shyby, shyby s gumou, dipy na bradlech',
+      'Fáze 3 — objem: 5+ čistých shybů, 10+ dipů, L-sit progres',
+      'Fáze 4 — pokročilé: muscle-up, pistol squat, handstand progres'
+    ]
+  },
+  'fitness-doma.cz': {
+    kind: 'article',
+    siteName: 'fitness-doma.cz',
+    theme: 'light',
+    title: 'Domácí posilovna bez vybavení',
+    byline: 'Žádné vybavení, žádné výmluvy',
+    paragraphs: [
+      'Batoh plný knih se dá proměnit v závaží. Židle poslouží na tricepsové kliky. Zeď je opora na handstand progrese. Prostor doma stačí — chce to jen kreativitu.'
+    ],
+    list: [
+      'Kliky (klasické, diamantové, na jednu ruku s pomocí)',
+      'Dřepy a výpady s batohem plným knih',
+      'Tricepsové kliky o židli',
+      'Plank varianty (klasický, boční, s pohybem)'
+    ]
+  },
+  'grindmindset.cz': {
+    kind: 'article',
+    siteName: 'grindmindset.cz',
+    theme: 'dark',
+    title: 'Ranní rutina 5 AM',
+    byline: 'GRIND MINDSET · disciplína dělá rozdíl',
+    paragraphs: [
+      'Vstávat v 5 ráno není o tom, kolik hodin spíš navíc nebo míň — je o tom, že si den ukradneš zpátky dřív, než ho ukradne někdo jiný.'
+    ],
+    list: [
+      '5:00 — studená sprcha',
+      '5:15 — 20 minut cvičení',
+      '5:40 — žádný telefon, jen voda a ticho',
+      '6:00 — plán na den, tři priority, žádné výmluvy'
+    ]
+  },
+  'highvaluemale.co': {
+    kind: 'article',
+    siteName: 'highvaluemale.co',
+    theme: 'dark',
+    title: 'High Value Man checklist',
+    byline: '10 vlastností, které tě posunou nahoru',
+    paragraphs: [],
+    list: [
+      'Má fyzičku, o kterou se stará — ne pro ostatní, pro sebe.',
+      'Má finanční plán, i kdyby vydělával málo.',
+      'Nechodí za pozorností — pozornost jde za ním.',
+      'Umí říct ne, i když by to bylo pohodlnější říct ano.',
+      'Nemluví o plánech — ukazuje výsledky.',
+      'Zvládá odmítnutí bez dramatu.',
+      'Má standardy a nemění je kvůli jedné osobě.',
+      'Investuje do sebe dřív, než investuje do vztahu.',
+      'Neztrácí frame, i když je pod tlakem.',
+      'Ví, kam jde — i když tam ještě není.'
+    ]
+  },
+  'looksmaxx-tips.com': {
+    kind: 'tipslist',
+    siteName: 'looksmaxx-tips.com',
+    theme: 'light',
+    tips: [
+      { title: 'Mewing: základy pro začátečníky', meta: '5 min čtení' },
+      { title: 'Canthal tilt — jak ho poznat a co s ním', meta: '7 min čtení' },
+      { title: '3 návyky, které zlepší tvůj skin bez utrácení', meta: '4 min čtení' },
+      { title: 'Držení těla ovlivňuje víc, než čekáš', meta: '6 min čtení' },
+      { title: 'Spánek jako looksmaxxing nástroj č. 1', meta: '5 min čtení' }
+    ]
+  },
+  'jointherealworld.com': {
+    kind: 'landing',
+    siteName: 'The Real World',
+    theme: 'dark',
+    headline: 'ESCAPE THE MATRIX.',
+    subheadline: 'Škola tě připravuje na to, abys byl zaměstnanec. My tě naučíme, jak být svůj vlastní šéf.',
+    ctaText: 'PŘIDAT SE TEĎ — $49.99/měsíc',
+    features: ['E-commerce', 'Copywriting', 'Kryptoměny', 'Business Mastery', 'Sociální sítě'],
+    testimonial: '„Za 3 měsíce jsem si vydělal první tisícovku dolarů online.“ — student, 17 let'
+  },
+  'chadrating.co': {
+    kind: 'landing',
+    siteName: 'chadrating.co',
+    theme: 'dark',
+    headline: 'Zjisti svůj skutečný PSL rating.',
+    subheadline: 'Komunita 40 000+ lidí, kteří ti řeknou brutální pravdu o tom, jak vypadáš.',
+    ctaText: 'NAHRÁT FOTKU A ZJISTIT SVÉ SKÓRE',
+    features: ['Anonymní hodnocení', 'Detailní breakdown', 'Srovnání s komunitou', 'Tipy na zlepšení'],
+    testimonial: '„Bolelo to, ale konečně jsem věděl, na čem jsem.“ — anonymní uživatel'
+  },
+  'looksmax.org': {
+    kind: 'forum',
+    siteName: 'looksmax.org',
+    theme: 'dark',
+    threads: [
+      { title: 'ratemy jaw please, be honest', author: 'anon4821', replies: 34 },
+      { title: 'is skin really 50% of looks?', author: 'copeless', replies: 67 },
+      { title: 'daily reminder: genetics > everything you do', author: 'truthteller99', replies: 152 },
+      { title: 'mewing 8 months progress (pics)', author: 'jawgrind', replies: 41 },
+      { title: 'how much does frame actually matter', author: 'boneheavy', replies: 29 },
+      { title: 'PSL scale explained for newcomers', author: 'mod_apex', replies: 88 }
+    ]
+  },
+  'reddit.com/r/orthotropics': {
+    kind: 'reddit',
+    subreddit: 'orthotropics',
+    members: '184 tis.',
+    description: 'Diskuze o orální myofunkční terapii, mewingu a přirozeném vývoji obličeje.',
+    posts: [
+      { title: 'Mewing 2 roky - progress pics uvnitř', author: 'u/jawlineseeker', upvotes: '1,2 tis.', comments: 89 },
+      { title: 'Je nutné navštívit myofunkčního terapeuta, nebo stačí YouTube návody?', author: 'u/breathe_nose', upvotes: 340, comments: 156 },
+      { title: 'Rozdíl mezi hard mewingem a soft mewingem — vysvětleno', author: 'u/tongue_posture', upvotes: 512, comments: 47 },
+      { title: 'Moje čelist se za rok opravdu změnila (ne clickbait)', author: 'u/patient_glowup', upvotes: 890, comments: 203 }
+    ]
+  },
+  'reddit.com/r/looksmax': {
+    kind: 'reddit',
+    subreddit: 'looksmax',
+    members: '210 tis.',
+    description: 'Sebezlepšování vzhledu — cvičení, styl, skincare, postoj.',
+    posts: [
+      { title: 'Rate my glowup — 1 rok gymu a skincare rutiny', author: 'u/glowup_grind', upvotes: '2,4 tis.', comments: 178 },
+      { title: 'Je canthal tilt jen o makeupu/obočí, nebo se dá fakt trénovat?', author: 'u/tiltcurious', upvotes: 156, comments: 92 },
+      { title: 'Genetika je 70 %, zbytek je návyky. Change my mind.', author: 'u/copeordope', upvotes: 445, comments: 312 },
+      { title: 'PSL scale je pseudo věda a měli bychom si to přiznat', author: 'u/skeptical_mogger', upvotes: 89, comments: 267 }
+    ]
+  }
+};
+
+function matchGenericSite(url) {
+  return Object.keys(GENERIC_SITES).find(key => url.startsWith(key)) || null;
+}
+
+function scheduleSiteHTML(site) {
+  return `
+    <div class="site-page light">
+      <header class="site-header moodle-header">
+        <span class="site-logo">🎓 ${site.siteName}</span>
+        <span class="site-header-sub">Třída ${site.className} — Rozvrh hodin</span>
+      </header>
+      <div class="site-body">
+        <table class="schedule-table">
+          <thead><tr><th></th>${site.days.map(d => `<th>${d.day}</th>`).join('')}</tr></thead>
+          <tbody>
+            ${site.times.map((time, i) => `
+              <tr>
+                <td class="schedule-time">${time}</td>
+                ${site.days.map(d => `<td>${d.subjects[i] || '—'}</td>`).join('')}
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function classroomSiteHTML(site) {
+  return `
+    <div class="site-page light">
+      <header class="site-header classroom-header">
+        <span class="site-logo">📚 ${site.siteName}</span>
+        <span class="site-header-sub">Třída ${site.className}</span>
+      </header>
+      <div class="site-body classroom-stream">
+        ${site.posts.map(p => `
+          <div class="classroom-post">
+            <div class="classroom-post-head"><span class="classroom-author">${p.author}</span><span class="classroom-time">${p.time}</span></div>
+            <div class="classroom-text">${p.text}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function articleSiteHTML(site) {
+  return `
+    <div class="site-page ${site.theme}">
+      <header class="site-header article-header">
+        <span class="site-logo">${site.siteName}</span>
+      </header>
+      <div class="site-body article-body">
+        <h1 class="article-title">${site.title}</h1>
+        <div class="article-byline">${site.byline}</div>
+        ${site.paragraphs.map(p => `<p>${p}</p>`).join('')}
+        ${site.list ? `<ul class="article-list">${site.list.map(li => `<li>${li}</li>`).join('')}</ul>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function tipsListSiteHTML(site) {
+  return `
+    <div class="site-page ${site.theme}">
+      <header class="site-header article-header">
+        <span class="site-logo">${site.siteName}</span>
+      </header>
+      <div class="site-body">
+        <div class="tipslist">
+          ${site.tips.map(t => `
+            <div class="tipslist-card">
+              <div class="tipslist-title">${t.title}</div>
+              <div class="tipslist-meta">${t.meta}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function landingSiteHTML(site) {
+  return `
+    <div class="site-page ${site.theme}">
+      <div class="landing-hero">
+        <div class="landing-logo">${site.siteName}</div>
+        <h1 class="landing-headline">${site.headline}</h1>
+        <div class="landing-sub">${site.subheadline}</div>
+        <button class="landing-cta">${site.ctaText}</button>
+        <div class="landing-features">${site.features.map(f => `<span class="landing-feature-chip">${f}</span>`).join('')}</div>
+        <div class="landing-testimonial">${site.testimonial}</div>
+      </div>
+    </div>
+  `;
+}
+
+function forumSiteHTML(site) {
+  return `
+    <div class="site-page ${site.theme}">
+      <header class="site-header article-header">
+        <span class="site-logo">${site.siteName}</span>
+      </header>
+      <div class="site-body">
+        <div class="genforum">
+          ${site.threads.map(t => `
+            <div class="genforum-row">
+              <div class="genforum-title">${t.title}</div>
+              <div class="genforum-meta"><span>${t.author}</span><span>${t.replies} odpovědí</span></div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function redditSiteHTML(site) {
+  return `
+    <div class="site-page light">
+      <header class="site-header reddit-header">
+        <span class="site-logo">🔶 r/${site.subreddit}</span>
+        <span class="site-header-sub">${site.members} členů</span>
+      </header>
+      <div class="site-body">
+        <div class="reddit-desc">${site.description}</div>
+        <div class="reddit-posts">
+          ${site.posts.map(p => `
+            <div class="reddit-post">
+              <div class="reddit-post-votes">▲<span>${p.upvotes}</span>▼</div>
+              <div class="reddit-post-body">
+                <div class="reddit-post-title">${p.title}</div>
+                <div class="reddit-post-meta">${p.author} · ${p.comments} komentářů</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function buildGenericSiteHTML(siteKey) {
+  const site = GENERIC_SITES[siteKey];
+  if (!site) return buildErrorPageHTML(siteKey);
+  switch (site.kind) {
+    case 'schedule': return scheduleSiteHTML(site);
+    case 'classroom': return classroomSiteHTML(site);
+    case 'article': return articleSiteHTML(site);
+    case 'tipslist': return tipsListSiteHTML(site);
+    case 'landing': return landingSiteHTML(site);
+    case 'forum': return forumSiteHTML(site);
+    case 'reddit': return redditSiteHTML(site);
+    default: return buildErrorPageHTML(siteKey);
+  }
 }
 
 function buildHistoryPageHTML() {
@@ -862,6 +1205,8 @@ function renderActivePage() {
     attachGrokHandlers();
   } else if (tab.type === 'selfdata') {
     chromePage.innerHTML = buildSelfDataPageHTML();
+  } else if (tab.type === 'genericsite') {
+    chromePage.innerHTML = buildGenericSiteHTML(tab.siteKey);
   } else {
     chromePage.innerHTML = buildErrorPageHTML(tab.url);
   }
@@ -4097,6 +4442,7 @@ const EDITOR_SECTIONS = [
   { key: 'chromeHistory', label: 'Chrome — historie', data: HISTORY_DAYS },
   { key: 'chromeBookmarks', label: 'Chrome — záložky', data: BOOKMARKS_BAR },
   { key: 'chromeTabs', label: 'Chrome — výchozí otevřené taby', data: INITIAL_TABS_TEMPLATE },
+  { key: 'genericSites', label: 'Chrome — obsah záložek', data: GENERIC_SITES },
   { key: 'discord', label: 'Discord', data: DISCORD },
   { key: 'recycle', label: 'Koš', data: RECYCLE_ITEMS },
   { key: 'photos', label: 'Fotky a videa', data: PHOTOS_TREE },

@@ -438,6 +438,119 @@ body {
 }
 .chrome-error-reload:hover { background: #f6f8fa; }
 
+/* ── Generic bookmark sites (school/gym/grind/looksmaxx content) ── */
+.site-page {
+  height: 100%;
+  overflow-y: auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+.site-page.light { background: #fff; color: #202124; }
+.site-page.dark { background: #0b0c14; color: #d8dbe6; }
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  padding: 20px 32px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.site-page.light .site-header { background: #fff; border-bottom: 1px solid #e8eaed; }
+.site-page.dark .site-header { background: linear-gradient(180deg, #0e0f1a, #0b0c14 90%); border-bottom: 1px solid #1e2030; }
+.site-logo { font-size: 18px; font-weight: 700; }
+.site-page.dark .site-logo { color: #f2f4ff; }
+.site-header-sub { font-size: 12.5px; color: #7d8299; }
+.site-page.light .site-header-sub { color: #5f6368; }
+.site-body { padding: 24px 32px 48px; max-width: 760px; }
+
+/* Moodle schedule */
+.schedule-table { border-collapse: collapse; width: 100%; font-size: 13px; }
+.schedule-table th, .schedule-table td { padding: 10px 14px; text-align: center; border: 1px solid #e8eaed; }
+.schedule-table th { background: #f1f3f4; font-weight: 600; color: #3c4043; }
+.schedule-table td.schedule-time { font-weight: 600; color: #5f6368; background: #f8f9fa; }
+
+/* Google Classroom */
+.classroom-stream { display: flex; flex-direction: column; gap: 14px; }
+.classroom-post { border: 1px solid #e8eaed; border-radius: 8px; padding: 14px 18px; }
+.classroom-post-head { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.classroom-author { font-size: 13px; font-weight: 600; color: #202124; }
+.classroom-time { font-size: 12px; color: #8a9099; }
+.classroom-text { font-size: 13.5px; line-height: 1.6; color: #3c4043; }
+
+/* Generic article (gym / grind / looksmaxx blog posts) */
+.article-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+.article-byline { font-size: 12.5px; color: #7d8299; margin-bottom: 20px; }
+.site-page.light .article-byline { color: #5f6368; }
+.article-body p { font-size: 14px; line-height: 1.75; margin-bottom: 14px; }
+.article-list { margin: 8px 0 0; padding-left: 20px; }
+.article-list li { font-size: 13.5px; line-height: 1.9; }
+
+/* Tips list cards */
+.tipslist { display: flex; flex-direction: column; gap: 10px; }
+.tipslist-card { border-radius: 10px; padding: 14px 18px; }
+.site-page.light .tipslist-card { background: #f8f9fa; border: 1px solid #e8eaed; }
+.tipslist-title { font-size: 14px; font-weight: 600; }
+.tipslist-meta { font-size: 12px; color: #8a9099; margin-top: 4px; }
+
+/* Landing pages (The Real World / chadrating) */
+.landing-hero { max-width: 640px; margin: 0 auto; padding: 60px 32px 48px; text-align: center; }
+.landing-logo { font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #7d8299; margin-bottom: 18px; text-transform: uppercase; }
+.landing-headline { font-size: 34px; font-weight: 800; line-height: 1.2; margin-bottom: 16px; }
+.site-page.dark .landing-headline { color: #f2f4ff; text-shadow: 0 0 16px rgba(0,229,255,0.35); }
+.landing-sub { font-size: 15px; line-height: 1.6; color: #9198ad; margin-bottom: 28px; }
+.landing-cta {
+  font-size: 14px;
+  font-weight: 700;
+  padding: 14px 28px;
+  border-radius: 8px;
+  border: none;
+  background: #00e5ff;
+  color: #0b0c14;
+  cursor: pointer;
+  margin-bottom: 32px;
+}
+.landing-cta:hover { background: #33ebff; }
+.landing-features { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 28px; }
+.landing-feature-chip {
+  font-size: 12px;
+  color: #d8dbe6;
+  background: #14162280;
+  border: 1px solid #2a2d40;
+  border-radius: 999px;
+  padding: 6px 14px;
+}
+.landing-testimonial { font-size: 13px; font-style: italic; color: #7d8299; }
+
+/* Generic forum (looksmax.org) */
+.genforum { display: flex; flex-direction: column; gap: 2px; }
+.genforum-row { padding: 12px 14px; border-bottom: 1px solid #1c1f2c; }
+.genforum-title { font-size: 13.5px; color: #e2e4f0; }
+.genforum-meta { display: flex; gap: 14px; font-size: 11.5px; color: #7d8299; margin-top: 4px; }
+
+/* Reddit */
+.reddit-desc { font-size: 13px; color: #5f6368; margin-bottom: 20px; }
+.reddit-posts { display: flex; flex-direction: column; gap: 10px; }
+.reddit-post {
+  display: flex;
+  gap: 14px;
+  border: 1px solid #e8eaed;
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+.reddit-post-votes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 11px;
+  color: #ff4500;
+  font-weight: 700;
+  flex-shrink: 0;
+  width: 32px;
+}
+.reddit-post-title { font-size: 13.5px; font-weight: 600; color: #202124; }
+.reddit-post-meta { font-size: 12px; color: #8a9099; margin-top: 4px; }
+
 /* ── ChatGPT UI (embedded in Chrome) ── */
 #chatgpt-app {
   display: flex;
