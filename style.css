@@ -119,7 +119,7 @@ body {
 
 /* Draggable window titlebars — classic desktop window behavior */
 .chrome-titlebar, .discord-titlebar, .explorer-titlebar, .cs2-titlebar,
-.halo-titlebar, .duolingo-titlebar, .wa-titlebar {
+.halo-titlebar, .wa-titlebar {
   cursor: move;
   user-select: none;
 }
@@ -271,55 +271,6 @@ body {
 .chrome-menu-shortcut { color: #8a8a8a; font-size: 11.5px; }
 .chrome-menu-sep { height: 1px; background: #eee; margin: 6px 0; }
 
-/* ── Bookmarks bar ── */
-.chrome-bookmarks-bar {
-  height: 32px;
-  flex-shrink: 0;
-  background: #fff;
-  border-bottom: 1px solid #e5e5e5;
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  gap: 2px;
-  position: relative;
-}
-.chrome-bookmark-folder {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  height: 26px;
-  padding: 0 10px;
-  border-radius: 5px;
-  font-size: 12px;
-  color: #3c4043;
-  cursor: pointer;
-}
-.chrome-bookmark-folder:hover, .chrome-bookmark-folder.open { background: #eef0f2; }
-.chrome-bookmark-folder-icon { width: 14px; height: 14px; flex-shrink: 0; color: #b9860a; }
-.chrome-bookmark-dropdown {
-  position: absolute;
-  top: 32px;
-  background: #fff;
-  border-radius: 6px;
-  box-shadow: 0 4px 18px rgba(0,0,0,0.22);
-  padding: 6px 0;
-  min-width: 240px;
-  z-index: 950;
-  font-size: 12.5px;
-}
-.chrome-bookmark-dropdown.hidden { display: none; }
-.chrome-bookmark-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 14px;
-  color: #1f1f1f;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.chrome-bookmark-item:hover { background: #f1f3f4; }
-.chrome-bookmark-item img { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
-
 .chrome-page {
   flex: 1;
   overflow: hidden;
@@ -438,7 +389,7 @@ body {
 }
 .chrome-error-reload:hover { background: #f6f8fa; }
 
-/* ── Generic bookmark sites (school/gym/grind/looksmaxx content) ── */
+/* ── Generic sites (linked from Chrome history) ── */
 .site-page {
   height: 100%;
   overflow-y: auto;
@@ -462,28 +413,6 @@ body {
 .site-header-sub { font-size: 12.5px; color: #7d8299; }
 .site-page.light .site-header-sub { color: #5f6368; }
 .site-body { padding: 24px 32px 48px; max-width: 760px; }
-
-/* Moodle schedule */
-.schedule-table { border-collapse: collapse; width: 100%; font-size: 13px; }
-.schedule-table th, .schedule-table td { padding: 10px 14px; text-align: center; border: 1px solid #e8eaed; }
-.schedule-table th { background: #f1f3f4; font-weight: 600; color: #3c4043; }
-.schedule-table td.schedule-time { font-weight: 600; color: #5f6368; background: #f8f9fa; }
-
-/* Google Classroom */
-.classroom-stream { display: flex; flex-direction: column; gap: 14px; }
-.classroom-post { border: 1px solid #e8eaed; border-radius: 8px; padding: 14px 18px; }
-.classroom-post-head { display: flex; justify-content: space-between; margin-bottom: 6px; }
-.classroom-author { font-size: 13px; font-weight: 600; color: #202124; }
-.classroom-time { font-size: 12px; color: #8a9099; }
-.classroom-text { font-size: 13.5px; line-height: 1.6; color: #3c4043; }
-
-/* Generic article (gym / grind / looksmaxx blog posts) */
-.article-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
-.article-byline { font-size: 12.5px; color: #7d8299; margin-bottom: 20px; }
-.site-page.light .article-byline { color: #5f6368; }
-.article-body p { font-size: 14px; line-height: 1.75; margin-bottom: 14px; }
-.article-list { margin: 8px 0 0; padding-left: 20px; }
-.article-list li { font-size: 13.5px; line-height: 1.9; }
 
 /* Tips list cards */
 .tipslist { display: flex; flex-direction: column; gap: 10px; }
@@ -520,12 +449,6 @@ body {
   padding: 6px 14px;
 }
 .landing-testimonial { font-size: 13px; font-style: italic; color: #7d8299; }
-
-/* Generic forum (looksmax.org) */
-.genforum { display: flex; flex-direction: column; gap: 2px; }
-.genforum-row { padding: 12px 14px; border-bottom: 1px solid #1c1f2c; }
-.genforum-title { font-size: 13.5px; color: #e2e4f0; }
-.genforum-meta { display: flex; gap: 14px; font-size: 11.5px; color: #7d8299; margin-top: 4px; }
 
 /* Reddit */
 .reddit-desc { font-size: 13px; color: #5f6368; margin-bottom: 20px; }
@@ -1462,35 +1385,6 @@ body {
 .photos-modal-preview .pv-bank .bank-balance { font-size: 40px; }
 .photos-modal-preview .pv-bank .bank-note { font-size: 14px; padding: 8px 12px; }
 
-/* duolingo */
-.pv-duo {
-  background: #fff;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-.pv-duo .duo-header { color: #58cc02; font-weight: 800; font-size: 10px; }
-.pv-duo .duo-streak { display: flex; align-items: center; gap: 4px; font-size: 20px; font-weight: 800; color: #ff9600; }
-.pv-duo .duo-label { font-size: 8px; color: #777; }
-.photos-modal-preview .pv-duo .duo-header { font-size: 22px; }
-.photos-modal-preview .pv-duo .duo-streak { font-size: 52px; }
-.photos-modal-preview .pv-duo .duo-label { font-size: 15px; }
-.cz-flag {
-  width: 20px; height: 14px;
-  background: linear-gradient(to bottom, #fff 50%, #d7141a 50%);
-  position: relative; border-radius: 2px; overflow: hidden;
-  display: inline-block;
-}
-.cz-flag::before {
-  content: '';
-  position: absolute; left: 0; top: 0;
-  border-style: solid;
-  border-width: 7px 0 7px 12px;
-  border-color: transparent transparent transparent #11457e;
-}
-.photos-modal-preview .cz-flag { width: 44px; height: 30px; }
-.photos-modal-preview .cz-flag::before { border-width: 15px 0 15px 26px; }
-
 /* cs2 stats */
 .pv-cs2 {
   background: #1b2838;
@@ -2198,124 +2092,6 @@ body {
 }
 .halo-medal-icon { font-size: 20px; }
 .halo-medal-name { font-size: 10px; color: #c9d6dc; line-height: 1.3; }
-
-/* ── Duolingo (Chess course dashboard) ── */
-#duolingo-window {
-  position: fixed;
-  top: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(680px, 94vw);
-  height: min(720px, 88vh);
-  background: #fff;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  z-index: 905;
-  box-shadow: 0 16px 56px rgba(0,0,0,0.5);
-  overflow: hidden;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  color: #3c3c3c;
-}
-#duolingo-window.hidden { display: none; }
-.duolingo-titlebar {
-  height: 40px;
-  flex-shrink: 0;
-  background: #58cc02;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 12px;
-}
-.duolingo-titlebar-icon { width: 20px; height: 20px; border-radius: 5px; }
-.duolingo-titlebar-name { flex: 1; font-size: 13px; color: #fff; font-weight: 700; letter-spacing: 0.3px; }
-.duolingo-close {
-  width: 26px; height: 24px;
-  background: none; border: none; border-radius: 4px;
-  color: #fff; cursor: pointer; font-size: 13px;
-  display: flex; align-items: center; justify-content: center;
-}
-.duolingo-close:hover { background: rgba(0,0,0,0.15); }
-
-.duolingo-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 24px 28px 44px;
-  background: #fff;
-}
-
-.duo-header-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #e5e5e5;
-  margin-bottom: 20px;
-}
-.duo-avatar {
-  width: 56px; height: 56px; border-radius: 50%;
-  background: #58cc02;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 26px; color: #fff; flex-shrink: 0;
-}
-.duo-username { font-size: 18px; font-weight: 700; color: #3c3c3c; }
-.duo-course-sub { font-size: 13px; color: #777; margin-top: 3px; }
-.duo-streak-badge {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: #fff7e6;
-  border: 1px solid #ffc800;
-  border-radius: 10px;
-  padding: 8px 14px;
-  flex-shrink: 0;
-}
-.duo-flame { font-size: 20px; }
-.duo-streak-num { font-size: 20px; font-weight: 800; color: #ff9600; }
-.duo-streak-label { font-size: 11px; color: #9c7a1f; text-transform: uppercase; letter-spacing: 0.3px; }
-
-.duo-stats-row { display: flex; gap: 14px; margin-bottom: 22px; }
-.duo-stat-card {
-  flex: 1;
-  background: #f7f7f7;
-  border: 1px solid #e5e5e5;
-  border-radius: 10px;
-  padding: 14px 12px;
-  text-align: center;
-}
-.duo-stat-value { font-size: 24px; font-weight: 800; color: #1cb0f6; }
-.duo-stat-label { font-size: 11px; color: #999; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
-
-.duo-banner {
-  background: linear-gradient(135deg, #58cc02, #46a302);
-  color: #fff;
-  border-radius: 10px;
-  padding: 14px 18px;
-  font-size: 13.5px;
-  font-weight: 600;
-  margin-bottom: 28px;
-}
-
-.duo-section-title { font-size: 14px; color: #3c3c3c; font-weight: 700; margin-bottom: 16px; }
-
-.duo-skill-path { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 10px 0 20px; }
-.duo-skill-node { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; }
-.duo-skill-node:nth-child(3n+1) { align-items: flex-start; padding-left: 12%; }
-.duo-skill-node:nth-child(3n+2) { align-items: center; }
-.duo-skill-node:nth-child(3n) { align-items: flex-end; padding-right: 12%; }
-.duo-skill-circle {
-  width: 56px; height: 56px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 22px;
-  box-shadow: 0 4px 0 rgba(0,0,0,0.15);
-}
-.duo-skill-node.done .duo-skill-circle { background: #ffc800; color: #fff; box-shadow: 0 4px 0 #c79400; }
-.duo-skill-node.active .duo-skill-circle { background: #58cc02; color: #fff; box-shadow: 0 4px 0 #46a302; animation: duo-pulse 1.8s ease-in-out infinite; }
-.duo-skill-node.locked .duo-skill-circle { background: #e5e5e5; color: #afafaf; box-shadow: 0 4px 0 #cfcfcf; }
-.duo-skill-label { font-size: 11.5px; color: #777; max-width: 130px; text-align: center; }
-.duo-skill-node.locked .duo-skill-label { color: #afafaf; }
-@keyframes duo-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
 
 /* ── YouTube (embedded in Chrome) ── */
 .yt-app {

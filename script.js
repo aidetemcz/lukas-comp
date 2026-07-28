@@ -417,9 +417,6 @@ const HISTORY_DAYS = [
   { date: '14. 10. 2025', items: [
     { time: '20:30', title: 'co znamená elo v šachu - Hledat Googlem', url: 'google.com/search?q=co+znamena+elo+v+sachu' }
   ]},
-  { date: '2. 10. 2025', items: [
-    { time: '19:15', title: 'duolingo chess vs chess.com - Hledat Googlem', url: 'google.com/search?q=duolingo+chess+vs+chess.com' }
-  ]},
   { date: '18. 9. 2025', items: [
     { time: '18:40', title: 'jak se rychle naučit šachy - Hledat Googlem', url: 'google.com/search?q=jak+se+rychle+naucit+sachy' }
   ]},
@@ -431,38 +428,11 @@ const HISTORY_DAYS = [
   ]}
 ];
 
-// ── Bookmarks bar ──
-const BOOKMARKS_BAR = [
-  { name: 'Škola', items: [
-    { title: 'Rozvrh hodin – Moodle', url: 'moodle.skola.cz/rozvrh' },
-    { title: 'Google Classroom – 1.A', url: 'classroom.google.com' }
-  ]},
-  { name: 'Home Gym', items: [
-    { title: 'Kalisthenika pro začátečníky – plán', url: 'homegym-plan.cz/kalisthenika' },
-    { title: 'Street workout progression guide', url: 'streetworkout.cz/progression' },
-    { title: 'Domácí posilovna bez vybavení', url: 'fitness-doma.cz/bez-vybaveni' }
-  ]},
-  { name: 'Grind', items: [
-    { title: 'Ranní rutina 5 AM', url: 'grindmindset.cz/ranni-rutina' },
-    { title: 'The Real World — landing page', url: 'jointherealworld.com' },
-    { title: 'High Value Man checklist', url: 'highvaluemale.co/checklist' }
-  ]},
-  { name: '_M', items: [
-    { title: 'facerate.io', url: 'facerate.io' },
-    { title: 'looksmaxx-tips.com', url: 'looksmaxx-tips.com' },
-    { title: 'chadrating.co', url: 'chadrating.co' },
-    { title: 'looksmax.org', url: 'looksmax.org' },
-    { title: 'reddit.com/r/orthotropics', url: 'reddit.com/r/orthotropics' },
-    { title: 'reddit.com/r/looksmax', url: 'reddit.com/r/looksmax' }
-  ]}
-];
-
 // ── Tabs ──
 const INITIAL_TABS_TEMPLATE = [
   { id: 'chatgpt', type: 'chatgpt', title: 'ChatGPT', url: 'chat.openai.com/c/6f2a91d0-8b3e-4c1a-9f2d-3a7e5c0b1d44', favicon: 'assets/icons/chatgpt.svg' },
   { id: 'facerate', type: 'facerate', title: 'facerate.io — Upload', url: 'facerate.io/upload', favicon: 'assets/icons/fav-facerate.svg' },
   { id: 'youtube', type: 'youtube', title: 'Passport Bros be like - YouTube', url: 'youtube.com/shorts/bawiCfLxe_g', favicon: 'assets/icons/fav-youtube.svg' },
-  { id: 'duolingo', type: 'blank', title: 'Duolingo', url: 'duolingo.com/learn', favicon: 'assets/icons/fav-duolingo.svg' },
   { id: 'google-search', type: 'google', title: 'vlak plzeň hlavní praha víkend - Hledat Googlem', url: 'google.com/search?q=vlak+plzen+hlavni+praha+vikend', favicon: 'assets/icons/fav-google.svg' },
   { id: 'gmail', type: 'gmail', title: 'Doručená pošta – Gmail', url: 'mail.google.com/mail/u/0/#inbox', favicon: 'assets/icons/fav-gmail.svg' }
 ];
@@ -493,7 +463,6 @@ function faviconForUrl(url) {
   if (url.startsWith('google.com')) return 'assets/icons/fav-google.svg';
   if (url.startsWith('youtube.com')) return 'assets/icons/fav-youtube.svg';
   if (url.startsWith('reddit.com')) return 'assets/icons/fav-reddit.svg';
-  if (url.startsWith('duolingo.com')) return 'assets/icons/fav-duolingo.svg';
   if (url.startsWith('facerate.io')) return 'assets/icons/fav-facerate.svg';
   if (url.startsWith('grok.x.ai')) return 'assets/icons/fav-grok.svg';
   if (url.startsWith('selfos.local')) return 'assets/icons/fav-selfdata.svg';
@@ -502,7 +471,6 @@ function faviconForUrl(url) {
 
 const chromeWindow = document.getElementById('chrome-window');
 const chromeTabbar = document.getElementById('chrome-tabbar');
-const chromeBookmarksBar = document.getElementById('chrome-bookmarks-bar');
 const chromePage = document.getElementById('chrome-page');
 const chromeAddressText = document.getElementById('chrome-address-text');
 const chromeStatusbar = document.getElementById('chrome-statusbar');
@@ -562,62 +530,6 @@ function renderTabbar() {
   nodes.forEach((node, i) => node.addEventListener('click', () => selectTab(TABS[i].id)));
   attachHoverPreview(nodes, i => TABS[i].url);
 }
-
-function renderBookmarksBar() {
-  chromeBookmarksBar.innerHTML = BOOKMARKS_BAR.map(folder => `
-    <div class="chrome-bookmark-folder">
-      <svg class="chrome-bookmark-folder-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M10 4l2 2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>
-      <span>${folder.name}</span>
-    </div>
-  `).join('');
-  const nodes = chromeBookmarksBar.querySelectorAll('.chrome-bookmark-folder');
-  nodes.forEach((node, i) => {
-    node.addEventListener('click', e => {
-      e.stopPropagation();
-      toggleBookmarkDropdown(i, node);
-    });
-  });
-}
-
-function toggleBookmarkDropdown(idx, folderEl) {
-  const existing = chromeBookmarksBar.querySelector('.chrome-bookmark-dropdown');
-  const wasOpenForThis = folderEl.classList.contains('open');
-  if (existing) existing.remove();
-  chromeBookmarksBar.querySelectorAll('.chrome-bookmark-folder').forEach(f => f.classList.remove('open'));
-  if (wasOpenForThis) return;
-
-  const folder = BOOKMARKS_BAR[idx];
-  const dropdown = document.createElement('div');
-  dropdown.className = 'chrome-bookmark-dropdown';
-  dropdown.style.left = folderEl.offsetLeft + 'px';
-  dropdown.innerHTML = folder.items.map(item => `
-    <div class="chrome-bookmark-item">
-      <img src="${faviconForUrl(item.url)}" alt="" />
-      <span>${item.title}</span>
-    </div>
-  `).join('');
-  chromeBookmarksBar.appendChild(dropdown);
-  folderEl.classList.add('open');
-
-  const itemNodes = dropdown.querySelectorAll('.chrome-bookmark-item');
-  itemNodes.forEach((node, i) => {
-    const item = folder.items[i];
-    node.addEventListener('click', () => {
-      navigateActiveTab(item.title, item.url);
-      dropdown.remove();
-      folderEl.classList.remove('open');
-    });
-  });
-  attachHoverPreview(itemNodes, i => folder.items[i].url);
-}
-
-document.addEventListener('click', () => {
-  const dropdown = chromeBookmarksBar && chromeBookmarksBar.querySelector('.chrome-bookmark-dropdown');
-  if (dropdown) {
-    dropdown.remove();
-    chromeBookmarksBar.querySelectorAll('.chrome-bookmark-folder').forEach(f => f.classList.remove('open'));
-  }
-});
 
 function navigateActiveTab(title, url) {
   const tab = TABS.find(t => t.id === activeTabId);
@@ -727,114 +639,6 @@ function buildErrorPageHTML(url) {
 
 // ── Generic bookmark sites (real content instead of "site can't be reached") ──
 const GENERIC_SITES = {
-  'moodle.skola.cz': {
-    kind: 'schedule',
-    siteName: 'Moodle',
-    className: '1.A',
-    times: ['8:00–8:45', '8:55–9:40', '9:50–10:35', '10:55–11:40', '11:50–12:35', '12:45–13:30'],
-    days: [
-      { day: 'Po', subjects: ['Matematika', 'Český jazyk', 'Angličtina', 'Fyzika', 'Tělesná výchova', 'Dějepis'] },
-      { day: 'Út', subjects: ['Chemie', 'Matematika', 'Český jazyk', 'Biologie', 'Zeměpis', '—'] },
-      { day: 'St', subjects: ['Angličtina', 'Informatika', 'Matematika', 'Tělesná výchova', 'Český jazyk', '—'] },
-      { day: 'Čt', subjects: ['Fyzika', 'Chemie', 'Angličtina', 'Matematika', 'Dějepis', 'Biologie'] },
-      { day: 'Pá', subjects: ['Český jazyk', 'Zeměpis', 'Matematika', 'Informatika', '—', '—'] }
-    ]
-  },
-  'classroom.google.com': {
-    kind: 'classroom',
-    siteName: 'Google Classroom',
-    className: '1.A',
-    posts: [
-      { author: 'Mgr. Nováková (Matematika)', time: 'včera', text: 'Úkol: strana 42, příklady 1–8. Odevzdat do pátku.' },
-      { author: 'Mgr. Svoboda (Fyzika)', time: 'před 2 dny', text: 'Zítra píšeme test na téma mechanika. Zopakujte si vzorce z kapitoly 3.' },
-      { author: 'Mgr. Nováková (Matematika)', time: 'před 4 dny', text: 'Sešity na kontrolu si prosím nechte ve škole.' },
-      { author: 'Třídní učitelka', time: 'před týdnem', text: 'Připomínka: příští čtvrtek třídní schůzky od 17:00.' }
-    ]
-  },
-  'homegym-plan.cz': {
-    kind: 'article',
-    siteName: 'homegym-plan.cz',
-    theme: 'light',
-    title: 'Kalisthenika pro začátečníky – plán',
-    byline: 'Domácí tréninkový plán · 4 týdny',
-    paragraphs: [
-      'Nepotřebuješ posilovnu ani činky. Stačí vlastní váha, trocha místa na podlaze a disciplína. Tenhle plán je pro úplné začátečníky — cíl je vydržet 4 týdny bez vynechání.'
-    ],
-    list: [
-      'Týden 1: kliky 3×8, dřepy 3×15, prkno 3×20 s',
-      'Týden 2: kliky 3×10, dřepy 3×18, prkno 3×25 s, výpady 3×10',
-      'Týden 3: kliky 3×12, dřepy 3×20, prkno 3×30 s, výpady 3×12',
-      'Týden 4: kliky 4×12, dřepy 4×20, prkno 4×30 s, výpady 4×12, + první shyby (i s pomocí)'
-    ]
-  },
-  'streetworkout.cz': {
-    kind: 'article',
-    siteName: 'streetworkout.cz',
-    theme: 'light',
-    title: 'Street workout progression guide',
-    byline: 'Progression roadmap · od nuly po muscle-up',
-    paragraphs: [
-      'Street workout není o tom, kolik zvedneš — je o tom, co dokážeš se svým vlastním tělem. Tahle cesta trvá měsíce, ne týdny. Nepřeskakuj kroky.'
-    ],
-    list: [
-      'Fáze 1 — základ: kliky, dřepy, australské shyby (nízká hrazda)',
-      'Fáze 2 — síla: negativní shyby, shyby s gumou, dipy na bradlech',
-      'Fáze 3 — objem: 5+ čistých shybů, 10+ dipů, L-sit progres',
-      'Fáze 4 — pokročilé: muscle-up, pistol squat, handstand progres'
-    ]
-  },
-  'fitness-doma.cz': {
-    kind: 'article',
-    siteName: 'fitness-doma.cz',
-    theme: 'light',
-    title: 'Domácí posilovna bez vybavení',
-    byline: 'Žádné vybavení, žádné výmluvy',
-    paragraphs: [
-      'Batoh plný knih se dá proměnit v závaží. Židle poslouží na tricepsové kliky. Zeď je opora na handstand progrese. Prostor doma stačí — chce to jen kreativitu.'
-    ],
-    list: [
-      'Kliky (klasické, diamantové, na jednu ruku s pomocí)',
-      'Dřepy a výpady s batohem plným knih',
-      'Tricepsové kliky o židli',
-      'Plank varianty (klasický, boční, s pohybem)'
-    ]
-  },
-  'grindmindset.cz': {
-    kind: 'article',
-    siteName: 'grindmindset.cz',
-    theme: 'dark',
-    title: 'Ranní rutina 5 AM',
-    byline: 'GRIND MINDSET · disciplína dělá rozdíl',
-    paragraphs: [
-      'Vstávat v 5 ráno není o tom, kolik hodin spíš navíc nebo míň — je o tom, že si den ukradneš zpátky dřív, než ho ukradne někdo jiný.'
-    ],
-    list: [
-      '5:00 — studená sprcha',
-      '5:15 — 20 minut cvičení',
-      '5:40 — žádný telefon, jen voda a ticho',
-      '6:00 — plán na den, tři priority, žádné výmluvy'
-    ]
-  },
-  'highvaluemale.co': {
-    kind: 'article',
-    siteName: 'highvaluemale.co',
-    theme: 'dark',
-    title: 'High Value Man checklist',
-    byline: '10 vlastností, které tě posunou nahoru',
-    paragraphs: [],
-    list: [
-      'Má fyzičku, o kterou se stará — ne pro ostatní, pro sebe.',
-      'Má finanční plán, i kdyby vydělával málo.',
-      'Nechodí za pozorností — pozornost jde za ním.',
-      'Umí říct ne, i když by to bylo pohodlnější říct ano.',
-      'Nemluví o plánech — ukazuje výsledky.',
-      'Zvládá odmítnutí bez dramatu.',
-      'Má standardy a nemění je kvůli jedné osobě.',
-      'Investuje do sebe dřív, než investuje do vztahu.',
-      'Neztrácí frame, i když je pod tlakem.',
-      'Ví, kam jde — i když tam ještě není.'
-    ]
-  },
   'looksmaxx-tips.com': {
     kind: 'tipslist',
     siteName: 'looksmaxx-tips.com',
@@ -847,16 +651,6 @@ const GENERIC_SITES = {
       { title: 'Spánek jako looksmaxxing nástroj č. 1', meta: '5 min čtení' }
     ]
   },
-  'jointherealworld.com': {
-    kind: 'landing',
-    siteName: 'The Real World',
-    theme: 'dark',
-    headline: 'ESCAPE THE MATRIX.',
-    subheadline: 'Škola tě připravuje na to, abys byl zaměstnanec. My tě naučíme, jak být svůj vlastní šéf.',
-    ctaText: 'PŘIDAT SE TEĎ — $49.99/měsíc',
-    features: ['E-commerce', 'Copywriting', 'Kryptoměny', 'Business Mastery', 'Sociální sítě'],
-    testimonial: '„Za 3 měsíce jsem si vydělal první tisícovku dolarů online.“ — student, 17 let'
-  },
   'chadrating.co': {
     kind: 'landing',
     siteName: 'chadrating.co',
@@ -866,19 +660,6 @@ const GENERIC_SITES = {
     ctaText: 'NAHRÁT FOTKU A ZJISTIT SVÉ SKÓRE',
     features: ['Anonymní hodnocení', 'Detailní breakdown', 'Srovnání s komunitou', 'Tipy na zlepšení'],
     testimonial: '„Bolelo to, ale konečně jsem věděl, na čem jsem.“ — anonymní uživatel'
-  },
-  'looksmax.org': {
-    kind: 'forum',
-    siteName: 'looksmax.org',
-    theme: 'dark',
-    threads: [
-      { title: 'ratemy jaw please, be honest', author: 'anon4821', replies: 34 },
-      { title: 'is skin really 50% of looks?', author: 'copeless', replies: 67 },
-      { title: 'daily reminder: genetics > everything you do', author: 'truthteller99', replies: 152 },
-      { title: 'mewing 8 months progress (pics)', author: 'jawgrind', replies: 41 },
-      { title: 'how much does frame actually matter', author: 'boneheavy', replies: 29 },
-      { title: 'PSL scale explained for newcomers', author: 'mod_apex', replies: 88 }
-    ]
   },
   'reddit.com/r/orthotropics': {
     kind: 'reddit',
@@ -908,65 +689,6 @@ const GENERIC_SITES = {
 
 function matchGenericSite(url) {
   return Object.keys(GENERIC_SITES).find(key => url.startsWith(key)) || null;
-}
-
-function scheduleSiteHTML(site) {
-  return `
-    <div class="site-page light">
-      <header class="site-header moodle-header">
-        <span class="site-logo">🎓 ${site.siteName}</span>
-        <span class="site-header-sub">Třída ${site.className} — Rozvrh hodin</span>
-      </header>
-      <div class="site-body">
-        <table class="schedule-table">
-          <thead><tr><th></th>${site.days.map(d => `<th>${d.day}</th>`).join('')}</tr></thead>
-          <tbody>
-            ${site.times.map((time, i) => `
-              <tr>
-                <td class="schedule-time">${time}</td>
-                ${site.days.map(d => `<td>${d.subjects[i] || '—'}</td>`).join('')}
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  `;
-}
-
-function classroomSiteHTML(site) {
-  return `
-    <div class="site-page light">
-      <header class="site-header classroom-header">
-        <span class="site-logo">📚 ${site.siteName}</span>
-        <span class="site-header-sub">Třída ${site.className}</span>
-      </header>
-      <div class="site-body classroom-stream">
-        ${site.posts.map(p => `
-          <div class="classroom-post">
-            <div class="classroom-post-head"><span class="classroom-author">${p.author}</span><span class="classroom-time">${p.time}</span></div>
-            <div class="classroom-text">${p.text}</div>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  `;
-}
-
-function articleSiteHTML(site) {
-  return `
-    <div class="site-page ${site.theme}">
-      <header class="site-header article-header">
-        <span class="site-logo">${site.siteName}</span>
-      </header>
-      <div class="site-body article-body">
-        <h1 class="article-title">${site.title}</h1>
-        <div class="article-byline">${site.byline}</div>
-        ${site.paragraphs.map(p => `<p>${p}</p>`).join('')}
-        ${site.list ? `<ul class="article-list">${site.list.map(li => `<li>${li}</li>`).join('')}</ul>` : ''}
-      </div>
-    </div>
-  `;
 }
 
 function tipsListSiteHTML(site) {
@@ -1004,26 +726,6 @@ function landingSiteHTML(site) {
   `;
 }
 
-function forumSiteHTML(site) {
-  return `
-    <div class="site-page ${site.theme}">
-      <header class="site-header article-header">
-        <span class="site-logo">${site.siteName}</span>
-      </header>
-      <div class="site-body">
-        <div class="genforum">
-          ${site.threads.map(t => `
-            <div class="genforum-row">
-              <div class="genforum-title">${t.title}</div>
-              <div class="genforum-meta"><span>${t.author}</span><span>${t.replies} odpovědí</span></div>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    </div>
-  `;
-}
-
 function redditSiteHTML(site) {
   return `
     <div class="site-page light">
@@ -1053,12 +755,8 @@ function buildGenericSiteHTML(siteKey) {
   const site = GENERIC_SITES[siteKey];
   if (!site) return buildErrorPageHTML(siteKey);
   switch (site.kind) {
-    case 'schedule': return scheduleSiteHTML(site);
-    case 'classroom': return classroomSiteHTML(site);
-    case 'article': return articleSiteHTML(site);
     case 'tipslist': return tipsListSiteHTML(site);
     case 'landing': return landingSiteHTML(site);
-    case 'forum': return forumSiteHTML(site);
     case 'reddit': return redditSiteHTML(site);
     default: return buildErrorPageHTML(siteKey);
   }
@@ -2146,7 +1844,6 @@ function openChrome() {
     activeTabId = 'chatgpt';
     activeConvId = 6;
     renderTabbar();
-    renderBookmarksBar();
     updateAddressBar();
     renderActivePage();
   }
@@ -2795,8 +2492,6 @@ const PHOTOS_TREE = {
           'Spořicí graf (Excel). Cíl 180 000 Kč na operaci čelisti, aktuálně naspořeno 4 212 Kč. Očekávané dosažení červenec 2027.'),
         pFile('bank_app_17032026.png', '17. 3. 2026', '410 KB', '1080 × 2340', 'bank',
           'Screenshot bankovní aplikace. Zůstatek 4 212 Kč, poznámka „TRK operace 180k“.'),
-        pFile('duolingo_20032026.png', '20. 3. 2026', '380 KB', '1080 × 2340', 'duolingo',
-          'Screenshot Duolinga: 2denní série. Snaha o disciplínu, která se rozpadá v malých věcech.'),
         pFile('cs2_stats_marec.png', '31. 3. 2026', '520 KB', '1920 × 1080', 'cs2',
           'Screenshot statistik CS2: 340 hodin za březen. Prudký nárůst oproti prosinci (40 h) — eskapace.')
       ]
@@ -2902,9 +2597,6 @@ function pvMeme(f) {
 function pvBank() {
   return `<div class="pv pv-bank"><div class="bank-top">Můj účet · běžný</div><div class="bank-balance">4 212 Kč</div><div class="bank-note">Poznámka: TRK operace 180k</div></div>`;
 }
-function pvDuo() {
-  return `<div class="pv pv-duo"><div class="duo-header">duolingo</div><div class="duo-streak">🔥 2</div><div class="duo-label">denní série</div><span class="cz-flag"></span></div>`;
-}
 function pvCs2() {
   return `<div class="pv pv-cs2"><div class="cs2-title">Counter-Strike 2 · březen 2026</div><div class="cs2-hours">340 h</div><div class="cs2-sub">prosinec: 40 h &nbsp;·&nbsp; rank: DMG</div></div>`;
 }
@@ -2937,7 +2629,6 @@ function buildPhotoPreview(f) {
     case 'greentext': return pvGreentext(f);
     case 'meme': return pvMeme(f);
     case 'bank': return pvBank();
-    case 'duolingo': return pvDuo();
     case 'cs2': return pvCs2();
     case 'savings': return pvSavings();
     case 'note': return pvNote(f);
@@ -3316,83 +3007,6 @@ function openHalo() {
   bringWindowToFront(haloWindow);
 }
 
-// ── Duolingo (Chess course) ──
-// He picked up chess as another self-improvement fork alongside looksmaxxing, but the
-// motivation is external (impress girls, not genuine interest) — hence a low course level
-// despite a long, consistent streak: he opens the app daily to keep the streak (a habit loop
-// the app itself gamifies), not because he's actually engaging deeply with the material.
-const duolingoWindow = document.getElementById('duolingo-window');
-document.getElementById('duolingo-close-btn').addEventListener('click', () => {
-  duolingoWindow.classList.add('hidden');
-});
-
-const DUOLINGO_PROFILE = {
-  username: 'hidd3nfram3',
-  course: 'Šachy',
-  league: 'Bronzová liga',
-  level: 5,
-  streakDays: 43,
-  totalXP: 645,
-  gems: 120,
-  bannerText: 'Zůstaň v sérii! Ještě dnes tě čeká jedna lekce 🔥'
-};
-
-const DUOLINGO_SKILL_PATH = [
-  { name: 'Základy tahů', state: 'done' },
-  { name: 'Rošáda a braní mimochodem', state: 'done' },
-  { name: 'Zahájení: Italská hra', state: 'active' },
-  { name: 'Taktika: vidle a špejle', state: 'locked' },
-  { name: 'Koncovky pěšců', state: 'locked' },
-  { name: 'Zahájení: Sicilská obrana', state: 'locked' },
-  { name: 'Taktika: vázání', state: 'locked' },
-  { name: 'Střední hra: strategie', state: 'locked' }
-];
-
-function duolingoSkillNodeHTML(skill) {
-  const icon = skill.state === 'done' ? '✓' : skill.state === 'active' ? '♟' : '🔒';
-  return `
-    <div class="duo-skill-node ${skill.state}">
-      <div class="duo-skill-circle">${icon}</div>
-      <div class="duo-skill-label">${skill.name}</div>
-    </div>
-  `;
-}
-
-function buildDuolingoBodyHTML() {
-  const p = DUOLINGO_PROFILE;
-  return `
-    <div class="duo-header-row">
-      <div class="duo-avatar">♟</div>
-      <div>
-        <div class="duo-username">${p.username}</div>
-        <div class="duo-course-sub">${p.course} · ${p.league}</div>
-      </div>
-      <div class="duo-streak-badge">
-        <span class="duo-flame">🔥</span>
-        <span class="duo-streak-num">${p.streakDays}</span>
-        <span class="duo-streak-label">dní v řadě</span>
-      </div>
-    </div>
-
-    <div class="duo-stats-row">
-      <div class="duo-stat-card"><div class="duo-stat-value">${p.level}</div><div class="duo-stat-label">Úroveň · začátečník</div></div>
-      <div class="duo-stat-card"><div class="duo-stat-value">${p.totalXP}</div><div class="duo-stat-label">Celkem XP</div></div>
-      <div class="duo-stat-card"><div class="duo-stat-value">${p.gems}</div><div class="duo-stat-label">Drahokamy</div></div>
-    </div>
-
-    <div class="duo-banner">${p.bannerText}</div>
-
-    <div class="duo-section-title">Šachy — cesta kurzem</div>
-    <div class="duo-skill-path">${DUOLINGO_SKILL_PATH.map(duolingoSkillNodeHTML).join('')}</div>
-  `;
-}
-
-function openDuolingo() {
-  document.getElementById('duolingo-body').innerHTML = buildDuolingoBodyHTML();
-  duolingoWindow.classList.remove('hidden');
-  bringWindowToFront(duolingoWindow);
-}
-
 // ── Google search (embedded in Chrome) — shell only, content is placeholder ──
 function parseGoogleQuery(url) {
   const m = url.match(/[?&]q=([^&]+)/);
@@ -3470,7 +3084,6 @@ const GMAIL_EMAILS = [
   { id: 'google-sec', sender: 'Google', email: 'no-reply@accounts.google.com', subject: 'Bezpečnostní upozornění pro váš účet', preview: '[Náhled placeholder]', body: '[Obsah placeholder]', date: '25. 3. 2026', time: '09:14', unread: false },
   { id: 'steam', sender: 'Steam', email: 'noreply@steampowered.com', subject: 'Tvůj týdenní souhrn nabídek', preview: '[Náhled placeholder]', body: '[Obsah placeholder]', date: '24. 3. 2026', time: '18:40', unread: false },
   { id: 'discord-notif', sender: 'Discord', email: 'noreply@discord.com', subject: 'Nové aktivity ve tvých serverech', preview: '[Náhled placeholder]', body: '[Obsah placeholder]', date: '23. 3. 2026', time: '21:02', unread: false },
-  { id: 'duolingo-mail', sender: 'Duolingo', email: 'hello@duolingo.com', subject: 'Nezapomeň na dnešní lekci! 🔥', preview: '[Náhled placeholder]', body: '[Obsah placeholder]', date: '22. 3. 2026', time: '19:55', unread: false },
   { id: 'nintendo', sender: 'Nintendo', email: 'newsletter@nintendo.com', subject: 'Newsletter: Novinky a nabídky', preview: '[Náhled placeholder]', body: '[Obsah placeholder]', date: '20. 3. 2026', time: '10:30', unread: false },
   { id: 'youtube-notif', sender: 'YouTube', email: 'no-reply@youtube.com', subject: 'Nové video od kanálu, který sleduješ', preview: '[Náhled placeholder]', body: '[Obsah placeholder]', date: '18. 3. 2026', time: '17:20', unread: false }
 ];
@@ -3859,7 +3472,6 @@ const START_MENU_APPS = [
   { app: 'folder-photos', label: 'Fotky a videa', icon: 'assets/icons/folder.svg' },
   { app: 'halo', label: 'Halo Infinite', icon: 'assets/icons/halo.svg' },
   { app: 'cs', label: 'Counter-Strike 2', icon: 'assets/icons/cs.svg' },
-  { app: 'duolingo', label: 'Duolingo', icon: 'assets/icons/duolingo.svg' },
   { app: 'self-data', label: 'self_data.html', icon: 'assets/icons/selfdata.svg' },
   { app: 'recycle', label: 'Koš', icon: 'assets/icons/recycle.svg' }
 ];
@@ -3918,7 +3530,6 @@ const TASKBAR_APPS = [
   { id: 'recycle', label: 'Koš', icon: 'assets/icons/recycle.svg', el: recycleWindow },
   { id: 'halo', label: 'Halo Infinite', icon: 'assets/icons/halo.svg', el: haloWindow },
   { id: 'cs2', label: 'Counter-Strike 2', icon: 'assets/icons/cs.svg', el: cs2Window },
-  { id: 'duolingo', label: 'Duolingo', icon: 'assets/icons/duolingo.svg', el: duolingoWindow },
   { id: 'whatsapp', label: 'WhatsApp', icon: 'assets/icons/whatsapp.svg', el: whatsappWindow }
 ];
 
@@ -3971,9 +3582,6 @@ function openApp(app) {
       break;
     case 'cs':
       openCs2();
-      break;
-    case 'duolingo':
-      openDuolingo();
       break;
     case 'recycle':
       openRecycle();
@@ -4185,7 +3793,6 @@ function refreshOpenWindowsAfterEdit() {
   if (!recycleWindow.classList.contains('hidden')) renderRecycleList();
   if (!cs2Window.classList.contains('hidden')) document.getElementById('cs2-body').innerHTML = buildCs2BodyHTML();
   if (!haloWindow.classList.contains('hidden')) document.getElementById('halo-body').innerHTML = buildHaloBodyHTML();
-  if (!duolingoWindow.classList.contains('hidden')) document.getElementById('duolingo-body').innerHTML = buildDuolingoBodyHTML();
   if (!whatsappWindow.classList.contains('hidden')) { renderWhatsAppChatList(); renderWhatsAppMain(); }
 }
 
@@ -4440,9 +4047,8 @@ document.addEventListener('keydown', e => {
 const EDITOR_SECTIONS = [
   { key: 'chatgpt', label: 'ChatGPT konverzace', data: CHATGPT_CONVERSATIONS },
   { key: 'chromeHistory', label: 'Chrome — historie', data: HISTORY_DAYS },
-  { key: 'chromeBookmarks', label: 'Chrome — záložky', data: BOOKMARKS_BAR },
   { key: 'chromeTabs', label: 'Chrome — výchozí otevřené taby', data: INITIAL_TABS_TEMPLATE },
-  { key: 'genericSites', label: 'Chrome — obsah záložek', data: GENERIC_SITES },
+  { key: 'genericSites', label: 'Chrome — obsah odkazovaných stránek', data: GENERIC_SITES },
   { key: 'discord', label: 'Discord', data: DISCORD },
   { key: 'recycle', label: 'Koš', data: RECYCLE_ITEMS },
   { key: 'photos', label: 'Fotky a videa', data: PHOTOS_TREE },
@@ -4465,8 +4071,6 @@ const EDITOR_SECTIONS = [
   { key: 'haloFriends', label: 'Halo — přátelé (Spartan Company)', data: HALO_FRIENDS },
   { key: 'haloWeapons', label: 'Halo — oblíbené zbraně', data: HALO_WEAPONS },
   { key: 'haloMedals', label: 'Halo — medaile', data: HALO_MEDALS },
-  { key: 'duolingoProfile', label: 'Duolingo — profil', data: DUOLINGO_PROFILE },
-  { key: 'duolingoSkillPath', label: 'Duolingo — cesta kurzem', data: DUOLINGO_SKILL_PATH },
   { key: 'desktopClock', label: 'Plocha — hodiny', data: CLOCK_CONTENT },
   { key: 'desktopToast', label: 'Plocha — Discord notifikace', data: TOAST_CONTENT },
   { key: 'selfDataMetrics', label: 'self_data.html — metriky', data: SELF_DATA_METRICS },
@@ -4487,7 +4091,6 @@ setTimeout(showToastNotification, 900);
   [trashViewerWindow, '.explorer-titlebar'],
   [cs2Window, '.cs2-titlebar'],
   [haloWindow, '.halo-titlebar'],
-  [duolingoWindow, '.duolingo-titlebar'],
   [whatsappWindow, '.wa-titlebar']
 ].forEach(([win, titlebarSelector]) => {
   if (!win) return;
