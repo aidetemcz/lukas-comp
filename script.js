@@ -206,7 +206,9 @@ const HISTORY_DAYS = [
     { time: '23:15', title: 'Grok', url: 'grok.x.ai/chat' },
     { time: '22:47', title: 'facerate.io/upload', url: 'facerate.io/upload' },
     { time: '22:41', title: "why 6'0 is the new 5'8 - YouTube", url: 'youtube.com/watch?v=w6057' },
-    { time: '22:00', title: 'reddit.com/r/looksmax', url: 'reddit.com/r/looksmax' }
+    { time: '22:00', title: 'reddit.com/r/looksmax', url: 'reddit.com/r/looksmax' },
+    { time: '01:48', title: 'Plzeň hl.n. → Praha hl.n. - IDOS', url: 'idos.cz/vlakyautobusymhd/spojeni/?f=Plze%C5%88&t=Praha' },
+    { time: '01:47', title: 'vlak plzeň hlavní praha víkend - Hledat Googlem', url: 'google.com/search?q=vlak+plzen+hlavni+praha+vikend' }
   ]},
   { date: '22. 3. 2026', items: [
     { time: '22:40', title: 'facerate.io/upload', url: 'facerate.io/upload' },
@@ -559,6 +561,9 @@ function navigateActiveTab(title, url) {
   } else if (url.startsWith('selfos.local')) {
     tab.type = 'selfdata';
     tab.title = title;
+  } else if (url.startsWith('idos.cz')) {
+    tab.type = 'idos';
+    tab.title = title;
   } else if (matchGenericSite(url)) {
     tab.type = 'genericsite';
     tab.siteKey = matchGenericSite(url);
@@ -903,6 +908,9 @@ function renderActivePage() {
     attachGrokHandlers();
   } else if (tab.type === 'selfdata') {
     chromePage.innerHTML = buildSelfDataPageHTML();
+  } else if (tab.type === 'idos') {
+    chromePage.innerHTML = buildIdosPageHTML();
+    attachIdosHandlers();
   } else if (tab.type === 'genericsite') {
     chromePage.innerHTML = buildGenericSiteHTML(tab.siteKey);
   } else {
@@ -1872,15 +1880,6 @@ const RECYCLE_ITEMS = [
     icon: 'assets/icons/file-image.svg',
     type: 'image-blur',
     caption: 'moje_foto_upraveno_v4.jpg — silnější čelist (AI úprava)'
-  },
-  {
-    id: 'dopis-petrovi',
-    name: 'dopis_petrovi.txt',
-    deletedDate: '8. 2. 2026',
-    size: '1 KB',
-    icon: 'assets/icons/notepad.svg',
-    type: 'text',
-    content: 'Ahoj Petře, dlouho jsme se neviděli, měl bych...'
   },
   {
     id: 'plan-leden',
@@ -3021,8 +3020,55 @@ const GOOGLE_RESULTS = Array.from({ length: 9 }, (_, i) => ({
 
 const GOOGLE_PAA = ['[Otázka placeholder 1]?', '[Otázka placeholder 2]?', '[Otázka placeholder 3]?', '[Otázka placeholder 4]?'];
 
+// One curated result set for Lukáš's single late-night train search — everything else
+// still uses the generic GOOGLE_RESULTS placeholder above.
+const GOOGLE_QUERY_RESULTS = {
+  'vlak plzen hlavni praha vikend': {
+    stats: 'Přibližně 4 210 000 výsledků (0,39 s)',
+    results: [
+      {
+        url: 'idos.cz › vlakyautobusymhd › spojeni',
+        title: 'Plzeň hl.n. → Praha hl.n. – jízdní řád, spojení | IDOS',
+        desc: 'Vyhledejte aktuální spojení vlakem i autobusem mezi Plzní a Prahou. Jízdní řády, ceny jízdenek a doba jízdy online.',
+        navUrl: 'idos.cz/vlakyautobusymhd/spojeni/?f=Plze%C5%88&t=Praha',
+        navTitle: 'Plzeň hl.n. → Praha hl.n. - IDOS'
+      },
+      {
+        url: 'cd.cz › jizdenky-a-nabidka › vnitrostatni-doprava',
+        title: 'Plzeň – Praha vlakem | České dráhy',
+        desc: 'Rychlíky a InterCity spoje z Plzně do Prahy. Jízdenky online, slevy s In Kartou, aktuální jízdní řád ČD.'
+      },
+      {
+        url: 'regiojet.cz › vlakove-spojeni › plzen-praha',
+        title: 'Plzeň → Praha vlakem už od 149 Kč | RegioJet',
+        desc: 'Pohodlné vlakové spojení Plzeň – Praha. Wi-Fi zdarma, občerstvení na palubě, výběr místa při rezervaci online.'
+      },
+      {
+        url: 'flixbus.cz › autobusova-doprava › plzen-praha',
+        title: 'Autobus Plzeň – Praha už od 89 Kč | FlixBus',
+        desc: 'Levné a pohodlné autobusové spojení z Plzně do Prahy. Wi-Fi a zásuvky ve všech spojích, snadná rezervace online.'
+      },
+      {
+        url: 'mapy.cz › trasa › plzen-praha',
+        title: 'Plzeň – Praha: vzdálenost, trasa a doba jízdy – Mapy.cz',
+        desc: 'Vzdálenost Plzeň–Praha je přibližně 92 km. Doba jízdy autem cca 1 h 10 min, veřejnou dopravou od 1 h 30 min.'
+      }
+    ],
+    paa: [
+      'Kolik stojí vlak z Plzně do Prahy?',
+      'Jak dlouho trvá cesta vlakem z Plzně do Prahy?',
+      'Jede z Plzně do Prahy přímý vlak?',
+      'Jak se dostanu z Plzně do Prahy nejrychleji?'
+    ]
+  }
+};
+
 function buildGooglePageHTML(url) {
   const query = parseGoogleQuery(url);
+  const special = GOOGLE_QUERY_RESULTS[query.trim().toLowerCase()];
+  const results = special ? special.results : GOOGLE_RESULTS;
+  const paa = special ? special.paa : GOOGLE_PAA;
+  const stats = special ? special.stats : 'Přibližně 128 000 000 výsledků (0,42 s)';
   return `
     <div class="g-app">
       <header class="g-header">
@@ -3045,9 +3091,9 @@ function buildGooglePageHTML(url) {
       </div>
       <div class="g-body">
         <div class="g-results-col">
-          <div class="g-stats">Přibližně 128 000 000 výsledků (0,42 s)</div>
-          ${GOOGLE_RESULTS.map(r => `
-            <div class="g-result">
+          <div class="g-stats">${stats}</div>
+          ${results.map((r, i) => `
+            <div class="g-result${r.navUrl ? ' g-result-clickable' : ''}" ${r.navUrl ? `data-nav-url="${r.navUrl}" data-nav-title="${r.navTitle}"` : ''}>
               <div class="g-result-url">${r.url}</div>
               <div class="g-result-title">${r.title}</div>
               <div class="g-result-desc">${r.desc}</div>
@@ -3060,7 +3106,7 @@ function buildGooglePageHTML(url) {
         </div>
         <div class="g-paa-col">
           <div class="g-paa-title">Lidé se také ptají</div>
-          ${GOOGLE_PAA.map(q => `<div class="g-paa-item"><span>${q}</span><span class="g-paa-chevron">⌄</span></div>`).join('')}
+          ${paa.map(q => `<div class="g-paa-item"><span>${q}</span><span class="g-paa-chevron">⌄</span></div>`).join('')}
         </div>
       </div>
     </div>
@@ -3076,6 +3122,115 @@ function attachGoogleHandlers() {
   };
   document.getElementById('g-search-btn').addEventListener('click', doSearch);
   input.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+  document.querySelectorAll('.g-result-clickable').forEach(el => {
+    el.addEventListener('click', () => {
+      navigateActiveTab(el.dataset.navTitle, el.dataset.navUrl);
+    });
+  });
+}
+
+// ── IDOS (embedded in Chrome) — the one search Lukáš never turned into a ticket ──
+// He looks up the Plzeň → Praha leg only, never the bus/car leg to get to the station
+// in the first place, and never a way back. A search, not a plan.
+const IDOS_CONNECTIONS = [
+  { dep: '06:35', arr: '08:10', duration: '1:35', line: 'IC 501', transfer: 'přímý', price: 219 },
+  { dep: '08:20', arr: '09:55', duration: '1:35', line: 'IC 503', transfer: 'přímý', price: 219 },
+  { dep: '10:38', arr: '12:05', duration: '1:27', line: 'IC 505 „Šumava“', transfer: 'přímý', price: 249, highlighted: true },
+  { dep: '12:35', arr: '14:10', duration: '1:35', line: 'Ex 351', transfer: '1× přestup', price: 259 },
+  { dep: '14:12', arr: '15:40', duration: '1:28', line: 'IC 507', transfer: 'přímý', price: 229 },
+  { dep: '17:35', arr: '19:08', duration: '1:33', line: 'Ex 355', transfer: '1× přestup', price: 279 },
+  { dep: '20:40', arr: '22:15', duration: '1:35', line: 'IC 509', transfer: 'přímý', price: 219 }
+];
+
+function idosRowHTML(c, i) {
+  return `
+    <div class="idos-row${c.highlighted ? ' hovered' : ''}">
+      <span class="idos-time">${c.dep}</span>
+      <span class="idos-time-arrow">→</span>
+      <span class="idos-time">${c.arr}</span>
+      <span class="idos-duration">${c.duration}</span>
+      <span class="idos-line">${c.line}</span>
+      <span class="idos-transfer">${c.transfer}</span>
+      <span class="idos-price">${c.price} Kč</span>
+      <button class="idos-reserve-btn" data-idx="${i}">Rezervovat</button>
+    </div>
+  `;
+}
+
+function buildIdosPageHTML() {
+  return `
+    <div class="idos-app">
+      <header class="idos-header">
+        <div class="idos-logo">IDOS<span>.cz</span></div>
+        <div class="idos-account-link" id="idos-account-link">
+          <svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4.4 0-8 2.2-8 5v3h16v-3c0-2.8-3.6-5-8-5z"/></svg>
+          Přihlášení / Registrace
+        </div>
+      </header>
+      <div class="idos-searchbar">
+        <div class="idos-search-field">
+          <label>Odkud</label>
+          <input value="Plzeň hl.n." readonly />
+        </div>
+        <button class="idos-swap-btn" title="Prohodit">⇄</button>
+        <div class="idos-search-field">
+          <label>Kam</label>
+          <input value="Praha hl.n." readonly />
+        </div>
+        <div class="idos-search-field idos-date-field">
+          <label>Datum</label>
+          <input value="So 28. 3. 2026" readonly />
+        </div>
+        <button class="idos-search-btn">Hledat spojení</button>
+      </div>
+      <div class="idos-body">
+        <aside class="idos-sidebar">
+          <div class="idos-filter-group">
+            <div class="idos-filter-title">Druh dopravy</div>
+            <label class="idos-filter-row"><input type="checkbox" checked disabled />Vlak</label>
+            <label class="idos-filter-row"><input type="checkbox" disabled />Autobus</label>
+            <label class="idos-filter-row"><input type="checkbox" disabled />MHD</label>
+          </div>
+          <div class="idos-filter-group">
+            <div class="idos-filter-title">Počet přestupů</div>
+            <label class="idos-filter-row"><input type="radio" name="idos-transfers" disabled />Bez přestupu</label>
+            <label class="idos-filter-row"><input type="radio" name="idos-transfers" checked disabled />Max. 1 přestup</label>
+          </div>
+          <div class="idos-filter-group">
+            <div class="idos-filter-title">Dopravce</div>
+            <label class="idos-filter-row"><input type="checkbox" checked disabled />České dráhy</label>
+            <label class="idos-filter-row"><input type="checkbox" checked disabled />RegioJet</label>
+          </div>
+        </aside>
+        <div class="idos-results">
+          <div class="idos-results-head">
+            <span>Odjezd</span><span></span><span>Příjezd</span><span>Doba jízdy</span><span>Spoj</span><span>Přestupy</span><span>Cena</span><span></span>
+          </div>
+          ${IDOS_CONNECTIONS.map(idosRowHTML).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="idos-login-modal hidden" id="idos-login-modal">
+      <div class="idos-login-box">
+        <button class="idos-login-close" id="idos-login-close">✕</button>
+        <div class="idos-login-title">Přihlášení</div>
+        <input class="idos-login-input" placeholder="E-mail" />
+        <input class="idos-login-input" type="password" placeholder="Heslo" />
+        <button class="idos-login-submit">Přihlásit se</button>
+        <div class="idos-login-register">Nemáte účet? <span>Zaregistrovat se</span></div>
+      </div>
+    </div>
+  `;
+}
+
+function attachIdosHandlers() {
+  const modal = document.getElementById('idos-login-modal');
+  const openModal = () => modal.classList.remove('hidden');
+  const closeModal = () => modal.classList.add('hidden');
+  document.getElementById('idos-account-link').addEventListener('click', openModal);
+  document.querySelectorAll('.idos-reserve-btn').forEach(btn => btn.addEventListener('click', openModal));
+  document.getElementById('idos-login-close').addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 }
 
 // ── Gmail (embedded in Chrome) — shell only, content is placeholder ──
@@ -4063,6 +4218,8 @@ const EDITOR_SECTIONS = [
   { key: 'grok', label: 'Grok', data: GROK_CONVERSATIONS },
   { key: 'googleResults', label: 'Google — výsledky', data: GOOGLE_RESULTS },
   { key: 'googlePAA', label: 'Google — Lidé se také ptají', data: GOOGLE_PAA },
+  { key: 'googleQueryResults', label: 'Google — výsledky pro vlak hledání', data: GOOGLE_QUERY_RESULTS },
+  { key: 'idosConnections', label: 'IDOS — spojení Plzeň-Praha', data: IDOS_CONNECTIONS },
   { key: 'cs2Hours', label: 'CS2 — hodiny za měsíc', data: CS2_MONTHLY_HOURS },
   { key: 'cs2Matches', label: 'CS2 — zápasy', data: CS2_MATCHES },
   { key: 'cs2Friends', label: 'CS2 — přátelé', data: CS2_FRIENDS },

@@ -528,17 +528,17 @@ Herní ikony jsou spíš dekorativní. Když se otevřou, zobrazí:
 3. **`zprava_babicce.txt`** — nedokončená zpráva: "babi vim ze se o me trapis ale nem" — smazáno 14. 3.
 4. **`moje_foto_upraveno_v4.jpg`** — jeho selfie prošlé filtrem/AI úpravou (silnější čelist) — smazáno 22. 3. (**stydí se, ale nechal to smazané v koši, ne prázdný**)
 5. **`grok_spice_screenshot.png`** — screenshot z Groku spice mode s ostrou odpovědí o "female nature" — smazáno 23. 3. (stydí se)
-6. **`dopis_petrovi.txt`** — nikdy neposlaný email starému kamarádovi z osmičky: "Ahoj Petře, dlouho jsme se neviděli, měl bych..." — smazáno 8. 2.
-7. **`yunko_furuta_screenshot.png`** — screenshot z Discord kanálu #self-hate-mondays s tou referencí — smazáno 12. 3. (**stáhl si to na disk, ale pak smazal — nebyl v pohodě s tím**)
-8. **`stary_workout_plan.pdf`** — jeho úplně první homegym plán z listopadu 2025, primitivní, s poznámkami rukou
+6. **`yunko_furuta_screenshot.png`** — screenshot z Discord kanálu #self-hate-mondays s tou referencí — smazáno 12. 3. (**stáhl si to na disk, ale pak smazal — nebyl v pohodě s tím**)
+7. **`stary_workout_plan.pdf`** — jeho úplně první homegym plán z listopadu 2025, primitivní, s poznámkami rukou
+
+> Poznámka: `dopis_petrovi.txt` (nikdy neposlaný email kamarádovi z osmičky) byl v koši dřív, ale byl trvale smazán — v aplikaci už není, ani v koši.
 
 ### 10.2 Detektivní klíč koše
 Když děti otevřou koš, uvidí, že Lukas je **jiný člověk, než se zdá na povrchu**:
 - Uvažoval o suicide (položka 1)
 - Chce se přiblížit babičce, ale neumí (položka 3)
 - Uvědomuje si, že to, co dělá s obrázky, je manipulace (položka 4)
-- Byl v pohodě s tím, co ho v Discord skupině vytočilo (položka 7)
-- Cítí ztrátu starých kamarádů (položka 6)
+- Byl v pohodě s tím, co ho v Discord skupině vytočilo (položka 6)
 
 **Toto je centrální didaktický moment workshopu.**
 

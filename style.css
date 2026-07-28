@@ -2645,6 +2645,178 @@ body {
 .g-paa-item { display: flex; justify-content: space-between; gap: 10px; padding: 14px 0; border-bottom: 1px solid #ebebeb; font-size: 14px; color: #202124; cursor: pointer; }
 .g-paa-chevron { color: #70757a; flex-shrink: 0; }
 
+/* ── IDOS (embedded in Chrome) ── */
+.idos-app { height: 100%; overflow-y: auto; background: #f4f6f8; color: #202124; font-family: Arial, 'Segoe UI', sans-serif; }
+.idos-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #00477b;
+  padding: 14px 28px;
+}
+.idos-logo { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: 0.3px; }
+.idos-logo span { color: #7fc4ff; }
+.idos-account-link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: #cfe6ff;
+  cursor: pointer;
+}
+.idos-account-link:hover { color: #fff; }
+.idos-searchbar {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  background: #fff;
+  padding: 16px 28px;
+  border-bottom: 1px solid #dde3e8;
+  flex-wrap: wrap;
+}
+.idos-search-field { display: flex; flex-direction: column; gap: 4px; }
+.idos-search-field label { font-size: 11px; color: #70757a; text-transform: uppercase; letter-spacing: 0.3px; }
+.idos-search-field input {
+  border: 1px solid #c7ced4;
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #202124;
+  min-width: 160px;
+  background: #fbfcfd;
+}
+.idos-swap-btn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 1px solid #c7ced4;
+  background: #fff;
+  color: #00477b;
+  font-size: 15px;
+  cursor: pointer;
+  margin-bottom: 2px;
+}
+.idos-swap-btn:hover { background: #eef4fa; }
+.idos-search-btn {
+  background: #f5a300;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 2px;
+}
+.idos-search-btn:hover { background: #e29500; }
+.idos-body { display: flex; gap: 20px; padding: 20px 28px 40px; align-items: flex-start; }
+.idos-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: #fff;
+  border: 1px solid #e1e6ea;
+  border-radius: 8px;
+  padding: 16px 18px;
+}
+.idos-filter-group { margin-bottom: 18px; }
+.idos-filter-group:last-child { margin-bottom: 0; }
+.idos-filter-title { font-size: 12px; font-weight: 700; color: #4d5156; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px; }
+.idos-filter-row { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: #3c4043; padding: 4px 0; }
+.idos-results { flex: 1; background: #fff; border: 1px solid #e1e6ea; border-radius: 8px; overflow: hidden; }
+.idos-results-head {
+  display: grid;
+  grid-template-columns: 56px 20px 56px 70px 1fr 100px 70px 100px;
+  gap: 10px;
+  padding: 10px 18px;
+  background: #eef2f5;
+  font-size: 11px;
+  font-weight: 700;
+  color: #70757a;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.idos-row {
+  display: grid;
+  grid-template-columns: 56px 20px 56px 70px 1fr 100px 70px 100px;
+  gap: 10px;
+  align-items: center;
+  padding: 14px 18px;
+  border-top: 1px solid #eef1f3;
+  font-size: 13.5px;
+  color: #202124;
+}
+.idos-row.hovered { background: #eaf3fd; }
+.idos-time { font-weight: 700; }
+.idos-time-arrow { color: #a3aab1; }
+.idos-duration { color: #4d5156; }
+.idos-line { color: #4d5156; }
+.idos-transfer { color: #70757a; font-size: 12.5px; }
+.idos-price { font-weight: 700; color: #00477b; }
+.idos-reserve-btn {
+  background: #fff;
+  border: 1px solid #00477b;
+  color: #00477b;
+  border-radius: 5px;
+  padding: 7px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.idos-reserve-btn:hover { background: #00477b; color: #fff; }
+
+.idos-login-modal {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+.idos-login-modal.hidden { display: none; }
+.idos-login-box {
+  position: relative;
+  background: #fff;
+  border-radius: 10px;
+  padding: 32px 30px 26px;
+  width: 300px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+.idos-login-close {
+  position: absolute;
+  top: 10px; right: 12px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #70757a;
+  cursor: pointer;
+}
+.idos-login-title { font-size: 18px; font-weight: 700; color: #00477b; margin-bottom: 18px; }
+.idos-login-input {
+  display: block;
+  width: 100%;
+  border: 1px solid #c7ced4;
+  border-radius: 5px;
+  padding: 9px 12px;
+  font-size: 13.5px;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+.idos-login-submit {
+  width: 100%;
+  background: #f5a300;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 4px;
+}
+.idos-login-submit:hover { background: #e29500; }
+.idos-login-register { font-size: 12.5px; color: #70757a; margin-top: 14px; text-align: center; }
+.idos-login-register span { color: #00477b; cursor: pointer; text-decoration: underline; }
+
 /* ── Gmail (embedded in Chrome) ── */
 .gm-app { height: 100%; display: flex; flex-direction: column; background: #fff; color: #202124; font-family: Arial, sans-serif; }
 .gm-header { height: 64px; flex-shrink: 0; display: flex; align-items: center; gap: 20px; padding: 0 20px; border-bottom: 1px solid #e0e0e0; }
