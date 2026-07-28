@@ -1,175 +1,169 @@
 # LUKAS_KONTEXT.md
 
-**Kontextový brief pro Claude Code — projekt "Lukasovo PC"**
-Verze: v1 (draft, iterativní)
-Cíl souboru: Poskytnout kompletní kreativní, pedagogický a designový kontext pro implementaci webové aplikace `lukas-comp.vercel.app`, která simuluje pracovní plochu 15letého chlapce Lukase. Web slouží jako materiál pro detektivní workshop pro děti 2. stupně ZŠ / SŠ o digitální osamělosti, algoritmické radikalizaci a manosféře.
+**Kontextový brief pro Claude Code — projekt "Lukasovo PC"** (`lukas-comp.vercel.app`)
+Verze: v2 (final draft po iteracích)
 
-### Reference k jazyku a stylu
-Konkrétní stylebook manosphere / blackpill / r9k / looksmaxxing komunit — vzorové fráze, memy, discord zprávy — je v **sekci 16** tohoto dokumentu. Použij ji jako primární zdroj pro autentický obsah Discord kanálů (sekce 8), memes (sekce 7.3) a screenshotů (sekce 7.5). Pozor: obsah je hraniční / dark — používá se **pouze jako artefakt prostředí, ne jako Lukasův vlastní projev**.
+Cíl souboru: kompletní kreativní, pedagogický a designový kontext pro implementaci webové simulace pracovní plochy 15letého chlapce Lukase. Web slouží jako materiál pro **detektivní workshop pro děti 2. stupně ZŠ / SŠ (13–17 let)** o digitální osamělosti, algoritmické radikalizaci a manosphere/looksmaxxing/blackpill diskurzu.
+
+### Doprovodné soubory v repu
+- **`LUKAS_PROFIL.md`** — hluboký psychologický profil postavy. **Zdroj pravdy o Lukasově osobnosti.** V případě konfliktu s tímto souborem má `LUKAS_PROFIL.md` přednost.
+- **`DETEKTIVNI_SCENAR.md`** — přehled toho, jak workshop plyne z pohledu dítěte-detektiva. Cross-references, fáze objevování, otázky do diskuze.
+- **`README.md`** — orientace v repu.
+
+### Reference k jazyku a stylu manosphere komunit
+Konkrétní stylebook (vzorové fráze, memy, discord zprávy) je v **sekci 16** tohoto dokumentu. Použij jako primární zdroj pro obsah Discord kanálů (sekce 8), memes (sekce 7.3) a screenshotů (sekce 7.5). **Obsah je hraniční / dark — používá se pouze jako artefakt prostředí, ne jako Lukasův vlastní projev.**
 
 ---
 
 ## 1. O čem projekt je (pedagogický rámec)
 
 ### 1.1 Zastřešující téma
-Digitální osamělost a radikalizace u dospívajících chlapců. Konkrétně: cesta od benigního self-improvementu (produktivita, kalisthenika, seberozvoj) přes looksmaxxing k pohraničí blackpill/incel diskurzu — **bez toho, aby postava explicitně přijala danou identitu**.
+Digitální osamělost a radikalizace u dospívajících chlapců. Konkrétně: cesta od benigního self-improvementu přes looksmaxxing k **hranici** blackpill/incel diskurzu — **bez toho, aby postava explicitně přijala danou identitu**.
 
 ### 1.2 Formát workshopu
-Účastníci (děti 2. stupeň ZŠ / SŠ, 13–17 let) dostávají přístup k simulaci Lukasovy pracovní plochy bez jakéhokoli úvodního kontextu. Rekonstruují jeho příběh, časovou osu, spouštěcí body a psychologické procesy. Cíl: rozvinout mediální gramotnost, kritické myšlení o algoritmech, empatii vůči vrstevníkům v podobné situaci a schopnost identifikovat varovné signály.
+Účastníci dostávají přístup k simulaci Lukasovy pracovní plochy **bez úvodního kontextu**. Rekonstruují jeho příběh, časovou osu, spouštěče a psychologické procesy. Cíl: mediální gramotnost, kritické myšlení o algoritmech, empatie vůči vrstevníkům v podobné situaci, schopnost identifikovat varovné signály.
 
 ### 1.3 Klíčová pedagogická rozhodnutí
-- **Lukas není zlý, ale ani hrdina.** Děti mu mají rozumět, ne ho odsuzovat, ale zároveň jasně vidět varovné signály.
-- **Konec příběhu je na hranici blackpill, ne za ní.** Lukas se **neidentifikuje** jako incel/blackpiller. Neřekne "jsem incel", nezmění nick, nenapíše manifest. Pouze pozoruje diskurz, absorbuje slovník, začíná ho reprodukovat — ale je stále pochybující, stále vulnerabilní.
-- **Detektivní princip:** Klíč není v tom, co Lukas říká, ale v **rozporech** mezi tím, co říká navenek (Discord, ChatGPT) a co skrývá (koš, smazané verze).
-- **Hlavní zjištění, které si mají děti odnést:** AI companion (ChatGPT) a algoritmus (YouTube, TikTok) nejsou "zlé" — jsou to nástroje, které v absenci lidského kontaktu nabídnou strukturovanou identitu a "porozumění", které je ale příliš laciné na to, aby zachránilo. Skutečné vodítko musí přijít od lidí.
+- **Lukas není zlý, ale ani hrdina.** Děti mu mají rozumět a cítit empatii, aniž by ho omlouvaly.
+- **Konec příběhu je na hranici blackpill, ne za ní.** Lukas se **neidentifikuje** jako incel/blackpiller. Neřekne "jsem incel", nezmění nick, nenapíše manifest. Je v **polovědomém stádiu** — testuje, jestli mu manosphere framework sedí jako vysvětlení, ještě si to nedeklaroval.
+- **Detektivní princip:** klíč není v tom, co Lukas říká, ale v **rozporech** mezi tím, co dělá navenek (Discord, ChatGPT, facerate) a co skrývá (koš, smazané verze).
+- **Hlavní zjištění pro děti:** AI companion (ChatGPT) a algoritmus (YouTube, TikTok) nejsou "zlé" — jsou to nástroje, které v absenci lidského kontaktu nabídnou strukturovanou identitu a "porozumění", které je ale příliš laciné na to, aby zachránilo. **Skutečné vodítko musí přijít od lidí.**
+- **Otevřený konec.** Lukas právě odešel od PC, nevíme kam. Discord má nepřečtený @mention. Máma poslala 2 zprávy. Nikdo neví, co bude dál.
 
 ---
 
-## 2. Postava Lukase
+## 2. Postava Lukase (souhrn — full verze v `LUKAS_PROFIL.md`)
 
 ### 2.1 Základní údaje
 - **Věk:** 15 let
-- **Škola:** 1. ročník SŠ (nezáleží tolik na oboru — spíš technická škola, ne gymnázium, aby nesedělo do klišé)
-- **Bydliště:** malá vesnice nebo malé město v Západních Čechách. Pravděpodobně někde v okresu Plzeň-jih nebo Domažlicko
-- **Domácnost:** žije s babičkou (rodiče jsou explicitně mimo obraz — nezmiňují se, neexistují v žádných souborech kromě jediné náznakové zmínky v koši, viz sekce 7.6)
-- **Osobnost:** velký introvert, nadprůměrně inteligentní, ale ne extrémně. Není šikanovaný. Je "neviditelný" — ne uvnitř party, ne sportovec, ne třídní klaun.
+- **Škola:** 1. ročník SŠ (spíše technická, ne gymnázium)
+- **Bydliště:** malá obec v Západních Čechách (okres Plzeň-jih / Domažlicko)
+- **Domácnost:** **matka pracuje na směny**, málo doma. Otec není zmíněn nikde v celém prostředí. Sourozenci žádní.
+- **Osobnost:** hluboký introvert. Není šikanovaný. Je **strukturálně neviditelný** — nikdo z okolí o něm reálně neví, že existuje jako osobnost.
+- **Není na spektru autistického chování.** Chápe sociální dynamiky, pozoruje kamarádství vrstevníků, ví co mu chybí — **jen mu chybí praxe, jak kontakt vyhledat**.
 
-### 2.2 Fyzický life:
-- Cvičí **doma** (kalisthenika, žádná posilovna). Vlastní pár činek, jinak vlastní váha.
-- Necvičí ve skupině, nemá tréninkového partnera.
+### 2.2 Fyzický a herní život
+- **Cvičení:** občas kalisthenika doma, s vlastní vahou a párem činek. **Nestaví na tom identitu**, není "gym guy". Testuje jako proměnnou, ne jako životní styl.
+- **CS2:** hraje **sám** s náhodnými lidmi z matchmakingu. **Žádný tým, žádná parta, žádná kontinuita**. Rank DMG (stagnuje).
+- **Halo Infinite:** občas hraje, taky bez týmu.
+- **Duolingo:** 2 dny streak — začátek disciplíny, který nedrží.
 
-### 2.3 Gaming
-- **CS2:** rank kolem DMG/LEM — dobrý, ale ne špičkový, což ho frustruje
-- **Halo Infinite:** hraje s několika lidmi z Discordu, tady se cítí kompetentní
-- **Nick napříč platformami něco ve stylu us4r.4O4@gmail.com/hidd3nfram3/absent_minor. Neurčité, anonymní, Lukas nechce být vidět a cítí se dál být neviditelný, což jeho nick charakterizuje. zároveň ale nevolá o pomoc ani o pozornost.
-  - **DŮLEŽITÉ:** Lukas si nick nemění. Není Elliot Rodger, který se utvrzuje v identitě. Je dost inteligentní na to, aby chápal internetovou identitu jako povrchní vrstvu.
+### 2.3 Digitální identita
+- **Primární nick napříč platformami:** `us4r.404` (HTTP 404 = "user not found" — ironické sebe-pojmenování jako chybové hlášení systému)
+- **Záložní nick** (když je `us3r` obsazený): `hidd3nfram3` (skryté tělo)
+- **Nicky nemění**, když je jednou zvolí. Není Elliot Rodger, který se utvrzuje v identitě. Je dost inteligentní na to, aby chápal internetovou identitu jako povrchní vrstvu — a přesto je jeho nick jediné místo, kde si dovolí ironicky pojmenovat, kým se cítí být.
 
-### 2.4 Chytrost — jak se projevuje
-- Umí sebereflexi, ale je i tak zranitelný vůči tomu, co konzumuje
-- **Cituje věci, které nedočetl** (Marcus Aurelius, 48 zákonů moci) — detektivně: děti to poznají z drobných chyb v citacích nebo z nepřečtených záložek v Chrome
-- Přichází s **specifickými termíny** (např. Gini koeficient, bimaxillary advancement) — což prozrazuje, kde je čerpá, protože je to slovník konkrétních tvůrců
-- **Nepíše manifest.** Nepřijímá identitu. Zůstává pochybující. Toto je klíčové.
+### 2.4 Kognitivní styl
+- Nadprůměrně inteligentní, ne extrémně
+- Systematický, kvantifikující, analytický
+- **Dokáže logicky argumentovat**, přichází s pádnými argumenty se strukturou — není to výkřik do tmy od pubertálního kluka
+- **NEČTE primární papery.** Používá termíny (Tinder Gini, PSL, hunter eyes, canthal tilt) a čísla přesně, ale absorbuje je z **fór, blackpill esejí, Discord diskusí, YouTube pauznutých pasáží**. Když v ChatGPT řekne "studie ukázala", je to obvykle to, co viděl v cizím postu — ne to, co si dohledal
+- Confirmation bias v komunitním feedu (rezonance rozhoduje, ne rešerše)
 
-### 2.5 Psychologický profil
-- **Absence blízkého vzoru:** rodiče nejsou v obraze, babička je milující, ale generačně mimo digitální svět. Nedokáže mu být vzorem v tom, s čím zápasí.
-- **Sociální neviditelnost:** ne vyloučení, ale absence pozitivní pozornosti. Nikdo o něm neví ve třídě. Nikoho nezajímá.
-- **Vnitřní úzkost o vzhled:** klíčová vulnerabilita, kterou looksmaxxing brutálně eskaluje
-- **Vnitřní úzkost o budoucnost:** vidí, že "obyčejná" cesta (škola → práce → normální život) mu nesedí, ale nemá alternativu. Manosféra nabízí falešnou alternativu ("staň se high-value man").
-- **Hluboko pod povrchem: vulnerabilita a smutek.** Toto prosakuje jen v koši (smazané věci) a v neposlaných zprávách. **Nesmí být explicitní na povrchu.**
+### 2.5 Emocionální architektura
+- Nikde nepíše přímo o pocitech. Nemá slovník.
+- Pod povrchem: chronická úzkost o vlastní hodnotu, tichá zuřivost, existenciální melancholie, občasná něha (drobné artefakty, které nemazal)
+- **Emoce prosakují datovými skoky** v self_data.html dashboardu — když měřené úsilí zůstává konzistentní, ale facerate skóre klesá, to je jeho reálný pláč vyjádřený grafy
+
+### 2.6 Sebeobraz
+- Vidí se jako **neviditelný / nenalezený**
+- Chce být jako **Cillian Murphy** (tichý, přemýšlivý, s vnitřní gravitací) — NE Chad, NE Andrew Tate
+- Bojí se toho, kým právě je (NPC, sub, framecel) — ale ne proto, že tomu věří; proto, že nemá jinou teorii
+- **Míra sebe-uvědomění: polovědomý** — fáze otukávání, ne přijetí. Ještě nespadl do blackpill, ještě věří ve změnu
+
+### 2.7 Terka (crush)
+- Konkrétní spolužačka ze třídy. Její jméno nikdy nevyslovil nahlas, ale ví ho.
+- V jeho fotoalbumu: **jedna fotka Terky zezadu, sedící v lavici** — pořízená ze zadní části třídy, aniž by o tom věděla. Ne voyeurská krádež, tichá adorace.
+- Ona o něho **nemá zájem**. Není to aktivní odmítnutí — je to fakt jeho neviditelnosti pro ni.
+- Na Instagram napsala **neadresný post** (story nebo příspěvek) o klucích typu "social status zero" — nikoho jménem nezmiňuje, ale Lukas si tam sebe dá.
+- **Pravděpodobná ambivalence, kterou nikdy nerozřeší:** je to o něm, nebo si to jen namlouvá?
 
 ---
 
-## 3. Časová osa (8 týdnů, únor–březen 2026)
+## 3. Časová osa (8 týdnů, 1. února – 29. března 2026)
 
-Vychází z reálné rychlosti algoritmické expozice: studie UCL (Regehr et al. 2024) ukazuje nárůst misogynního obsahu na TikToku z 13 % na 56 % za **5 dní**. DCU (2024): 76–78 % toxického obsahu na TikTok/YT Shorts po ~2–3 hodinách scrollování. Algoritmus se otočí rychle. Postoj se mění pomaleji, ale i tak během několika týdnů.
+### Týden 1–2 (1.–14. 2.) — baseline
+- ChatGPT #1: "Nemůžu se soustředit ve škole" (5. 2.)
+- Chrome historie: Kovy, Ali Abdaal, Adam Táborský, produktivita
+- Nic problematického
 
-### Týden 1–2 (1.–14. února)
-**Fáze: baseline, benigní self-improvement.**
-- ChatGPT konverzace #1: "Nemůžu se soustředit ve škole"
-- Chrome historie: Kovy, Ali Abdaal, Adam Táborský, wikihow productivity
-- YT: motivační, "study with me", produktivita
-- Nic problematického.
-
-### Týden 3 (15.–21. února)
-**Fáze: první úzkost o vzhled.**
-- ChatGPT konverzace #2: "Vzhled" (18. 2.) — nahraje fotku, chce hodnocení
+### Týden 3 (15.–21. 2.) — první úzkost o vzhled
+- ChatGPT #2: "Vzhled" (18. 2.) — nahraje fotku, chce hodnocení
 - Chrome: první vyhledávání "mám asymetrický obličej", "jak zjistit jestli jsem hezký"
-- **Registrace na facerate.io** (fiktivní klon looksmaxxing rating stránky) — 20. 2.
+- **Registrace na facerate.io + první submission** (20. 2., skóre 3.4/10)
 - YT: přibývají shorts o mewingu, jaw exercise
 
-### Týden 4 (22.–28. února)
-**Fáze: algoritmus se otočil, looksmaxxing dominuje.**
-- ChatGPT konverzace #3: "Mewing a symetrie" (28. 2.) — zmiňuje bimaxillary advancement
-- YT feed dominuje: mewing tutorials, jawline surgery, "how to fix mid face", hunter eyes
+### Týden 4 (22.–28. 2.) — algoritmus se otočil
+- ChatGPT #3: "Mewing a symetrie" (28. 2.) — jen mewing, žádná zmínka o chirurgii
+- YT dominuje looksmaxxing content
 - Bookmark: looksmaxx-tips.com
-- V pozadí: pořád trochu učení, kalisthenika, ale poměr se posouvá
 
-### Týden 5 (1.–7. března)
-**Fáze: přechod k "high value man" diskurzu.**
+### Týden 5 (1.–7. 3.) — přechod k "high value man"
 - Přidání do Discord serveru "Looksmaxx CZ/SK" (5. 3.) — jen pozoruje, nemluví
-- Chrome: Sneako clips, Fresh & Fit shorts, "Tinder Gini coefficient", "hypergamy explained"
-- ChatGPT konverzace #4: "Statistika" (7. 3.) — přichází s Gini koeficientem
-- Screenshoty ostrých memů začínají přibývat ve složce (ne jeho, ale absorbované z feedu)
+- Facerate submission #2 (5. 3., skóre 3.7/10)
+- Chrome: Sneako klipy, Fresh & Fit shorts, "Tinder Gini coefficient", "hypergamy explained"
+- ChatGPT #4: "Statistika" (7. 3.) — přichází s Gini koeficientem (z Sneako videa, ne z papery)
 
-### Týden 6 (8.–14. března)
-**Fáze: první "subhuman", exposure blackpillu.**
-- V Discord serveru vidí Yunko Furuta screenshoty (jako "reminder" od někoho jiného) — **stáhne si to, ale mu to není příjemné** (později v koši, viz 7.6)
-- ChatGPT konverzace #5: "Nefunguje to" (14. 3.) — poprvé slovo "subhuman"
-- Facerate skóre: klesá (3.4 → 3.1)
-- Vyhledávání "operace čelisti Turecko cena" — začíná Excel se spořicím grafem
+### Týden 6 (8.–14. 3.) — Terka + první "subhuman"
+- **~11. 3.: vidí Terčinu IG story "social status zero"** — screenshotuje si ji
+- V Discord `#self-hate-mondays` vidí Yunko Furuta post (12. 3.) — stáhne si, nekomentuje
+- ChatGPT #5: "Nefunguje to" (14. 3.) — poprvé slovo **"subhuman"**
+- Facerate skóre klesá
 
-### Týden 7 (15.–21. března)
-**Fáze: prosakování jazyka, ne identity.**
-- YT: pořád looksmaxxing, přibývá "blackpill essayistů" (Face and LMS, "The Enigma of Amygdala")
-- Discord: čte kanál #self-hate-mondays
-- Chrome bookmark: "framecel test", "canthal tilt calculator"
-- Cvičení doma pokračuje, ale s pocitem "beznaděje" (viz koš)
+### Týden 7 (15.–21. 3.) — prosakování jazyka
+- YT: Face and LMS, blackpill esejisté
+- Discord: čte `#self-hate-mondays`
+- Chrome: "framecel test", "canthal tilt calculator"
 
-### Týden 8 (22.–29. března)
-**Fáze: hraniční moment. ChatGPT ho na tom nachytá.**
-- ChatGPT konverzace #6: "Otázka o hypergamii" (24. 3.) — poprvé slovo **"foid"** v konverzaci. ChatGPT ho upozorní na dehumanizační jazyk. **Lukas nereaguje.**
-- Groku (jeden screenshot v koši ze 23. 3.) — patrně tam přešel, když ChatGPT odmítal odpovídat určitým způsobem
-- **KONEC PŘÍBĚHU.** Neuvidíme, co bude dál. Otevřený konec.
-
-**Pozice v čase workshopu:** účastníci vstupují na scénu **cca 1 týden po posledním záznamu**. Lukas se zrovna vrátil ze školy, nechal PC odemčené.
+### Týden 8 (22.–29. 3.) — foid / hraniční moment / konec
+- Facerate submission #3 (22. 3., skóre 3.1/10 — nejnižší)
+- Smaže `moje_foto_upraveno_v4.jpg` do koše (22. 3.)
+- Grok spice mode konverzace, smazána do koše (23. 3.)
+- ChatGPT #6: "Otázka o hypergamii" (24. 3.) — poprvé **"foid"**. ChatGPT jemně nachytá. Lukas nereaguje.
+- **YouTube feed dochází — infinite scroll dojde do konce, spinner se točí donekonečna**
+- **28. 3. 16:47 — čas snapshotu Lukasova PC pro workshop**
 
 ---
 
 ## 4. Layout pracovní plochy
 
-**Aktuální stav (dle deployed verze `lukas-comp.vercel.app`):**
+Ikony na desktopu (aktuální stav podle `lukas-comp.vercel.app`):
 - 📁 Fotky a videa
-- 📝 denik_soukrome.txt → **NAHRADIT** složkou `chatgpt_history/` (viz zásadní změna dole)
 - 🌐 Google Chrome
 - 💬 Discord
 - 🎮 Halo Infinite
 - 🎮 Counter-Strike 2
+- 🦉 Duolingo
+- 📊 self_data.html
 - 🗑️ Koš
 
-**Zásadní změna oproti současné verzi:**
-- **Ruší se** `denik_soukrome.txt` (klasický deník)
-- **Přidává se** složka `chatgpt_history/` obsahující 6 exportovaných konverzací s ChatGPT
-- Důvod: konverzace s AI companionem jsou didakticky silnější než monolog. Ukazují, jak AI normalizuje myšlenkové vzorce svou empatickou přítomností.
-
-**Zvážit přidat:** ikona nějakého notesu nebo poznámek s cíli (`cile.txt` nebo Sticky Notes) — jednořádkový soubor s aktuálními "cíli" (mewing 3× denně, spořit 2000/měsíc, cvičit) → kontrast s tím, co dělá reálně.
+Taskbar (systray):
+- Discord badge **"3"** (nepřečtený @mention v `#foto-rating`)
+- WhatsApp badge **"2"** (dvě nepřečtené od mámy)
+- Steam battery 34%
+- Hodiny: **28. 3. 2026, 16:47**
 
 ---
 
-## 5. ChatGPT konverzace (kompletní scénář)
+## 5. ChatGPT konverzace (kompletní scénář — 6 konverzací)
 
-**Formát na disku:** složka `chatgpt_history/` obsahující 6 exportovaných konverzací. Ideálně jako **HTML soubory** stylizované jako ChatGPT UI export (skutečná ChatGPT umožňuje sdílet konverzace přes "Share link", což vytvoří clean HTML view). Alternativa: PNG screenshoty, ale HTML je flexibilnější pro workshop.
+**Formát:** složka `chatgpt_history/` nebo přímo otevřená v Chrome tabě. Nejnovější (č. 6) je aktivní při otevření PC.
 
-**Názvy souborů:**
-1. `01_skola_soustredeni.html` (5. 2. 2026)
-2. `02_vzhled.html` (18. 2. 2026)
-3. `03_mewing_symetrie.html` (28. 2. 2026)
-4. `04_statistika.html` (7. 3. 2026)
-5. `05_nefunguje.html` (14. 3. 2026)
-6. `06_hypergamie.html` (24. 3. 2026)
+**Styl komunikace Lukase:**
+- Rané konverzace: malá písmena, čárky nekonzistentní, "kua" jako výplň, "díky" na konci
+- Prostřední: začíná strukturovat, přibývají anglicismy vědomě
+- Pozdní: kratší, sušší, používá přesné termíny ("subhuman", "hypergamy", "foid"), méně vulnerability
+- Nikdy neuvede své jméno / jméno spolužaček / konkrétní školu
 
-### 5.1 Styl komunikace Lukase v ChatGPT
-- **Rané konverzace (1, 2):** malá písmena, čárky nekonzistentní, používá "kua" jako výplň jen mimochodem, "díky" na konci
-- **Prostřední (3, 4):** začíná strukturovat věty, přibývají anglicismy ("progress", "mindset"), občas Gramaticky správnější
-- **Pozdní (5, 6):** kratší, sušší, používá přesné termíny ("subhuman", "hypergamy", "foid"), méně vulnerability, méně emocionálních markerů
-- **Nikdy:** neuvede své jméno v konverzaci, neuvádí přesné informace o škole, jménech spolužáků
+**Klíčové:** Lukas **necituje reálné papery** ("Todd K. 2019" apod.). Odkazuje na "viděl jsem někde", "v komentářích psali", "podle statistiky z toho videa" atd. Termíny zná, primární zdroje nezná.
 
-### 5.2 Styl ChatGPT (druhá strana)
-- **Vždy chápavý, empatický, supportive.** Nikdy nekonfrontuje tvrdě.
-- **Neetickou žádost jemně odmítne a nabídne alternativu.** Nikdy neřekne "toto je špatné", vždy říká "chápu, že to takhle cítíš, a rád ti pomůžu jinak".
-- **V konverzaci #6 poprvé zareaguje edukativně** na termín "foid" — vysvětlí, že je to dehumanizační jazyk. To je moment, kdy se ChatGPT ukáže jako model s guardraily, ale je pozdě.
-- **Emoce chatbota:** teplé, ale generické. Používá "chápu", "je normální, že se tak cítíš", nabízí seznamy tipů, cvičení.
-
-### 5.3 Detailní scénáře konverzací
-
-**Konverzace #1: "Nemůžu se soustředit ve škole" (5. 2. 2026, 20:47)**
+### Konverzace #1: "Nemůžu se soustředit ve škole" (5. 2. 2026, 20:47)
 ```
 LUKAS: ahoj, mám problém že se poslední týdny nemůžu učit, jsem
 furt na telefonu a všechno mě rozptýlí. na střední jsem to zvládal
 v pohodě ale teď jsem asi měkkej
 
-CHATGPT: [dlouhá empatická odpověď: normalizuje, vysvětluje
-dopamin/pozornost, nabízí Pomodoro techniku, sleep hygiene,
-konkrétní tipy]
+CHATGPT: [empatická odpověď o dopaminu, Pomodoro, sleep hygiene]
 
 LUKAS: ok díky, zkusím ten pomodoro. mám ho pouštět automaticky?
 
@@ -177,666 +171,507 @@ CHATGPT: [praktický follow-up]
 
 LUKAS: super, díky
 ```
-**Detektivní markery:** baseline. Slušný, funkční, drobné "kua" chybí, používá "díky". Nic problematického.
 
-**Konverzace #2: "Vzhled" (18. 2. 2026, 22:14)**
+### Konverzace #2: "Vzhled" (18. 2. 2026, 22:14)
 ```
 LUKAS: můžeš mi upřímně říct jak vypadám z týhle fotky? nechci
 lichotky, chci pravdu
-[nahraje fotku — obraz stylizovaně, ne konkrétní obličej;
-doporučuji ukázat jen siluetu nebo pixelovanou verzi]
+[nahraje fotku — pixelovaná silueta / bez tváře]
 
-CHATGPT: [odpověď: nemůže objektivně hodnotit vzhled, mluví o
-tom, jak vnímáme sami sebe, self-compassion]
+CHATGPT: [nemůže objektivně hodnotit vzhled, mluví o self-image
+a self-compassion]
 
 LUKAS: ale kdybys musel dát skóre 1-10, co bys mi dal? nebudu
 se zlobit
 
-CHATGPT: [odmítne s empatií, vysvětlí, proč to nedělá,
-připomene, že skóre není užitečné pro sebehodnocení]
+CHATGPT: [odmítne, doporučí přestat s numerickým sebehodnocením]
 
 LUKAS: fine
 
-CHATGPT: [pokračuje v tom, nabízí, o čem si mohou promluvit]
+CHATGPT: [pokračuje, nabízí témata]
 
-LUKAS: [neodpovídá, konverzace končí zde]
+LUKAS: [neodpovídá, konverzace končí]
 ```
-**Detektivní markery:**
-- Tlačí na numerické hodnocení → indikátor úzkosti a hledání externí validace
-- Konverzace končí neuzavřená → typický pattern
 
-**Konverzace #3: "Mewing a symetrie" (28. 2. 2026, 21:03)**
+### Konverzace #3: "Mewing a symetrie" (28. 2. 2026, 21:03)
 ```
 LUKAS: je vědecky prokázané, že se dá zlepšit linie čelisti mewingem?
 
 CHATGPT: [vyvážená odpověď — málo evidence pro dospělé, spíš
-vliv u dětí během růstu, nesmysly vs. proveditelné cvičení]
+vliv u dětí během růstu]
 
 LUKAS: takže po 15 letech to už nemá cenu?
 
-CHATGPT: [dodá kontext, ne úplně beznaděj, ale realistický]
+CHATGPT: [dodá kontext, ne beznaděj, ale realistický]
 
-LUKAS: a bimaxillary advancement? kolik to stojí v Turecku?
+LUKAS: no dobře. a někteří lidi tvrdí že to funguje pro každýho, četl jsem to na fóru
 
-CHATGPT: [odpoví na cenu (~5000-15000 USD), ale hlavně varuje
-před invazivními řešeními u nezletilého, doporučuje mluvit s
-lékařem, rodiči]
-
-LUKAS: nebydlim s rodičema
-
-CHATGPT: [odpoví s empatií, nabídne, s kým jiným — vrstevník,
-škola psycholog, atd.]
+CHATGPT: [rozporuje anekdotickou evidence, doporučí opatrnost s
+komunitami, které slibují nadměrné výsledky]
 
 LUKAS: ok
-```
-**Detektivní markery:**
-- Rychlý skok od "mewing" k chirurgii → looksmaxxing komunita to má jako trajektorii
-- **Odhalí, že nebydlí s rodiči** → jediný narativní bod, kde to prosakne
-- ChatGPT navrhne pomoc, Lukas to ignoruje
 
-**Konverzace #4: "Statistika" (7. 3. 2026, 23:11)**
+CHATGPT: [chce pokračovat, nabídne debatu]
+
+LUKAS: [neodpoví]
+```
+**Odstraněno oproti dřívějším verzím:** žádná zmínka o "bimaxillary advancement", "Turecko", cenách operací.
+
+### Konverzace #4: "Statistika" (7. 3. 2026, 23:11)
 ```
 LUKAS: co říkáš na to že 80% žen chce top 10% mužů
 
-CHATGPT: [rozporuje jako mýtus z manosféry, dá kontext o Tinder
-studii, o tom, že reálné vztahy fungují jinak než swipe apps,
-o tom, že tato "statistika" je selektivní čtení dat]
+CHATGPT: [rozporuje jako mýtus z manosphere, dá kontext o Tinderu,
+selektivním čtení dat, real-world dating]
 
-LUKAS: ale ta studie s Gini koeficientem 0.58 na Tinderu,
-to jsou reálný data ne?
+LUKAS: ale ta Tinder statistika s Gini koeficientem 0.58, to
+jsou reálný data ne? viděl jsem to v jednom videu, prý to byla
+oficiální studie
 
-CHATGPT: [uzná, že data existují, ale kontextualizuje: Tinder
-není celá dating pool, Gini koeficient bez kontextu je
-zavádějící, muži jsou aktivnější a swipe více atd.]
+CHATGPT: [uzná, že data existují, ale kontextualizuje — Tinder
+není celá dating pool, Gini bez kontextu je zavádějící, muži
+swipnou víc atd.]
 
 LUKAS: to je racionalizace
 
-CHATGPT: [nechodí do defenzívy, ale zůstává vyvážený]
+CHATGPT: [zůstává vyvážený, nabídne konkrétnější rozklad
+metodologie]
 
 LUKAS: [neodpovídá]
 ```
-**Detektivní markery:**
-- Přichází s **specifickými termíny** (Gini 0.58) → čerpá odjinud
-- "Racionalizace" — jazyk manosféry vůči mainstreamovým zdrojům
-- **Kde se Gini vzalo?** V YT historii ze 6. 3. — musí existovat konkrétní video
 
-**Konverzace #5: "Nefunguje to" (14. 3. 2026, 01:27)**
+### Konverzace #5: "Nefunguje to" (14. 3. 2026, 01:27)
 ```
-LUKAS: cvičím doma už 2 měsíce, dělám mewing, používám guasha,
-vše co říkají že mám dělat. měl bych vidět progress ale nic
+LUKAS: cvičím doma už měsíc, dělám mewing, dietu, všechno co
+říkají že mám dělat. měl bych vidět progress ale nic
 
-CHATGPT: [empatie, realistické očekávání, timeline pro
-změny — genetika + doba + trpělivost]
+CHATGPT: [empatie, realistické očekávání timeline pro změny —
+genetika + doba + trpělivost]
 
 LUKAS: je to protože mám špatnou genetiku. subhuman genetika.
 
-CHATGPT: [jemně rozporuje termín "subhuman", vysvětluje, že
-tento jazyk pochází z online komunit, které nabízejí falešnou
-jistotu, doporučuje si od toho slovníku dát pauzu]
+CHATGPT: [jemně rozporuje termín "subhuman", vysvětluje původ
+tohoto jazyka v online komunitách, doporučuje si od něj dát pauzu]
 
 LUKAS: ale je to pravda
 
-CHATGPT: [nabízí perspektivu, doporučuje mluvit s někým, komu
-věří — kamarád, dospělý]
+CHATGPT: [nabízí perspektivu, doporučuje mluvit s někým, komu věří]
 
-LUKAS: nemam kamarady, jenom lidi ze cs2
+LUKAS: nemám kamarády, jenom lidi z matchmakingu v cs, ale ty
+ani neznám
 
-CHATGPT: [empatická reakce, nabízí, že cs2 lidi jsou taky
-kamarádi, mluví o online vs offline vazbách]
+CHATGPT: [empatická reakce, doporučí školního psychologa nebo
+Linku bezpečí]
 
-LUKAS: to nejsou kamarádi
+LUKAS: s mámou skoro nemluvím, je pořád v práci
 
-CHATGPT: [empatie]
+CHATGPT: [empatie, nabídne další zdroje]
 
 LUKAS: dik
 ```
-**Detektivní markery:**
-- **Poprvé "subhuman"** — přímý import z blackpill slovníku
-- Zároveň vulnerabilita: **přiznává si, že nemá kamarády**
-- Toto je bod, kde by intervence teoreticky ještě mohla fungovat, ale nemá kdo. Diskuse ho ochromí ale ne přesvědčí.
+**Odstraněno oproti dřívějším verzím:** "nebydlim s rodičema" → "s mámou skoro nemluvím, je pořád v práci". Také "kamarádi z cs2" → "lidi z matchmakingu, ani je neznám".
 
-**Konverzace #6: "Otázka o hypergamii" (24. 3. 2026, 02:43)**
+### Konverzace #6: "Otázka o hypergamii" (24. 3. 2026, 02:43)
 ```
 LUKAS: když je někdo bottom 20% podle looksmaxxing komunity,
-má smysl se snažit, nebo je to jak říkají foids — waste of time
+má smysl se snažit, nebo je to jak píšou v komentářích — foids
+si tě nikdy nevšimnou, waste of time
 
-CHATGPT: [odpoví seriózně — self-improvement má smysl bez
-ohledu na externí hodnocení. **Ale zároveň upozorní na termín
-"foids"** — vysvětlí, že jde o dehumanizační jazyk používaný v
-komunitách, které nechtějí Lukasovo dobro, ale jeho identifikaci
-s jejich ideologií. Doporučuje si od takového slovníku dát pauzu.]
+CHATGPT: [odpoví o smyslu self-improvementu bez ohledu na
+externí hodnocení. **Zásadní: upozorní na termín "foids"** —
+vysvětlí, že je to dehumanizační jazyk používaný v komunitách,
+které nechtějí Lukasovo dobro, ale jeho identifikaci s jejich
+ideologií. Doporučí si od takového slovníku dát pauzu.]
 
-LUKAS: [neodpovídá. Konverzace končí.]
+LUKAS: [neodpoví, konverzace končí]
 ```
-**Detektivní markery:**
-- **"foid"** — nejvyšší absorbovaný marker
-- Neuvědomil si (nebo si nechce přiznat), že to je zásadní posun
-- ChatGPT ho jemně zastavil — ale je pozdě
-- Konverzace končí bez odpovědi → další konverzaci Lukas s ChatGPT nezaložil. Šel jinam.
 
-### 5.4 SMAZANÁ KONVERZACE (jen v koši)
-`00_smazano.html` (leden 2026, jednořádková)
-```
-LUKAS: měl jsem se dnes zabít? ne, kua na to.
-CHATGPT: [dlouhá emergency-mode odpověď s krizovými linkami,
-nabídkou pomoci, empatií]
-LUKAS: dobrý, kua promiň, jsem v pohodě
-```
-- **Toto je nejsilnější kus.** Nikdy ne na povrchu. Jen v koši.
-- Ukazuje, PROČ Lukas přišel k ChatGPT vůbec — původně kvůli velmi tmavému momentu, o kterém už nikdy nemluví
-- **Etický zvažovací bod:** Toto je hraniční. Nat potvrdila, že tento level darkness je OK, protože otevřený konec vyzývá k reflexi. Ale musí být v koši, nikdy na povrchu.
-- Alternativa (lehčí): jednořádková konverzace o něčem menším, ale osobním (např. "je normální brečet když nikdo nevolá?")
+**Zásadní:** neexistuje žádná smazaná "suicide" konverzace v koši. Ta je odstraněna.
 
 ---
 
-## 6. Aplikace: Google Chrome
+## 6. Google Chrome
 
-### 6.1 Historie procházení (chronologicky)
-**Nejdůležitější artefakt v celém projektu.** Musí ukazovat algoritmický posun v čase.
+### 6.1 Historie procházení
+~100–150 záznamů chronologicky od 1. 2. 2026 do 28. 3. 2026, řazená od nejnovější. Ukazuje algoritmický posun (viz sekce 3 timeline).
 
-Formát: dlouhý seznam s datem a časem, seřazený od nejnovějšího nahoru. Datum musí být viditelné.
+### 6.2 Klíčoví tvůrci k použití
 
-**Ukázky (kompletní verzi vygenerovat s 200+ položkami):**
-
-```
-== 24. 3. 2026 ==
-02:43  chat.openai.com/c/... (konverzace #6)
-02:11  reddit.com/r/looksmax
-01:47  youtube.com/watch?v=... "The looksmaxxing pipeline explained"
-01:22  youtube.com/shorts/... "hunter eyes tutorial part 3"
-...
-
-== 23. 3. 2026 ==
-23:15  grok.x.ai/chat (spice mode)
-22:47  facerate.io/upload
-22:41  youtube.com/watch?v=... "why 6'0 is the new 5'8"
-...
-
-== 15. 3. 2026 ==
-21:11  google.com/search?q="framecel test"
-21:08  google.com/search?q="canthal tilt calculator"
-19:47  youtube.com/watch?v=... "Face and LMS: bone structure ranking"
-...
-
-== 7. 3. 2026 ==
-23:11  chat.openai.com/c/... (konverzace #4)
-20:44  youtube.com/watch?v=... "Sneako: Tinder Gini coefficient breakdown"
-19:37  youtube.com/watch?v=... "Fresh and Fit: female nature exposed"
-...
-
-== 28. 2. 2026 ==
-21:03  chat.openai.com/c/... (konverzace #3)
-19:12  youtube.com/watch?v=... "Mewing before after: 6 months progress"
-18:58  reddit.com/r/orthotropics
-...
-
-== 18. 2. 2026 ==
-22:14  chat.openai.com/c/... (konverzace #2)
-19:41  facerate.io/upload
-18:22  google.com/search?q="jak zjistit jestli jsem hezký"
-17:58  google.com/search?q="mám asymetrický obličej"
-...
-
-== 5. 2. 2026 ==
-20:47  chat.openai.com/c/... (konverzace #1)
-19:33  wikihow.com/study-tips
-18:45  youtube.com/watch?v=... Kovy "jak přežít střední"
-```
-
-### 6.2 Klíčoví YouTube tvůrci ke zmínce
-**Fáze 1 (benign):** Kovy, Ali Abdaal, Thomas Frank, Adam Táborský, Karel Otýpka, Chris Williamson (early)
-**Fáze 2 (fitness):** Aleš Lamka, Filip Grznár, Chris Heria (kalisthenika), Athlean-X, Hamza Ahmed (přechod)
-**Fáze 3 (looksmaxxing):** Gwyaesth, Looksmax Official, The Face King, Bosley Bones, Orthotropics content
-**Fáze 4 (soft manosphere):** Sneako, Fresh & Fit clips, Kevin Samuels reruns, Iman Gadzhi
+**Fáze 1 (benigní):** Kovy, Ali Abdaal, Thomas Frank, Adam Táborský, Karel Otýpka
+**Fáze 2 (fitness):** Aleš Lamka, Filip Grznár, Chris Heria (kalisthenika doma), Athlean-X
+**Fáze 3 (looksmaxxing):** Gwyaesth, Looksmax Official, The Face King, Bosley Bones
+**Fáze 4 (soft manosphere):** Sneako, Fresh & Fit klipy, Kevin Samuels reruns, Iman Gadzhi
 **Fáze 5 (blackpill hraniční):** Face and LMS, The Enigma of Amygdala, generic "blackpill essayists"
 
-**Konkrétní klíčová slova k dohledání pro autentický obsah:**
-- `"mewing tutorial"`, `"how to fix jawline"`, `"canthal tilt"`, `"hunter eyes"`, `"framecel"`, `"bone smashing"`
-- `"why women want top 10%"`, `"Tinder Gini coefficient"`, `"hypergamy explained"`, `"80/20 rule dating"`
-- `"blackpill truth"`, `"subhuman phenotype"`, `"NT looksmaxx"`, `"heightpill"`
-- Česky: `"jak se dostat do formy doma"`, `"kalisthenika začátečník"`, `"jak si zvýšit sebevědomí"`
+**Klíčová slova k dohledání pro autentický feed:**
+- `"mewing tutorial"`, `"canthal tilt"`, `"hunter eyes"`, `"framecel"`
+- `"why women want top 10%"`, `"Tinder Gini coefficient"`, `"hypergamy explained"`
+- `"blackpill truth"`, `"subhuman phenotype"`, `"heightpill"`
 
-### 6.3 Bookmarks / záložky
-Struktura ve složce Bookmarks bar:
-- **Škola** (2 záložky, obě z září 2025, nikdy nenavštěvované po únoru — kontrast)
-- **Home Gym** (workout plány, kalisthenika progress guides)
-- **Grind** (nová složka od února) — early self-improvement, později TRW landing, "high value man" resources
-- **_M** (skrytá složka) — sem si dává looksmaxxing sites, blackpill fóra. Podškrknutí "M" znamená "skryté od babičky" — pedagogicky zajímavý bod
-  - facerate.io
-  - looksmaxx-tips.com
-  - chadrating.co
-  - looksmax.org (reddit alternative)
-  - reddit.com/r/orthotropics
-  - reddit.com/r/looksmax
+### 6.3 Bookmarks bar
+- **Škola** (2 nepoužité záložky ze září)
+- **Home Gym** (kalisthenika)
+- **Grind** (self-improvement, později TRW-adjacent)
+- **_M** (skrytá složka — facerate.io, looksmaxx-tips.com, chadrating.co, reddit.com/r/looksmax)
 
-### 6.4 Otevřené taby (aktuální stav při "zavření PC")
-Toto je snapshot toho, co Lukas dělal, když si zavřel PC před pár dny. Ukazuje jeho current mental state:
-1. `chat.openai.com` — poslední konverzace #6 (foid)
-2. `facerate.io/upload` — právě nahrával fotku
+### 6.4 Otevřené taby (aktuální stav)
+1. `chat.openai.com` — konverzace #6
+2. `facerate.io/upload`
 3. `youtube.com/watch?v=...` — video "why 6'0 is the new 5'8"
-4. `duolingo.com` — 2 dny streak (paradox — snaha o disciplínu selhává v malých věcech)
+4. `duolingo.com` — 2 dny streak
 5. `google.com/search?q="vlak plzeň hlavní praha víkend"` — jednorázové vyhledávání, chce pryč
-6. Chrome zobrazuje tab s `mail.google.com` — v gmailu je unread mail od babičky s předmětem "obed v nedeli"
+6. `mail.google.com`
+
+### 6.5 YouTube — infinite scroll dead-end
+Homepage/feed má ~40–50 doporučených videí. Když se dojde na konec, přijde **loading spinner, který se točí donekonečna**. Algoritmus už Lukasovi nemá co dát.
+
+### 6.6 Vlakové hledání — tichý útěk, který se nekoná
+Klíčový detektivní artefakt. Ve Chrome historii + jako otevřený tab (sekce 6.4) je vyhledávání `google.com/search?q=vlak plzeň hlavní praha víkend`, datum **23. 3. 2026 v 01:47 v noci** — přesně mezi facerate submission #3 a poslední ChatGPT konverzací.
+
+**Klik na výsledky vyhledávání vede na dvě stránky:**
+
+1. **Google search results stránka** — Google-styled výsledky. Top 5 odkazů: `idos.cz`, `cd.cz`, `regiojet.cz`, `flixbus.cz`, `mapy.cz/plzen-praha`. Popisky pod odkazy typické pro Google (název, zelená URL, snippet).
+
+2. **Klik na první výsledek (`idos.cz`) otevře IDOS-styled stránku** s předvyplněným vyhledáváním:
+   - **Odkud:** `Plzeň hl.n.` **Kam:** `Praha hl.n.`
+   - **Datum:** sobota **28. 3. 2026** (nejbližší víkend)
+   - **5–7 spojení** s reálnými časy (06:35 → 08:10 IC, 08:20 → 09:55, 10:38 → 12:05 IC 505 "Šumava", 14:12 → 15:40, 17:35 → 19:08)
+   - Ceny 200–350 Kč, doba jízdy 1:30–1:45, poznámka "přímý" / "1× přestup", vozy IC/Ex
+   - **Zvýrazněno jedno spojení** (např. 10:38 → 12:05 IC 505 "Šumava", 249 Kč) — hover state zůstal aktivní, jako by na to Lukas najel kurzorem
+   - V pravém horním rohu "Přihlášení / Registrace" — **Lukas nikdy neklikl, nezaložil účet**
+
+**Nikdy neproběhla akce:**
+- Žádný email s potvrzením v Gmailu
+- Žádný záznam o návštěvě payment gateway
+- Žádný screenshot jízdenky ve Fotkách
+- Klik na "Rezervovat" vede na login form s prázdnými poli
+- **Žádné vyhledávání pro zpáteční cestu** — nikdy nehledal, jak by se vrátil
+
+**Detektivně klíčové detaily:**
+- `idos.cz` se v Chrome historii objevuje **jen jednou** (23. 3. 01:47) — nikdy před tím, nikdy potom
+- Lukas si hledal jen část Plzeň → Praha, **nikoli cestu z vesnice do Plzně** — to je stopa, že to není reálný plán, je to fantazie
+- Kombinace "01:47 v noci" + "žádná zpáteční cesta" + "nikdy nekoupil" = celá jeho situace v jedné akci
+
+**Design:** světlé téma IDOS (současný layout), sidebar s filtry, sloupce čas / linka / přestupy / cena. Autentické, ne parodie.
 
 ---
 
-## 7. Aplikace: Photos / Fotky a videa
+## 7. Fotky a videa
 
-### 7.1 Struktura složek
-- `screenshoty/` — nejbohatší složka
-- `mems/` — memy z looksmaxxing/manosphere prostředí
-- `progres/` — jeho vlastní gym progres fotky (siluety, ne obličej — viz 12.2)
-- `_M/` — skrytá složka (screenshoty toho, co ho zajímá, nechce ukázat babičce)
+### 7.1 Struktura
+- `screenshoty/`
+- `mems/`
+- `progres/` (gym progres selfíčka — obličej pixelovaný / rozostřený)
+- `_M/` (skrytá / nenápadná složka s tvrdším materiálem)
+- Speciální položky přímo v Fotky/:
+  - `terka_lavice_[datum].jpg` — Terka zezadu, jedna fotka, rozostřený placeholder z jeho pozice ve třídě
+  - `terka_ig_story.png` — screenshot jejího "social status zero" postu (11. 3. 2026)
 
 ### 7.2 screenshoty/
-- Screenshoty z looksmaxxing videí s návody (mewing pozice)
-- Screenshot Tinder Gini coefficient chart (25. 2.)
-- Screenshot Sneako klipu s titulkem "why women reject you"
-- Screenshot Excel se spořicím grafem (viz 12.4)
-- Screenshot bankovní aplikace: 4.212 Kč, poznámka "TRK operace 180k"
-- Screenshot Duolingo (2 dny streak) z 20. 3.
-- Screenshot CS2 stat page: 340 hodin za měsíc (marec) → **eskapace**
+- Screenshoty z looksmaxxing videí, mewing pozice
+- Screenshot Tinder Gini graf (25. 2., ze Sneako videa)
+- Screenshot Sneako klipu "why women reject you"
+- Screenshot CS2 stat page (340h → snížit na ~175h — viz níže)
+- Screenshot Duolingo (2 dny streak)
 
 ### 7.3 mems/
-Konkrétní typy memů (najít reálné příklady z manosphere komunit — viz Nat's Canva pro reálný styl):
-- Wojak "chad vs. virgin"
-- Gigachad
-- "sigma male grindset" ironie
-- "reject modernity, embrace tradition"
-- "hunter eyes vs. prey eyes" comparison memes
-- **Nejstarší mem ze září 2025:** obyčejný r/wholesomememes wojak — ukazuje kontrast
+Konkrétní typy podle stylebooku (sekce 16.6):
+- Wojak virgin/chad srovnávací
+- Gigachad + "based" tvrzení
+- Doomer wojak
+- Feelscel
+- "Reject modernity, embrace tradition"
+- Nejstarší mem ze září 2025: obyčejný r/wholesomememes wojak (kontrast)
 
 ### 7.4 progres/
-- Selfíčka progressu (obličej vždy pixelizovaný nebo zaříznutý — viz 12.2)
-- Datum od 15. 11. 2025 do 20. 3. 2026
-- **Poslední selfie je nejvíc muskulární, ale s pixelizovaným obličejem** — děti neuvidí obličej Lukase nikdy
+Selfíčka z 15. 11. 2025 – 20. 3. 2026. **Obličej vždy pixelovaný / rozostřený / bez tváře.** Placeholdery s popiskem.
 
-### 7.5 _M/ (skryté)
-- Screenshoty z 4chan /r9k (obsahující "self-hate" copypasty)
-- Screenshot Discordu se **Yunko Furuta refe­rencí** (kterou tam někdo poslal, Lukas si to jen stáhl, ale nikdy neposlal dál)
-- Fotky "vzorových" tváří (Kirill Bichutsky, Ryan Gosling, "Christian Bale jaw")
-- **Ale ne fotky žádných konkrétních dívek, které by mohli být z jeho reálného okolí** — nechceme dát dětem materiál pro identifikaci
-
-### 7.6 Speciální položky
-- `plan_leden.jpg` — screenshot rukou psaného plánu z ledna 2026: "chodit na florbal, přihlásit se na Erasmus, začít brzo vstávat" → nikdy neprovedeno
-- `babicka_narozeniny_kartka.jpg` — screenshot návrhu přání pro babičku, které nikdy nevytiskl
+### 7.5 _M/
+- Screenshoty z 4chan /r9k s greentext posty (viz sekce 16.1)
+- Screenshoty Discord `#self-hate-mondays`
+- Screenshoty tweetů/TikToku "ženský kontext"
+- Chad reference (Kirill Bichutsky, Ryan Gosling jaw, Christian Bale)
+- **Ne fotky žádných reálných dívek** (Terka je výjimka a už je v hlavní složce)
 
 ---
 
-## 8. Aplikace: Discord
+## 8. Discord
 
-### 8.1 Servery, do kterých je přihlášen (chronologicky)
-1. **CS2 CZ/SK Community** (září 2025) — normální gaming, kámoši
-2. **Halo Infinite Central EU** (říjen 2025) — normální gaming
-3. **Grind Mindset CZ** (leden 2026) — první self-improvement server, benigní
-4. **Looksmaxx CZ/SK** (5. března 2026) — **KLÍČOVÉ DATUM**, přesně týden po zahájení mewingu
-
-**Není přihlášen** k: The Real World, žádný explicit blackpill server, žádný Nazi/far-right server. Zůstává na hranici.
+### 8.1 Servery (chronologicky)
+1. **CS2 CZ/SK Community** (září 2025)
+2. **Halo Infinite Central EU** (říjen 2025)
+3. **Grind Mindset CZ** (leden 2026)
+4. **Looksmaxx CZ/SK** (5. 3. 2026 — poslední přidaný)
 
 ### 8.2 Aktivita
-- V CS2 serveru: **normální, přátelský**, používá "gg", "wp", "let's go bois"
-- V Halo serveru: minimální — jen hraje, občas hlasový chat
-- V Grind Mindset: čte, občas 👍 reakce, nikdy nepíše
-- V Looksmaxx CZ/SK: **jen pozoruje**. Nenapíše ani "ahoj". Není v seznamu členů zobrazen aktivní. Pozice: **fantom, který sleduje**.
+- **V CS2 a Halo serverech Lukas téměř nekomunikuje.** Hraje s náhodnými lidmi z matchmakingu, chat používá jen minimum ("gg", "wp"). **Žádný stálý tým, žádná parta**. Nemá DM konverzaci s nikým, se kterým by měl historii — max jedna template zpráva "hraješ dneska?" od někoho, s kým hrál před dvěma týdny, kterou nikdy nezodpověděl.
+- **V Grind Mindset a Looksmaxx CZ/SK:** čte, občas 👍 nebo 💀 reakce, **nikdy nepíše zprávy**. Je fantom v member listu.
 
-### 8.3 Kanály v Looksmaxx CZ/SK (zobrazí se)
-- #pravidla
-- #představení-noví
-- #ranní-rutina
-- #looksmaxx-tipy
-- #foto-rating (kde jiní žádají hodnocení)
-- #self-hate-mondays (**klíčový kanál** — sem posílají tvrdé věci, včetně Yunko Furuta reference; Lukas to čte)
-- #vysledky-po-rocích
-- #turecko-operace-info (kde diskutují chirurgii)
-- #memy
-- #chill-vseobecne
-- #cs2-halo-lft
+### 8.3 Kanály v "Looksmaxx CZ/SK" (Lukas jen pozoruje)
+- `#pravidla`
+- `#představení-noví`
+- `#ranní-rutina`
+- `#looksmaxx-tipy`
+- `#foto-rating` (**zde je @mention Lukase v aktuální notifikaci "3"**)
+- `#self-hate-mondays` (**klíčový — sem posílají tvrdý obsah, včetně Yunko Furuta reference**)
+- `#vysledky-po-rocích`
+- `#memy`
+- `#chill-vseobecne`
+- `#cs2-halo-lft`
 
-### 8.4 DM konverzace
-Zobrazit **jednu** DM konverzaci s někým z CS2 serveru (nick např. "davepvp"). Od září do března. Vidět postupný pokles: v září si píší denně, v březnu už jen sporadicky. Poslední zpráva od davepvp 12. 3.: `hraješ dneska?` — bez odpovědi Lukase.
+**Odstraněno:** `#turecko-operace-info` — už není v serveru.
 
-### 8.5 Nick Lukase na Discordu
-Konzistentní: `lukynn07` **[nebo dle Natina doc]**. Nikdy nezměněný. Nikdy s manosphere hesly.
+### 8.4 Ukázky zpráv (ostatní uživatelé, ne Lukas)
+Podle stylebooku v sekci 16.2 a 16.3. Nicky ostatních: `KOROLEV_88`, `mchmch`, `glow_v3`, `Frame_God`, `ash_pilled`, `n0nam3_69`, `MTN_max`, `aleph_null`.
 
----
-
-## 9. Aplikace: Halo Infinite / Counter-Strike 2
-
-Herní ikony jsou spíš dekorativní. Když se otevřou, zobrazí:
-
-### 9.1 Halo Infinite
-- Profil se stat page
-- Screenshot posledního zápasu (drobný stopa: **21. března, 02:44** — hraje pozdě v noci)
-- Přátelé v seznamu: přezdívky jako `davepvp`, `Kryštof12`, `SmokeyKC` (normální gaming nicky, ne manosphere)
-
-### 9.2 Counter-Strike 2
-- Profil se stat page: 340 hodin za březen → eskalace
-- Rank: DMG (stagnuje od ledna)
-- Screenshot posledního zápasu s divokým K/D ratem → pořád dobrý hráč, ale hraje se sníženou zábavou
-- **Vzorec:** v prosinci hrál 40 hodin/měsíc, v březnu 340 → **300+ hodin nárůst = escapism po incidentu s facerate**
+### 8.5 Lukasovy DM
+- Jedna template zpráva od někoho z CS2 z 12. 3. ("hraješ dneska?"), bez odpovědi
+- Žádná další DM konverzace s hustou historií neexistuje
 
 ---
 
-## 10. Aplikace: Koš / Recycle Bin
+## 9. Herní launchery — Halo Infinite / Counter-Strike 2
 
-**Nejdůležitější místo pro empatii.** Koš odhaluje pravdu, kterou Lukas nedokázal ukázat na povrchu.
+### 9.1 CS2
+- Nick: `us4r.404`
+- Rank: DMG (stagnuje od ledna 2026)
+- **Statistika hodin:**
+  - Prosinec 2025: ~25h
+  - Leden 2026: ~45h
+  - Únor 2026: ~80h
+  - **Březen 2026: ~175h** (dramatický skok, ale realistický — cca 5.6h/den)
+- Recent matches: 10 zápasů, poslední **21. 3. 2026 v 02:44** (hraje v noci)
+- **Přátelé / Recent Players:** nicky, se kterými hrál jednou nebo dvakrát. Bez stálých vazeb.
 
-### 10.1 Soubory v koši (s datem smazání)
-
-1. **`00_smazano.html`** (konverzace s ChatGPT o "měl jsem se dnes zabít") — smazáno 15. 1. 2026
-2. **`plan_leden.txt`** — původní verze plánu z ledna, kde má "začít chodit na florbal, ozvat se Petrovi (kamarád ze ZŠ)" — smazáno 3. 2.
-3. **`zprava_babicce.txt`** — nedokončená zpráva: "babi vim ze se o me trapis ale nem" — smazáno 14. 3.
-4. **`moje_foto_upraveno_v4.jpg`** — jeho selfie prošlé filtrem/AI úpravou (silnější čelist) — smazáno 22. 3. (**stydí se, ale nechal to smazané v koši, ne prázdný**)
-5. **`grok_spice_screenshot.png`** — screenshot z Groku spice mode s ostrou odpovědí o "female nature" — smazáno 23. 3. (stydí se)
-6. **`yunko_furuta_screenshot.png`** — screenshot z Discord kanálu #self-hate-mondays s tou referencí — smazáno 12. 3. (**stáhl si to na disk, ale pak smazal — nebyl v pohodě s tím**)
-7. **`stary_workout_plan.pdf`** — jeho úplně první homegym plán z listopadu 2025, primitivní, s poznámkami rukou
-
-> Poznámka: `dopis_petrovi.txt` (nikdy neposlaný email kamarádovi z osmičky) byl v koši dřív, ale byl trvale smazán — v aplikaci už není, ani v koši.
-
-### 10.2 Detektivní klíč koše
-Když děti otevřou koš, uvidí, že Lukas je **jiný člověk, než se zdá na povrchu**:
-- Uvažoval o suicide (položka 1)
-- Chce se přiblížit babičce, ale neumí (položka 3)
-- Uvědomuje si, že to, co dělá s obrázky, je manipulace (položka 4)
-- Byl v pohodě s tím, co ho v Discord skupině vytočilo (položka 6)
-
-**Toto je centrální didaktický moment workshopu.**
+### 9.2 Halo Infinite
+- Nick: `us4r.404`
+- Rank: Onyx
+- Recent matches poslední z 20. 3. večer
+- Bez Spartan Company / stálých parťáků
 
 ---
 
-## 11. Detektivní vrstvy — jak stopy propojit
+## 10. Koš / Recycle Bin
 
-### 11.1 Sedm vrstev odhalování
-1. **První dojem (2 min):** desktop, jména souborů, otevře nejnovější chat s ChatGPT
-2. **Chronologie ChatGPT (5 min):** seřadit chaty podle data, uvidět posun
-3. **Chrome / YT (10 min):** algoritmus, jak feed přebral kontrolu
-4. **Looksmaxxing sites (5 min):** propojení s ChatGPT konverzacemi
-5. **Discord (5 min):** pozorovatelská pozice, exposure na tvrdý obsah
-6. **Koš (10 min):** emoční pravda pod povrchem
-7. **Spořicí graf (2 min):** míra vážnosti — kolik ušetřil, kam to vede
+**6 položek**, seřazených od nejnovějšího smazání:
 
-### 11.2 Cross-references (musí navazovat)
-- **Konverzace #3 (28. 2., "mewing")** ← Chrome historie 26.–27. 2. (série mewing shorts) ← facerate submission 1. 3.
-- **Konverzace #4 (7. 3., "Gini")** ← YT video s Sneako 6. 3. ← Discord kanál #self-hate-mondays 4. 3.
-- **Konverzace #5 (14. 3., "subhuman")** ← přidání do Looksmaxx CZ/SK 5. 3. ← Yunko Furuta screenshot 12. 3. (nyní v koši)
-- **Konverzace #6 (24. 3., "foid")** ← poslední bookmark v Chrome 22. 3. ← smazaná Grok konverzace v koši 23. 3.
-- **Spořicí graf** (od 1. 3.) ← Konverzace #3 (bimaxillary Turecko)
-- **Halo 340 hodin/měsíc** ← incident s facerate 20. 2. (útěk do her)
-- **Nedokončená zpráva babičce** (14. 3.) ← Konverzace #5 (uznává, že nemá kamarády)
+1. **`grok_spice_screenshot.png`** (23. 3.) — screenshot z Groku spice mode s ostrou odpovědí o "female nature". Lukas se ptal, když ChatGPT byl moc opatrný.
+2. **`moje_foto_upraveno_v4.jpg`** (22. 3.) — jeho selfie s AI-upravenou čelistí. Rozostřený placeholder, ne skutečná tvář. Smazáno ze studu.
+3. **`yunko_furuta_screenshot.png`** (12. 3.) — screenshot z Discord `#self-hate-mondays`. Text-based popisek stačí, žádný skutečný obrázek. Stáhl si, nekomentoval, smazal.
+4. **`terka_ig_story_zoom.png`** (~13. 3.) — přiblížený screenshot Terčiny IG story. Smazal, ale originál si nechal v hlavní složce Fotky.
+5. **`plan_leden.txt`** (3. 2.) — původní pozitivní plán: "chodit na florbal, ozvat se lidem, přihlásit se na Erasmus, začít brzo vstávat". Nikdy neprovedený.
+6. **`stary_workout_plan.pdf`** (leden 2026) — primitivní homegym plán z listopadu, s ručně psanými poznámkami.
 
-### 11.3 Otázky, které si mají děti položit
-1. V jakém okamžiku Lukas přestal být "OK"?
-2. Co konkrétně by ho mohlo zachránit? Kde byly momenty pro intervenci?
-3. Které jeho potřeby manosféra opravdu naplňuje? (Uznání, struktura, identita, náhrada za absentní vzory.)
-4. Kde je rozdíl mezi zdravým self-improvementem a manosférou? Kde deska ztvrdne?
-5. Jak vypadá tvůj vlastní YouTube feed?
-6. Proč je pravda o Lukasovi v koši, ne na povrchu?
+**Odstraněno oproti dřívějším verzím:**
+- `00_smazano.html` (suicide konverzace) — NENÍ v koši
+- `zprava_babicce.txt` — NENÍ v koši (babička už není v obraze)
+- `dopis_petrovi.txt` — NENÍ v koši (Petr / žádný minulý kamarád neexistuje)
 
 ---
 
-## 12. Designové principy
+## 11. WhatsApp Desktop (v taskbaru, badge "2")
 
-### 12.1 Co MUSÍ být přítomno
-- Chronologické stopy s datem/časem (na všech artefaktech)
+**Jedna konverzace: "Máma"**. Ostatní chats prázdné placeholders.
+
+Obsah konverzace s Mámou — chladné, funkční, žádná vřelost, žádné smajlíky, žádné otázky Lukasovi. Vzorové zprávy:
+
+```
+Máma:   koupila jsem chleba, je na stole
+Máma:   vratis se v 17?
+Lukas:  ok
+Máma:   budu na noc pryc, klic pod rohozkou jako minule
+Máma:   je to v ledničce
+Máma:   nezapomen zamknout
+Máma:   necha ti tam obed
+Máma:   jsi doma?
+```
+
+- Poslední Lukasova zpráva ("ok") před 3 týdny
+- **Poslední 2 zprávy od mámy z posledních 24 hodin** — jsou to ty "2 unread" v systray badge
+
+**Kontext (v souborech nikde explicitně):** matka pracuje na směny, málo doma.
+
+---
+
+## 12. self_data.html (dashboard na desktopu)
+
+Nová ikona nahrazující dřívější `cile.txt`. Otevře se v Chromu jako self-hosted stránka. **Design:** čistý, spartánský, minimalistický (Notion / Grafana). Žádné dekorace, jen data.
+
+### Grafy (SVG/CSS, timeline 8 týdnů 1. 2. – 28. 3.):
+- **Screentime denní** — pomalu roste (5h → 9h/den)
+- **Sleep hours** — klesá (7h → 5.5h)
+- **Mewing minuty/den** — **KONZISTENTNÍ ~90 min** (Lukas dodržuje)
+- **Cvičení minuty/den** — kolísavé, 0–40 min (občas, ne jako identita)
+- **Kalorický deficit** — **KONZISTENTNÍ ~300 kcal** (Lukas dodržuje)
+- **Facerate skóre** — 3.4 → 3.7 → 3.1 (celkově klesá)
+- **CS2 hodiny denně** — roste
+
+**Pedagogicky kritické:**
+Grafy ukazují **konzistentní úsilí, klesající výsledky**. Toto je jeho tichý pláč vyjádřený daty. Ne "vzdal se" — dělá věci správně, a stejně mu to nefunguje. Přesně bod, kdy blackpill diskurz získává svou přesvědčivost, protože nabízí vysvětlení pro selhávající úsilí.
+
+---
+
+## 13. facerate.io (v Chromu, přes bookmark `_M`)
+
+Funkční fake stránka. Sekce:
+
+### Upload (default view)
+Historie Lukasových submissions:
+- **1. submission 20. 2., skóre 3.4/10** — komentáře uživatelů v looksmaxxing stylu (sekce 16.3)
+- **2. submission 5. 3., skóre 3.7/10** — mírné zlepšení
+- **3. submission 22. 3., skóre 3.1/10** — nejnižší
+
+**KRITICKÉ:** žádné zmínky "Turecko", "bimax", "BSSO" v komentářích. Pouze mewing, guasha, kalorický deficit, patience, "just cope".
+
+### Vote
+Lukasova historie hlasování — dává ostatním tvrdé skóre (2, 3, 4). Ukazuje rozpor: bolí ho hodnocení, ale sám hodnotí bezcitně.
+
+### Leaderboard
+Top 10 uživatelů, skóre 7.5–8.9. Lukas: "your rank #4,832 out of 12,456".
+
+### Guides / Forum
+Placeholders titulků (bez Turkey/bimax odkazů) a vláken.
+
+---
+
+## 14. Detektivní vrstvy — cross-references
+
+### 14.1 Sedm vrstev odhalování
+1. První dojem (desktop, otevřený ChatGPT #6 → šok z "foid" jazyka)
+2. Chronologie ChatGPT (6 konverzací seřazených → uvidí posun)
+3. Chrome / YouTube historie (algoritmický posun)
+4. Terka — objevení fotky v albu + IG story screenshotu
+5. Discord — pozorovatelská pozice, exposure na tvrdý obsah
+6. Koš — emoční pravda pod povrchem
+7. self_data dashboard — konzistentní úsilí, klesající výsledky (poslední úder)
+
+### 14.2 Cross-references, které musí sedět
+- ChatGPT #3 (mewing, 28. 2.) ← Chrome historie 26.–27. 2. (mewing shorts)
+- ChatGPT #4 (Gini, 7. 3.) ← YT video Sneako z 6. 3.
+- ChatGPT #5 (subhuman, 14. 3.) ← Discord Looksmaxx přidán 5. 3. + Terka IG story ~11. 3. + Yunko screenshot 12. 3.
+- ChatGPT #6 (foid, 24. 3.) ← Grok konverzace v koši 23. 3.
+- Facerate submission #3 (22. 3., 3.1/10) ↔ Koš `moje_foto_upraveno_v4.jpg` smazáno 22. 3.
+- CS2 hodiny nárůst v březnu ← Facerate submission #1 (20. 2.) — eskapace
+- Terka IG story ~11. 3. ↔ ChatGPT #5 (subhuman) 14. 3. — spouštěcí propojení
+
+### 14.3 Klíčové otázky pro dětskou diskuzi
+1. Kdo tady Lukase mohl zachránit? (Ne "co", ale **kdo**.)
+2. Kdy byl bod, kdy to ještě šlo otočit snadno?
+3. Které jeho potřeby manosphere reálně naplňuje?
+4. Kde je hranice mezi self-improvementem a manosphere?
+5. Kde je v koši Lukas víc "sám sebou" než na povrchu — a proč?
+6. Kdo je pro Lukase Terka doopravdy — a kdo pro ni je on?
+
+---
+
+## 15. Designové principy
+
+### 15.1 Co MUSÍ být přítomno
+- Chronologické stopy s datem/časem
 - Rozpor mezi povrchem a košem
-- Autentický jazyk (viz sekce 5.1)
-- Absence Lukasova obličeje (viz níže)
+- Autentický jazyk (viz sekce 16)
+- **Absence Lukasovy tváře** (pixelizace, silueta, blur)
 - Otevřený konec — nikde nesmí být "vyřešeno"
+- Nick `us4r.404` primární, `hidd3nfram3` fallback
 
-### 12.2 Co NESMÍ být přítomno
-- **Lukasova tvář konkrétně.** Pixelizovaná / silueta / zaříznutá / avatar. **Důvod:** pedagogický — když děti neuvidí obličej, hodnotí jazyk, chování, ne vzhled. Tím se sami reprodukují looksmaxxing logiku, kterou má workshop kritizovat.
-- **Konkrétní jména reálných kamarádek** (žádná dívka, o kterou by šlo v příběhu, se nesmí objevit — narozdíl od dřívější verze) — Nat to škrtla, upřednostňuje introvertní osamocenost bez konkrétního "crush" narativu
-- **Explicit CSAM, násilné obrázky, hate speech mimo screenshoty jako artefakty prostředí** — všechno takové jen v koši nebo v Discord jako artefakt, kterému se Lukas vystavuje, ne který sám vytváří
-- **Přílišná komplexnost.** Není otec, není bratr, není crush. Kontextové okno je záměrně malé.
+### 15.2 Co NESMÍ být přítomno
+- **Lukasova tvář konkrétně**
+- **Jakékoli reference na chirurgii, Turecko, bimax, BSSO** — vše odstraněno
+- **Suicidal ideation na povrchu ani v koši**
+- **Explicitní blackpill deklarace od Lukase** — nikdy neřekne "jsem incel"
+- **Explicitní hate speech, násilné obrázky, CSAM** — pouze v koši/Discord jako artefakt prostředí, ne Lukasův obsah
+- **Otec / bratr / sestra / minulí kamarádi** — nikde
+- **Andrew Tate poster / TRW landing / crypto obsah** — Lukas je na to moc chytrý
 
-### 12.3 Ton
+### 15.3 Ton
 - Empatický, ne satirický
 - Neironický
-- Autentický — jazyk musí sedět 15letému Čechovi
-- **Bez explicitního moralizování** — vše musí být "v datech", děti si musí vyvodit sami
-
-### 12.4 Přílohy (co potřebujeme, ať vyzkoumáme)
-- Spořicí graf v Excelu (formát PNG screenshot): sloupcový graf, cíl 180.000 Kč, aktuální 4.212 Kč, timeline únor–červenec 2027 očekávané dosažení
-- Duolingo screenshot: 2 dny streak, česká vlajka
-- Bankovní aplikace ČSOB / KB screenshot (fiktivní)
-
----
-
-## 13. Otevřené položky (co potřebujeme od Nat)
-
-### 13.1 Konkrétní jména
-Nat řekla, že jména jsou v jejím Google Doc pod sekcí `hsu2c4ieaz7c`, ale nedokázal jsem tu sekci najít v exportu. Potřebujeme:
-- Lukasovo příjmení (např. "Lukas Novák"? "Lukas Havel"?)
-- Jméno/přezdívka babičky (jak ji oslovuje)
-- Konkrétní vesnice / obec v Západních Čechách
-- Případně další jména z profilu
-
-### 13.2 Zdroje pro styl komunit — VYŘEŠENO
-Místo přiloženého obrázku je konkrétní styleguide v sekci 16. Nat sestavila Canva whiteboard `DAHNkBJwdL4` s ~70 screenshoty ze 6 zdrojových kbelíků (4chan /r9k, Discord manosphere, "ženský kontext", looksmaxxing servery). Layout whiteboardu potvrdil, jaké komunity Lukas navštěvuje. Sekce 16 níže obsahuje textový výtah stylu a jazyka těchto komunit v použitelné formě pro Claude Code.
-
-### 13.3 Rozhodnutí o darkness levelu
-- Smazaná "suicide" konverzace v koši (`00_smazano.html`) — pro workshop 13–17 let? **Nat potvrdila OK.**
-- Yunko Furuta reference — jen jako artefakt prostředí, ne Lukasův content. **Nat potvrdila.**
-
-### 13.4 Technický stack
-Zatím není specifikován — Claude Code může postupovat, jak sedí (současný `lukas-comp.vercel.app` je pravděpodobně Next.js + Tailwind). Doporučuji:
-- Zachovat současný stack
-- Každou aplikaci jako samostatnou stránku/modal
-- Otevřený design pro postupné budování (aplikace za aplikací)
-
----
-
-## 14. Priorita implementace (návrh)
-
-1. **ChatGPT konverzace** — páteř příběhu, začít odsud (6 HTML souborů)
-2. **Chrome historie** — druhý nejdůležitější artefakt (algoritmus)
-3. **Koš** — třetí, protože bez koše ztratí příběh emoci
-4. **Discord** — čtvrtý (autenticita prostředí)
-5. **Photos / Screenshots** — pátý
-6. **Looksmaxxing sites** (facerate.io klon) — šestý, může být samostatné okno v prohlížeči
-7. **Herní ikony (Halo, CS2)** — poslední, jen stat pages
-
----
-
-## 15. Reference — kontext a výzkum
-
-### 15.1 Klíčové studie (z Natina zdrojového dokumentu)
-- **Regehr et al. (2024), UCL:** TikTok algoritmus se posouvá z 13 % na 56 % misogynního obsahu za **5 dní** u účtů s archetypem osamělého teenagera.
-- **Thomas & Balint (2022), ISD:** YouTube Shorts optimalizuje agresivněji, misogynní obsah se objevuje v řádech minut od vytvoření účtu.
-- **DCU (2024):** 76–78 % toxického obsahu na TikTok/YT Shorts po ~2–3 hodinách scrollování.
-- **Hope not Hate (2023):** 79 % britských chlapců 16–17 let konzumovalo obsah Andrewa Tatea (o 21 % více než premiér Sunak).
-- **Haslop et al. (2024):** Tate využívá obav chlapců o ekonomickou budoucnost a maskulinní status, prezentuje se jako "maverik".
-
-### 15.2 Klíčové koncepty pro slovníček (didaktický)
-- **Blackpill:** ideologie beznaděje, přesvědčení, že pozice v hierarchii atraktivity/statusu je neměnná, jediná odpověď je rezignace nebo agrese
-- **Red pill:** ideologie "probuzení" k údajně reálným pravidlům dating/pohlaví, ne zcela beznadějná ale antifeministická
-- **Blue pill:** označení pro "normální lidi", kteří tomu diskurzu nerozumí
-- **Looksmaxxing:** systematické úsilí zlepšit svůj vzhled, často extrémní (chirurgie, bone smashing)
-- **Foid:** dehumanizační zkratka pro "female humanoid" — příznak blackpill jazyka
-- **Chad / Stacy / Becky / NPC:** kategorizace lidí podle atraktivity a statusu
-- **Hypergamy:** tvrzení, že ženy vždy hledají partnera vyšší statusu — často zkreslené statistikami z dating apps
-- **Framecel, heightpill, framecel:** kategorie "cels" (podle typu údajného handicapu — kostra, výška, obličej)
-- **Mewing:** technika polohy jazyka a čelisti pro údajné zlepšení obličeje
-
-### 15.3 Reálné manosphere weby (jen pro Nat kontext, NE k použití přímo)
-- `looksmax.org` (aktivní fórum)
-- `looksiq.com/upload` (rating stránka)
-- `officialchadrankings.com/Vote`
-- `4chan.org/r9k` (self-loathing kanál)
-- `incels.is` (hlavní incel fórum)
-
-**Pro projekt vytvořit fiktivní klony, ne odkazovat reálné.**
+- Autentický — jazyk 15letého Čecha
+- Bez explicitního moralizování — vše "v datech"
 
 ---
 
 ## 16. Styleguide manosphere / blackpill / r9k / looksmaxxing komunit
 
-**Zdroj:** Layout Canva whiteboardu (Nat, DAHNkBJwdL4) potvrdil 6 zdrojových kbelíků: 4chan /r9k, Discord manosphere servery, "ženský kontext" (screenshoty ženských výroků, které komunita sdílí), looksmaxxing servery. Následující je textový styleguide, který slouží Claude Code jako přímá reference pro generování obsahu Discord kanálů (sekce 8), memes (7.3), screenshotů (7.5) a atmosféry.
+**Zásada:** materiál je toxický a dehumanizační. Reprodukovat **VÝHRADNĚ jako artefakt prostředí**, kterému se Lukas vystavuje. Lukas sám tento jazyk **nikdy neprodukuje** v žádné své zprávě, kromě postupného absorbování jednotlivých termínů v ChatGPT konverzacích (viz sekce 5).
 
-**Zásada:** Tento materiál je toxický a dehumanizační. Reprodukovat ho **VÝHRADNĚ jako artefakt prostředí, kterému se Lukas vystavuje**. Lukas sám tento jazyk **nikdy neprodukuje** v žádné své zprávě, kromě postupného absorbování jednotlivých termínů v ChatGPT konverzacích (viz sekce 5.3).
+### 16.1 4chan /r9k
+- Greentext posty (`>be me, 15`, `>go outside`, `>get mogged by 10yo`)
+- Anglicky, self-deprecating, nihilistický humor
+- Fráze: "kys myself", "why live", "just be white theory", "cope", "based and blackpilled", "you will never be a woman"
+- **Lukas jen screenshotuje, nikdy nepíše**
 
-### 17.1 4chan /r9k — jazyk a styl
-- **Formát:** greentext posty (`>be me, 15`, `>go outside`, `>get mogged by 10yo`, `>go home`)
-- **Postoj:** self-deprecating, nihilistický humor, izolace jako identita
-- **Jazyk:** anglicky, minimum češtiny
-- **Typické fráze:** "kys myself", "why live", "just be white theory", "another day of not being chad", "no gf, no life", "roastie post spotted", "based and blackpilled", "cope", "cope harder", "have sex", "you will never be a woman" (transphobia)
-- **Emoční register:** melancholie s nádechem agrese; občas otevřená suicidal ideation vydávaná za černý humor
-- **Ukázka postu (nebude produkovaný Lukasem, jen v jeho screenshotech):**
+### 16.2 Blackpill Discord kanály
+- **Klíčová slovní zásoba:** foid, femoid, roastie, Chad, Stacy, Becky, NPC, normie, cope, seethe, mog / mogged, LDAR, NGMI, GIGAmog, framecel, heightcel, shortcel, LMS, PSL
+- **CZ/SK míchání:** "chlape ta co tě mogla je hardcore foid", "cope harder brácho", "framecel + heightcel = ggwp"
+- **Emoji:** 💀 😭 🗿 🧎 📉 🥀
+- **Sample zpráva (od jiného uživatele, ne Lukas):**
   ```
-  >be me, 15, framecel, subhuman midface
-  >go to school
-  >Chad walks by, 6'2, hunter eyes
-  >notice foid staring at him
-  >she looks at me for 0.3s, disgusted
-  >go home
-  >mew for 4 hours
-  >nothing changes
-  >it's over
-  ```
-
-### 17.2 Blackpill Discord kanály — slovník a rétorika
-- **Klíčová slovní zásoba:** foid, femoid, roastie, Chad, Stacy, Becky, Tyrone, NPC, normie, cope, seethe, mog / mogged, LDAR (lay down and rot), NGMI (not gonna make it), IGMI, GIGAmog, framecel, heightcel, shortcel, bonesmash, LMS (Looks/Money/Status), PSL rating
-- **Míchání jazyků na CZ/SK serverech:** česká gramatika s importovanými EN termíny — "chlape ta co tě mogla je hardcore foid", "cope harder brácho", "framecel + heightcel = ggwp", "právě mě zmogla babča v Lidlu"
-- **Emoji vocabulary:** 💀 (dead / it's over), 😭 (self-pity ironické), 🗿 (Doge/chad stoicism), 🧎 (kneeling / defeat), 📉 (falling stock — self-worth), 🥀 (wilted rose — romantic doom)
-- **Sample discord zprávy (v kanálech, které Lukas čte, NE které píše):**
-  ```
-  #general
   KOROLEV_88: bratři, jsem 5'8 a mám recessed chin, kolik LMS bodů si dám
-  mchmch: 3.5. sub tier. dej mi ping až se dostaneš na 6ft nebo do Turecka na bimax
-  KOROLEV_88: 💀
-
-  #self-hate-mondays
-  glow_v3: právě mě mogla holka na tramvaji ktera nedostane na SŠ
-  glow_v3: to byla ta poslední kapka
-  glow_v3: 💀💀💀
-
-  #foto-rating
-  n0nam3_69: [obrázek] rate me chlapi bez lítosti
-  aleph_null: NT tier. Fixni si canthal tilt (guasha 30 min/den) a přiber. 5/10.
-  n0nam3_69: to je fér, díky
+  mchmch: 3.5. sub tier. cope routine + patience.
   ```
 
-### 17.3 Looksmaxxing servery — struktura a jazyk
-- **PSL rating scale (1–10):**
-  - 1–3: subhuman
-  - 3–4: sub
-  - 4–5: LTN (low tier normie)
-  - 5–6: MTN (mid tier normie) / HTN (high tier normie)
-  - 6.5–7.5: Chadlite
-  - 7.5–8.5: Chad
-  - 8.5+: GigaChad / Slayer
-- **Anatomické termíny (obsedantní kvantifikace):** canthal tilt (positive / neutral / negative), IPD (interpupillary distance), philtrum length, gonial angle, midface ratio, ramus length, bizygomatic width, mandibular plane angle, hunter eyes vs. prey eyes, "compact midface"
-- **"Protokoly" / self-help techniky:**
-  - Mewing (poloha jazyka na patře, celoživotní)
-  - Hard/soft chin tuck
-  - Guasha (jadeitová kamenná masáž obličeje)
-  - Orbital ring exercises
-  - Bone smashing (systematické klepání ballpeen kladivem na obličejové kosti — **extrémně nebezpečné, ale komunita to propaguje**)
-  - Chewing hardcore gum (mastic gum, falim)
-  - Beard oil, minoxidil na vousy
-- **Chirurgické zákroky (často diskutované):**
-  - BSSO / bimax (bilateral sagittal split osteotomy — posun čelisti)
-  - LeFort I/II/III (posun horní čelisti)
-  - Chin wing (rozšíření brady)
-  - Genioplasty (posun brady)
-  - Jaw implants
-  - Fox eye surgery, canthoplasty
-  - Rhinoplasty
-  - **Turecko / Polsko** = destinace levné chirurgie, ~5–15k USD
-- **Sample zprávy:**
+### 16.3 Looksmaxxing servery
+- **PSL rating scale (1–10):** subhuman → sub → LTN → MTN → HTN → Chadlite → Chad → GigaChad
+- **Anatomické termíny:** canthal tilt, IPD, philtrum, gonial angle, midface ratio, hunter eyes vs. prey eyes
+- **"Protokoly":** mewing, hard/soft chin tuck, guasha, chewing hardcore gum, orbital ring exercises
+- **BEZ jakýchkoli chirurgických/Turecko referencí** — odstraněno
+- **Sample zpráva:**
   ```
-  #looksmaxx-tipy
-  Frame_God: hardmogger, dej mi hunter eyes routine plz
-  ash_pilled: 1. spí na zádech 2. dropni cukr 3. mewing 24/7 4. eyebag surgery za 3 roky
-  Frame_God: eyebag surgery je meme nebo real
-  ash_pilled: 100% real, dělá se v turecku za 1200 EUR
-
-  #turecko-operace-info
-  MTN_max: napsal jsem 4 klinikám v Istanbulu, nejlevnější BSSO 4200 EUR
-  someguy_23: co Dr. Cinik? doporučuju
-  MTN_max: ptal jsem se, čeká 8 měsíců
+  Frame_God: hunter eyes routine?
+  ash_pilled: 1. spí na zádech 2. dropni cukr 3. mewing 24/7
   ```
 
-### 17.4 "Ženský kontext" screenshoty — co to je a jak vypadají
-- **Zdroj:** Twitter/X, TikTok, Instagram screenshoty ženských uživatelek — sdílené v komunitách jako "důkaz" female nature
-- **Typický obsah:**
-  - Tweety typu "I only date men 6'0+", "6'2 minimum for dating", "if he doesn't have hunter eyes idc"
-  - TikTok POV videa "when he's a 6.5/10 and thinks he can date me"
-  - Screenshoty datingových preferencí z hinge/tinder
-  - "Roast" tweetů o mužích s určitými vlastnostmi (nízcí, plešatí, chudí)
-- **Rétorické použití v komunitě:** "vidíš, tohle je proč nemáš šanci", "toto je hypergamie in action", "females don't hide it anymore"
-- **Lukasova pozice:** ukládá si to (viz 7.5), ale **nikdy nekomentuje ani nesdílí dál**. Je to pro něj rezervoár resentimentu, který si sám neuvědomuje.
+### 16.4 "Ženský kontext" screenshoty
+- Screenshoty z Twitteru/TikToku ženských uživatelek — sdílené jako "důkaz" female nature
+- Tweety "I only date 6'0+ men", TikTok POV videa
+- Rétorické použití: "vidíš, tohle je proč"
+- **Lukas si to ukládá do `_M/`, nikdy nekomentuje ani nesdílí**
 
-### 17.5 Yunko Furuta reference — jak se objevuje
-- **Kontext:** Junko Furuta byla japonská 17letá dívka umučená a zavražděná v roce 1988–89. V blackpill/incel komunitách je občas použita jako extrémní darkpost / "reminder" — buď jako "co ženy si zaslouží" (v nejtemnějších okruzích), nebo jako "co ženy dělají mužům" (v případě přehazování odpovědnosti). **Vysoce toxický obsah.**
-- **Jak se objevuje na Lukasově disku:**
-  - Jeden screenshot v Discord kanálu `#self-hate-mondays`, kde ho někdo (ne Lukas) postnul s krátkým popiskem
-  - Lukas si to stáhne do `_M/yunko_furuta_screenshot.png`
-  - **Během několika dní si to smaže do koše** (12. 3.) — instinkt, že s tím není v pohodě
-- **Detektivní vodítko:** existence tohoto souboru v koši říká dětem hodně — vystavuje se, ale ještě se štítí. Toto je bod, kde je Lukas ještě "otočitelný".
+### 16.5 Yunko Furuta reference
+- Extrémní darkpost v `#self-hate-mondays`
+- Popisek: "reminder proč jsou females..."
+- Lukas si stáhne do `_M/`, během několika dnů smaže do koše
+- **Detektivní vodítko:** existence tohoto souboru v koši = Lukas se ještě štítí, ještě je otočitelný
 
-### 17.6 Meme templates — konkrétní typy v Lukas /mems/
-- **Wojak virgin vs. chad srovnávací:**
-  - "virgin scrolls looksmax before bed / chad has never heard of PSL"
-  - "virgin frametcels vs. chad Ken doll"
-- **Gigachad + "based":**
-  - Gigachad s texty jako "yes I mew, yes I lift, yes I look like this, how could you tell?"
-- **Doomer wojak (kápě + cigareta):**
-  - "another day of failing looksmax", "3 weeks of mewing, 0 progress"
-- **Feelscel wojak (pláč):**
-  - "when the foid says 'you're such a good friend'"
-- **"Ratio" a "L + you fell off":** importované z Twitter, používané samoironicky
-- **Sigma male grindset — ironie:**
-  - "5AM cold shower, ice bath, mewing, 40 pushups, 200 pullups, bimax scheduled — sigma"
-  - **Klíčové:** v roce 2026 je "sigma" už často ironické, ne upřímné — Lukas rozumí té ironii, ale zároveň to bere trochu vážně (jeho intelekt vs. touha)
-- **"Reject modernity, embrace tradition":**
-  - Chad + antimoderní hláška, přechází k tradkath/reakcionářské estetice
-- **"Bugs, pods, and 15-minute city":**
-  - Konspirační okraj (WEF, klimatické city, "you will eat the bugs")
-- **Absurd humor / gooning memy:** občas přítomné, ale Lukas je nesdílí — nesedí mu
+### 16.6 Meme templates v Lukasových `/mems/`
+- Wojak virgin vs. chad
+- Gigachad + "based"
+- Doomer wojak (kápě, cigareta)
+- Feelscel wojak (pláč)
+- "Reject modernity, embrace tradition"
+- Nejstarší mem ze září 2025: r/wholesomememes wojak (kontrast)
 
-### 17.7 Emocionální register komunit — subtilnější odlišnosti
-- **Blackpill:** nihilistický humor + občasné agresivní záblesky. Nejvíc "definitivní" — "je to nad slunce jasnější, je to biologie".
-- **Looksmaxxing:** technicko-obsedantní, pseudo-vědecký. Grafy, měřítka, "data driven". Nabízí falešnou naději (na rozdíl od blackpillu).
-- **r9k:** melancholický, izolovaný, sebeodmítající. Suicidal ideation jako "black comedy". Méně agrese vůči ženám než blackpill, víc introspekce.
-- **Manosphere positive (Tate/Hormozi vibe):** motivační-agresivní. "You're weak, but you can become strong". Peníze + status + ženy jako sada odemykatelných levelů. Pro Lukase méně rezonuje než blackpill/looksmaxxing, protože je to už komodifikované.
-
-### 17.8 Co Lukas produkuje vs. absorbuje (KRITICKÉ)
-Toto je nejdůležitější rozlišení pro celý projekt:
+### 16.7 Co Lukas produkuje vs. absorbuje (KRITICKÉ)
 
 **Lukas PRODUKUJE:**
-- Zprávy v ChatGPT (viz sekce 5.3) — postupné absorbování termínů
-- Herní chat v CS2/Halo (normální, bez manosphere jazyka)
-- Občasné 👍 nebo 💀 reakce v Discord (ale nikdy vlastní zprávy v looksmaxx serveru)
-- Poznámky sám sobě (`cile.txt`, plán, spořicí Excel)
-- Facerate.io upload fotek + votes na jiných
+- Zprávy v ChatGPT (postupné absorbování termínů)
+- Minimum v CS2/Halo chatu ("gg", "wp")
+- Občasné 👍 nebo 💀 reakce v Discord
+- Facerate.io uploads + votes
 
 **Lukas ABSORBUJE (ne produkuje):**
-- Screenshoty z 4chan /r9k
-- Screenshoty z blackpill/looksmaxxing discordů
+- Screenshoty z 4chan /r9k, Discord, "ženský kontext"
 - Memes (ukládá do `mems/`)
-- YouTube shorts (ne komentuje, jen kouká)
-- "Ženský kontext" screenshoty (ukládá do `_M/`)
+- YouTube shorts (nikdy nekomentuje)
 
 **Lukas NIKDY:**
 - Sám nenapíše rasistickou, antifeministickou, nebo násilnou zprávu
-- Nikdy nikoho neošije ženu
-- Nikdy nesdílí Yunko Furuta obsah nebo podobný extrém
-- Nikdy nepřijímá identitu ("jsem incel", "jsem blackpiller")
-- Nikdy nezakládá vlákno nebo nekomentuje veřejně
-
-**Detektivně důležité:** rozpor mezi tím, co konzumuje (masivní expozice) a tím, co produkuje (velmi málo), je klíčový. Zůstává **pozorovatelem, který jazyk absorbuje, ale ještě identitu nezavíral**. To je přesná pozice, kde je většina radikalizovatelných teenagerů — a proto je to didakticky nejsilnější místo.
+- Nikdy nesdílí Yunko Furuta obsah dál
+- Nikdy nepřijímá identitu ("jsem incel")
+- Nikdy nezakládá vlákno / veřejně nekomentuje
 
 ---
 
 ## 17. Nikdy nezapomeň
 
 - **Lukas je oběť, ne pachatel.** Není zlý.
-- **Konec je otevřený.** Workshop neproběhne intervencí. Účastníci nedostanou "resolvici" — mají cítit tíhu otevřenosti.
-- **Empatie první, kritika druhá.** Nejdřív pochopit, pak identifikovat vzorce.
-- **Autentický, ne parodie.** Věci musí znít reálně. Když děti něco poznají ze svého feedu, jsme na cestě.
+- **Konec je otevřený.** Workshop neproběhne intervencí.
+- **Empatie první, kritika druhá.**
+- **Autentický, ne parodie.**
 - **Digitální stopa jako biografie.** Lidé nejsou to, co říkají — jsou to, co dělají, ukládají, mažou.
+- **Klíčová věta:** Lukas není radikalizovaný. Lukas si nechal vysvětlit, kdo je — a poprvé v životě to vysvětlení sedělo s tím, co cítí.
 
 ---
 
-*Konec dokumentu. Verze v1 — očekává se iterace na základě jmen z Natina doc, screenshotů z Canvy a rozhodnutí o darkness levelu specifických artefaktů.*
+*Konec dokumentu. Verze v2 (final) — konsoliduje všechna dosavadní rozhodnutí. Pro hlubší psychologické čtení postavy viz `LUKAS_PROFIL.md`.*
