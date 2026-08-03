@@ -4197,6 +4197,8 @@ attachEditorPanelHandlers();
 
 document.addEventListener('keydown', e => {
   if (e.ctrlKey && e.shiftKey && (e.key === 'E' || e.key === 'e')) {
+    const lockScreen = document.getElementById('lock-screen');
+    if (lockScreen && !lockScreen.classList.contains('hidden')) return;
     e.preventDefault();
     const overlay = document.getElementById('content-editor');
     if (overlay.classList.contains('hidden')) openContentEditor();
@@ -4242,8 +4244,6 @@ const EDITOR_SECTIONS = [
 
 snapshotEditorDefaults();
 loadContentOverrides();
-startClock();
-setTimeout(showToastNotification, 900);
 
 // Make every app window draggable by its titlebar and focusable on click, like a real desktop.
 [
@@ -4259,4 +4259,50 @@ setTimeout(showToastNotification, 900);
   if (!win) return;
   makeWindowDraggable(win, win.querySelector(titlebarSelector));
   makeWindowFocusable(win);
+});
+
+// ── Lock screen → Welcome transition (Windows-style entry point) ──
+// The clock/toast only start once the desktop is actually revealed, so their timing
+// lines up with what the user sees instead of ticking away behind the lock screen.
+const CZ_WEEKDAYS = ['neděle', 'pondělí', 'úterý', 'středa', 'čtvrtek', 'pátek', 'sobota'];
+const CZ_MONTHS_GENITIVE = ['ledna', 'února', 'března', 'dubna', 'května', 'června', 'července', 'srpna', 'září', 'října', 'listopadu', 'prosince'];
+
+function renderLockScreenClock() {
+  const d = new Date(parseClockBase());
+  const h = String(d.getHours()).padStart(2, '0');
+  const m = String(d.getMinutes()).padStart(2, '0');
+  document.getElementById('lock-time').textContent = `${h}:${m}`;
+  document.getElementById('lock-date').textContent = `${CZ_WEEKDAYS[d.getDay()]} ${d.getDate()}. ${CZ_MONTHS_GENITIVE[d.getMonth()]}`;
+}
+renderLockScreenClock();
+
+function revealDesktop() {
+  startClock();
+  setTimeout(showToastNotification, 900);
+}
+
+let lockScreenDismissed = false;
+function dismissLockScreen() {
+  if (lockScreenDismissed) return;
+  lockScreenDismissed = true;
+  const lock = document.getElementById('lock-screen');
+  const welcome = document.getElementById('welcome-screen');
+  lock.classList.add('dismissing');
+  setTimeout(() => {
+    lock.classList.add('hidden');
+    welcome.classList.remove('hidden');
+    requestAnimationFrame(() => welcome.classList.add('visible'));
+    setTimeout(() => {
+      welcome.classList.remove('visible');
+      setTimeout(() => {
+        welcome.classList.add('hidden');
+        revealDesktop();
+      }, 400);
+    }, 1100);
+  }, 500);
+}
+
+document.getElementById('lock-screen').addEventListener('click', dismissLockScreen);
+document.addEventListener('keydown', () => {
+  if (!lockScreenDismissed) dismissLockScreen();
 });

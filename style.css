@@ -9,6 +9,77 @@ body {
   user-select: none;
 }
 
+/* ── Lock screen (Windows-style intro, dismissed by click/keypress) ── */
+#lock-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: url('assets/wallpaper.jpg') center/cover no-repeat, linear-gradient(135deg, #0d1b2a 0%, #1b2a3b 50%, #0a1628 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+}
+#lock-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.55) 100%);
+}
+#lock-screen.dismissing { transform: translateY(-100%); opacity: 0; }
+#lock-screen.hidden { display: none; }
+
+.lock-screen-content {
+  position: relative;
+  text-align: center;
+  color: #fff;
+  text-shadow: 0 2px 18px rgba(0,0,0,0.55);
+}
+.lock-time { font-size: 96px; font-weight: 600; line-height: 1; letter-spacing: -2px; }
+.lock-date { font-size: 22px; font-weight: 400; margin-top: 8px; }
+
+.lock-hint {
+  position: absolute;
+  bottom: 48px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #fff;
+  font-size: 14px;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.6);
+  animation: lock-hint-pulse 2.2s ease-in-out infinite;
+}
+@keyframes lock-hint-pulse { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+
+/* ── Welcome transition (Windows sign-in style, between lock screen and desktop) ── */
+#welcome-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 8999;
+  background: #0a1120;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+#welcome-screen.hidden { display: none; }
+#welcome-screen.visible { opacity: 1; }
+
+.welcome-spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.25);
+  border-top-color: #fff;
+  animation: welcome-spin 0.9s linear infinite;
+}
+@keyframes welcome-spin { to { transform: rotate(360deg); } }
+.welcome-text { color: #fff; font-size: 22px; font-weight: 300; letter-spacing: 0.5px; }
+
 /* ── Desktop ── */
 #desktop {
   width: 100vw;
