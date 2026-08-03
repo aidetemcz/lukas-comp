@@ -4287,19 +4287,20 @@ function dismissLockScreen() {
   lockScreenDismissed = true;
   const lock = document.getElementById('lock-screen');
   const welcome = document.getElementById('welcome-screen');
+  // The welcome screen starts revealing itself immediately, underneath the lock screen as
+  // it slides up and away, instead of waiting for that slide to finish first — same
+  // continuous feel as the real Windows sign-in transition, and noticeably snappier.
   lock.classList.add('dismissing');
+  welcome.classList.remove('hidden');
+  requestAnimationFrame(() => welcome.classList.add('visible'));
+  setTimeout(() => lock.classList.add('hidden'), 360);
   setTimeout(() => {
-    lock.classList.add('hidden');
-    welcome.classList.remove('hidden');
-    requestAnimationFrame(() => welcome.classList.add('visible'));
+    welcome.classList.remove('visible');
     setTimeout(() => {
-      welcome.classList.remove('visible');
-      setTimeout(() => {
-        welcome.classList.add('hidden');
-        revealDesktop();
-      }, 400);
-    }, 1100);
-  }, 500);
+      welcome.classList.add('hidden');
+      revealDesktop();
+    }, 250);
+  }, 750);
 }
 
 document.getElementById('lock-screen').addEventListener('click', dismissLockScreen);
