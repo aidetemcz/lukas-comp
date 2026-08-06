@@ -901,15 +901,26 @@ function renderConvList() {
 }
 
 function renderConversation() {
-  const conv = CHATGPT_CONVERSATIONS.find(c => c.id === activeConvId);
+  let conv = CHATGPT_CONVERSATIONS.find(c => c.id === activeConvId);
+  if (!conv && CHATGPT_CONVERSATIONS.length > 0) {
+    conv = CHATGPT_CONVERSATIONS[0];
+    activeConvId = conv.id;
+  }
   renderConvList();
+  const messages = document.getElementById('chatgpt-messages');
+  if (!conv) {
+    document.getElementById('chatgpt-conv-timestamp').textContent = '';
+    messages.innerHTML = '<div class="chatgpt-empty-state">Žádné konverzace.</div>';
+    return;
+  }
   document.getElementById('chatgpt-conv-timestamp').textContent = `${conv.date}, ${conv.time}`;
 
   const chatgptTab = TABS.find(t => t.id === 'chatgpt');
-  chatgptTab.url = `chat.openai.com/c/${conv.urlId}`;
-  if (activeTabId === 'chatgpt') updateAddressBar();
+  if (chatgptTab) {
+    chatgptTab.url = `chat.openai.com/c/${conv.urlId}`;
+    if (activeTabId === 'chatgpt') updateAddressBar();
+  }
 
-  const messages = document.getElementById('chatgpt-messages');
   messages.innerHTML = conv.messages.map(msg => {
     const avatar = msg.role === 'user'
       ? '<span class="chatgpt-msg-avatar">L</span>'
@@ -2853,13 +2864,6 @@ const CS2_FRIENDS = [
   { name: 'SmokeyKC', online: true, status: 'online' }
 ];
 
-const CS2_ACHIEVEMENTS = [
-  { icon: '🎖️', name: 'Veterán — 1000+ h celkem' },
-  { icon: '🎯', name: 'Sniper — 500 headshotů' },
-  { icon: '🔥', name: 'Clutch King — 50× 1vX' },
-  { icon: '🌙', name: 'Night Owl — 100 zápasů po půlnoci' }
-];
-
 function cs2HoursChartSVG() {
   const data = CS2_MONTHLY_HOURS;
   const w = 600, h = 150, padL = 30, padR = 10, padT = 24, padB = 22;
@@ -2929,16 +2933,6 @@ function buildCs2BodyHTML() {
           <span class="cs2-friend-dot ${f.online ? 'online' : 'offline'}"></span>
           <span class="cs2-friend-name">${f.name}</span>
           <span class="cs2-friend-status">${f.status}</span>
-        </div>
-      `).join('')}
-    </div>
-
-    <div class="cs2-section-title">Achievementy</div>
-    <div class="cs2-achievements">
-      ${CS2_ACHIEVEMENTS.map(a => `
-        <div class="cs2-achievement">
-          <span class="cs2-achievement-icon">${a.icon}</span>
-          <span class="cs2-achievement-name">${a.name}</span>
         </div>
       `).join('')}
     </div>
@@ -3717,7 +3711,7 @@ const EDITOR_PROTECTED_KEYS = new Set(['type', 'preview', 'id', 'favicon', 'icon
 
 function isImageSlotObject(obj) {
   if (!isPlainObject(obj)) return false;
-  if (obj.photo === true) return true; // chatgpt message with an uploaded photo
+  if ('role' in obj && 'html' in obj) return true; // any chatgpt message — image can always be added
   if (obj.type === 'image-blur' || obj.type === 'image-missing') return true; // recycle bin
   if (typeof obj.preview === 'string' && 'date' in obj && 'size' in obj) return true; // Photos file card
   if ((obj.type === 'blur' || obj.type === 'sensitive') && 'filename' in obj) return true; // Discord attachment
@@ -3784,22 +3778,28 @@ function renderEditorNode(node, path, forceImageSlot, sectionKey) {
   if (Array.isArray(node)) {
     const section = sectionKey ? EDITOR_SECTIONS.find(s => s.key === sectionKey) : null;
     const showPrelude = section && path === section.key && typeof section.itemPrelude === 'function';
-    return node.map((item, i) => {
+    const canAddRemove = !!(section && section.allowAddRemove);
+    const removeBtnHTML = itemPath => canAddRemove
+      ? `<button type="button" class="editor-array-remove" data-remove-path="${itemPath}" title="Smazat položku">🗑</button>`
+      : '';
+    const itemsHTML = node.map((item, i) => {
       const itemPath = `${path}.${i}`;
       if (typeof item === 'string') {
-        return `<div class="editor-field"><label>#${i + 1}</label><input type="text" data-path="${itemPath}" value="${escapeForAttr(item)}" /></div>`;
+        return `<div class="editor-field"><label>#${i + 1}</label><div class="editor-array-primitive-row"><input type="text" data-path="${itemPath}" value="${escapeForAttr(item)}" />${removeBtnHTML(itemPath)}</div></div>`;
       }
       if (typeof item === 'number') {
-        return `<div class="editor-field"><label>#${i + 1}</label><input type="text" data-numeric="1" data-path="${itemPath}" value="${item}" /></div>`;
+        return `<div class="editor-field"><label>#${i + 1}</label><div class="editor-array-primitive-row"><input type="text" data-numeric="1" data-path="${itemPath}" value="${item}" />${removeBtnHTML(itemPath)}</div></div>`;
       }
       return `
         <div class="editor-array-item">
-          <div class="editor-array-item-heading">${editorHeadingFor(item, i)}</div>
+          <div class="editor-array-item-heading"><span>${editorHeadingFor(item, i)}</span>${removeBtnHTML(itemPath)}</div>
           ${showPrelude ? section.itemPrelude(item, itemPath) : ''}
           ${renderEditorNode(item, itemPath, forceImageSlot, sectionKey)}
         </div>
       `;
     }).join('');
+    const addBtnHTML = canAddRemove ? `<button type="button" class="editor-array-add" data-add-path="${path}">+ Přidat položku</button>` : '';
+    return itemsHTML + addBtnHTML;
   }
   if (isPlainObject(node)) {
     const showImageSlot = forceImageSlot || isImageSlotObject(node);
@@ -3862,6 +3862,84 @@ function resolveEditorPath(fullPath) {
 function setEditorValueAtPath(fullPath, value) {
   const resolved = resolveEditorPath(fullPath);
   if (resolved) resolved.parent[resolved.key] = value;
+}
+
+// When an editor image-slot path belongs to a chatgpt message ({role, html}), keep its
+// `photo` flag in sync — that's what actually gates whether the attachment shows up in
+// the real ChatGPT view, independent of whether an image was ever uploaded.
+function markMessagePhotoFlag(imagePath, hasPhoto) {
+  const resolved = resolveEditorPath(imagePath);
+  if (resolved && isPlainObject(resolved.parent) && 'role' in resolved.parent && 'html' in resolved.parent) {
+    resolved.parent.photo = hasPhoto;
+  }
+}
+
+// Resolves a path that points AT an array itself (e.g. "chatgpt" or "chatgpt.0.messages"),
+// as opposed to resolveEditorPath which resolves a path to a leaf field's {parent, key}.
+function resolveEditorArray(fullPath) {
+  const parts = fullPath.split('.');
+  const section = EDITOR_SECTIONS.find(s => s.key === parts[0]);
+  if (!section) return null;
+  let node = section.data;
+  for (let i = 1; i < parts.length; i++) {
+    if (node == null) return null;
+    node = node[parts[i]];
+  }
+  return Array.isArray(node) ? node : null;
+}
+
+// Produces a blank starting point for a new array item, shaped like the last existing
+// item so new entries stay structurally consistent (same fields, nested arrays/objects).
+function blankClone(value) {
+  if (Array.isArray(value)) return [];
+  if (isPlainObject(value)) {
+    const out = {};
+    Object.keys(value).forEach(k => { out[k] = blankClone(value[k]); });
+    if ('role' in out && 'html' in out) out.role = 'user';
+    return out;
+  }
+  if (typeof value === 'string') return '';
+  if (typeof value === 'number') return 0;
+  if (typeof value === 'boolean') return false;
+  return value;
+}
+
+function addEditorArrayItem(path) {
+  const arr = resolveEditorArray(path);
+  if (!arr) return;
+  const last = arr.length > 0 ? arr[arr.length - 1] : null;
+  let newItem;
+  if (isPlainObject(last)) newItem = blankClone(last);
+  else if (typeof last === 'number') newItem = 0;
+  else if (typeof last === 'string') newItem = '';
+  else newItem = {};
+  if (path === 'chatgpt') {
+    const maxId = CHATGPT_CONVERSATIONS.reduce((m, c) => Math.max(m, c.id || 0), 0);
+    newItem.id = maxId + 1;
+    newItem.urlId = 'new-' + Math.random().toString(36).slice(2, 10);
+    newItem.title = 'Nová konverzace';
+    newItem.date = '';
+    newItem.time = '';
+    newItem.messages = [{ role: 'user', html: '' }];
+  }
+  arr.push(newItem);
+  scheduleSaveContentOverrides();
+  renderEditorPanel(currentEditorSectionKey);
+  refreshOpenWindowsAfterEdit();
+}
+
+function removeEditorArrayItem(itemPath) {
+  const parts = itemPath.split('.');
+  const idx = parseInt(parts[parts.length - 1], 10);
+  if (isNaN(idx)) return;
+  const arrPath = parts.slice(0, -1).join('.');
+  if (arrPath === 'chatgpt' && !confirm('Opravdu smazat celou konverzaci? Tato akce se nedá vzít zpět.')) return;
+  const arr = resolveEditorArray(arrPath);
+  if (!arr) return;
+  arr.splice(idx, 1);
+  scheduleSaveContentOverrides();
+  renderEditorPanel(currentEditorSectionKey);
+  refreshOpenWindowsAfterEdit();
 }
 
 function fileToResizedDataUrl(file, maxDim, quality) {
@@ -4061,6 +4139,7 @@ function attachEditorPanelHandlers() {
       const path = el.dataset.imagePath;
       fileToResizedDataUrl(el.files[0]).then(dataUrl => {
         setEditorValueAtPath(path, dataUrl);
+        markMessagePhotoFlag(path, true);
         scheduleSaveContentOverrides();
         const slot = el.closest('.editor-image-slot');
         if (slot) {
@@ -4078,9 +4157,18 @@ function attachEditorPanelHandlers() {
     }
   });
   panel.addEventListener('click', e => {
+    if (e.target.classList.contains('editor-array-add')) {
+      addEditorArrayItem(e.target.dataset.addPath);
+      return;
+    }
+    if (e.target.classList.contains('editor-array-remove')) {
+      removeEditorArrayItem(e.target.dataset.removePath);
+      return;
+    }
     if (e.target.classList.contains('editor-image-clear')) {
       const path = e.target.dataset.imagePath;
       setEditorValueAtPath(path, null);
+      markMessagePhotoFlag(path, false);
       scheduleSaveContentOverrides();
       const slot = e.target.closest('.editor-image-slot');
       slot.querySelector('.editor-image-preview').innerHTML = '<span class="editor-image-empty">bez obrázku</span>';
@@ -4155,7 +4243,7 @@ document.addEventListener('keydown', e => {
 
 // ── Register every editable data collection, load saved edits, then start the clock/toast ──
 const EDITOR_SECTIONS = [
-  { key: 'chatgpt', label: 'ChatGPT konverzace', data: CHATGPT_CONVERSATIONS },
+  { key: 'chatgpt', label: 'ChatGPT konverzace', data: CHATGPT_CONVERSATIONS, allowAddRemove: true },
   { key: 'chromeHistory', label: 'Chrome — historie', data: HISTORY_DAYS },
   { key: 'chromeTabs', label: 'Chrome — výchozí otevřené taby', data: INITIAL_TABS_TEMPLATE },
   { key: 'genericSites', label: 'Chrome — obsah odkazovaných stránek', data: GENERIC_SITES },
@@ -4177,7 +4265,6 @@ const EDITOR_SECTIONS = [
   { key: 'cs2Hours', label: 'CS2 — hodiny za měsíc', data: CS2_MONTHLY_HOURS },
   { key: 'cs2Matches', label: 'CS2 — zápasy', data: CS2_MATCHES },
   { key: 'cs2Friends', label: 'CS2 — přátelé', data: CS2_FRIENDS },
-  { key: 'cs2Achievements', label: 'CS2 — achievementy', data: CS2_ACHIEVEMENTS },
   { key: 'haloMatches', label: 'Halo — zápasy', data: HALO_MATCHES },
   { key: 'haloFriends', label: 'Halo — přátelé (Spartan Company)', data: HALO_FRIENDS },
   { key: 'haloWeapons', label: 'Halo — oblíbené zbraně', data: HALO_WEAPONS },

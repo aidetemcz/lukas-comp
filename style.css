@@ -667,6 +667,7 @@ body {
   flex-direction: column;
   gap: 22px;
 }
+.chatgpt-empty-state { color: #8e8e8e; font-size: 14px; text-align: center; padding: 40px 4px; }
 .chatgpt-msg-row {
   display: flex;
   gap: 14px;
@@ -2020,22 +2021,6 @@ body {
 .cs2-friend-name { font-size: 13px; color: #fff; flex: 1; }
 .cs2-friend-status { font-size: 11.5px; color: #8f98a0; }
 
-.cs2-achievements { display: flex; gap: 12px; flex-wrap: wrap; }
-.cs2-achievement {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  width: 96px;
-  text-align: center;
-  padding: 10px 6px;
-  background: #0e141bcc;
-  border: 1px solid #2a3f57;
-  border-radius: 8px;
-}
-.cs2-achievement-icon { font-size: 22px; }
-.cs2-achievement-name { font-size: 10.5px; color: #c7d5e0; line-height: 1.3; }
-
 /* ── Halo Infinite launcher (Waypoint-style) ── */
 #halo-window {
   position: fixed;
@@ -3047,6 +3032,10 @@ body {
   background: #fafbfc;
 }
 .editor-array-item-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
   font-size: 12.5px;
   font-weight: 700;
   color: #5b6068;
@@ -3056,6 +3045,38 @@ body {
   padding-bottom: 8px;
   border-bottom: 1px solid #edeef0;
 }
+.editor-array-item-heading span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.editor-array-primitive-row { display: flex; align-items: center; gap: 8px; }
+.editor-array-primitive-row input { flex: 1; }
+
+.editor-array-remove {
+  flex-shrink: 0;
+  border: 1px solid #e0b3b3;
+  color: #b3261e;
+  background: #fff;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  text-transform: none;
+}
+.editor-array-remove:hover { background: #fbe9e7; }
+
+.editor-array-add {
+  display: block;
+  width: 100%;
+  border: 1px dashed #8ab4f8;
+  color: #0b5fff;
+  background: #f4f8ff;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 4px 0 16px;
+}
+.editor-array-add:hover { background: #e8f0fe; }
 
 .editor-field { margin-bottom: 10px; }
 .editor-field label { display: block; font-size: 11.5px; color: #6b7078; margin-bottom: 3px; }
@@ -3119,6 +3140,7 @@ body {
   cursor: pointer;
 }
 .editor-upload-btn:hover { background: #eef4ff; }
+.editor-image-input.hidden { display: none; }
 .editor-image-clear {
   border: 1px solid #e0b3b3;
   color: #b3261e;
