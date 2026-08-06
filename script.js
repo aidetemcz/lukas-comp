@@ -4300,7 +4300,7 @@ function dismissLockScreen() {
       welcome.classList.add('hidden');
       revealDesktop();
     }, 250);
-  }, 750);
+  }, 375);
 }
 
 document.getElementById('lock-screen').addEventListener('click', dismissLockScreen);
