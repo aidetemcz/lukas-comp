@@ -722,7 +722,6 @@ body {
   background-blend-mode: multiply;
   border: 1px solid #e0e0e0;
 }
-.chatgpt-photo-caption { font-size: 11.5px; color: #8e8e8e; }
 
 /* ── Explorer-style windows (Recycle Bin, file viewer) ── */
 #recycle-window, #trash-viewer-window {

@@ -926,7 +926,7 @@ function renderConversation() {
       ? '<span class="chatgpt-msg-avatar">L</span>'
       : `<span class="chatgpt-msg-avatar"><img src="assets/icons/chatgpt.svg" alt="" /></span>`;
     const photoHtml = msg.photo
-      ? `<div class="chatgpt-photo-attachment">${imageOrPlaceholder(msg.image, '<div class="chatgpt-photo-pixelated"></div>')}<span class="chatgpt-photo-caption">fotka.jpg</span></div>`
+      ? `<div class="chatgpt-photo-attachment">${imageOrPlaceholder(msg.image, '<div class="chatgpt-photo-pixelated"></div>')}</div>`
       : '';
     return `
       <div class="chatgpt-msg-row ${msg.role}">
