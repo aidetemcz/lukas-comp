@@ -435,8 +435,7 @@ const INITIAL_TABS_TEMPLATE = [
   { id: 'chatgpt', type: 'chatgpt', title: 'ChatGPT', url: 'chat.openai.com/c/6f2a91d0-8b3e-4c1a-9f2d-3a7e5c0b1d44', favicon: 'assets/icons/chatgpt.svg' },
   { id: 'facerate', type: 'facerate', title: 'facerate.io — Upload', url: 'facerate.io/upload', favicon: 'assets/icons/fav-facerate.svg' },
   { id: 'youtube', type: 'youtube', title: 'Andrew Tate On Hypergamy - YouTube', url: 'youtube.com/shorts/B7kvX7QZc0U', favicon: 'assets/icons/fav-youtube.svg' },
-  { id: 'google-search', type: 'google', title: 'vlak plzeň hlavní praha víkend - Hledat Googlem', url: 'google.com/search?q=vlak+plzen+hlavni+praha+vikend', favicon: 'assets/icons/fav-google.svg' },
-  { id: 'gmail', type: 'gmail', title: 'Doručená pošta – Gmail', url: 'mail.google.com/mail/u/0/#inbox', favicon: 'assets/icons/fav-gmail.svg' }
+  { id: 'google-search', type: 'google', title: 'vlak plzeň hlavní praha víkend - Hledat Googlem', url: 'google.com/search?q=vlak+plzen+hlavni+praha+vikend', favicon: 'assets/icons/fav-google.svg' }
 ];
 function makeInitialTabs() {
   const tabs = INITIAL_TABS_TEMPLATE.map(t => ({ ...t }));
@@ -457,12 +456,14 @@ function makeInitialTabs() {
       }
     }
   } catch (e) { /* YT data not initialized yet at this early call site */ }
+  // Seed each tab's own back/forward history with its starting page, same as a real
+  // browser treating the initial load as the first history entry.
+  tabs.forEach(t => { t.history = [{ url: t.url, title: t.title }]; t.historyIndex = 0; });
   return tabs;
 }
 
 function faviconForUrl(url) {
   if (url.startsWith('chat.openai.com')) return 'assets/icons/chatgpt.svg';
-  if (url.startsWith('mail.google.com')) return 'assets/icons/fav-gmail.svg';
   if (url.startsWith('google.com')) return 'assets/icons/fav-google.svg';
   if (url.startsWith('youtube.com')) return 'assets/icons/fav-youtube.svg';
   if (url.startsWith('reddit.com')) return 'assets/icons/fav-reddit.svg';
@@ -520,6 +521,7 @@ function selectTab(id) {
   renderTabbar();
   updateAddressBar();
   renderActivePage();
+  updateNavButtons();
 }
 
 function renderTabbar() {
@@ -534,7 +536,42 @@ function renderTabbar() {
   attachHoverPreview(nodes, i => TABS[i].url);
 }
 
-function navigateActiveTab(title, url) {
+// Every tab keeps its own back/forward history — { history: [{url,title}], historyIndex }.
+// Navigating normally truncates any "forward" entries past the current position and
+// appends the new page, like a real browser; going back/forward via goBack()/goForward()
+// just moves historyIndex and replays the same page without touching the stack.
+function pushTabHistory(tab) {
+  if (!tab.history) { tab.history = []; tab.historyIndex = -1; }
+  tab.history = tab.history.slice(0, tab.historyIndex + 1);
+  tab.history.push({ url: tab.url, title: tab.title });
+  tab.historyIndex = tab.history.length - 1;
+}
+
+function updateNavButtons() {
+  const tab = TABS.find(t => t.id === activeTabId);
+  const canBack = !!(tab && tab.history && tab.historyIndex > 0);
+  const canForward = !!(tab && tab.history && tab.historyIndex < tab.history.length - 1);
+  document.getElementById('chrome-nav-back').classList.toggle('disabled', !canBack);
+  document.getElementById('chrome-nav-forward').classList.toggle('disabled', !canForward);
+}
+
+function goBack() {
+  const tab = TABS.find(t => t.id === activeTabId);
+  if (!tab || !tab.history || tab.historyIndex <= 0) return;
+  tab.historyIndex -= 1;
+  const entry = tab.history[tab.historyIndex];
+  navigateActiveTab(entry.title, entry.url, true);
+}
+
+function goForward() {
+  const tab = TABS.find(t => t.id === activeTabId);
+  if (!tab || !tab.history || tab.historyIndex >= tab.history.length - 1) return;
+  tab.historyIndex += 1;
+  const entry = tab.history[tab.historyIndex];
+  navigateActiveTab(entry.title, entry.url, true);
+}
+
+function navigateActiveTab(title, url, fromHistory) {
   const tab = TABS.find(t => t.id === activeTabId);
   if (!tab) return;
   if (url.startsWith('chat.openai.com')) {
@@ -553,9 +590,6 @@ function navigateActiveTab(title, url) {
   } else if (url.startsWith('google.com/search')) {
     tab.type = 'google';
     tab.title = title;
-  } else if (url.startsWith('mail.google.com')) {
-    tab.type = 'gmail';
-    tab.title = title;
   } else if (url.startsWith('grok.x.ai')) {
     tab.type = 'grok';
     tab.title = title;
@@ -564,6 +598,9 @@ function navigateActiveTab(title, url) {
     tab.title = title;
   } else if (url.startsWith('idos.cz')) {
     tab.type = 'idos';
+    tab.title = title;
+  } else if (url.startsWith('chrome://history')) {
+    tab.type = 'history';
     tab.title = title;
   } else if (matchGenericSite(url)) {
     tab.type = 'genericsite';
@@ -575,26 +612,35 @@ function navigateActiveTab(title, url) {
   }
   tab.url = url;
   tab.favicon = faviconForUrl(url);
+  if (!fromHistory) pushTabHistory(tab);
   renderTabbar();
   updateAddressBar();
   renderActivePage();
+  updateNavButtons();
 }
+
+document.getElementById('chrome-nav-back').addEventListener('click', goBack);
+document.getElementById('chrome-nav-forward').addEventListener('click', goForward);
 
 function openHistory() {
   let tab = TABS.find(t => t.id === 'history');
   if (!tab) {
     tab = { id: 'history', type: 'history', title: 'Historie', url: 'chrome://history', favicon: 'assets/icons/fav-history.svg' };
+    tab.history = [{ url: tab.url, title: tab.title }];
+    tab.historyIndex = 0;
     TABS.push(tab);
   } else {
     tab.type = 'history';
     tab.title = 'Historie';
     tab.url = 'chrome://history';
     tab.favicon = 'assets/icons/fav-history.svg';
+    pushTabHistory(tab);
   }
   activeTabId = 'history';
   renderTabbar();
   updateAddressBar();
   renderActivePage();
+  updateNavButtons();
   closeChromeMenu();
 }
 
@@ -848,6 +894,8 @@ function renderConvList() {
     node.addEventListener('click', () => {
       activeConvId = CHATGPT_CONVERSATIONS[i].id;
       renderConversation();
+      const chatgptTab = TABS.find(t => t.id === 'chatgpt');
+      if (chatgptTab) { pushTabHistory(chatgptTab); updateNavButtons(); }
     });
   });
 }
@@ -900,10 +948,6 @@ function renderActivePage() {
   } else if (tab.type === 'google') {
     chromePage.innerHTML = buildGooglePageHTML(tab.url);
     attachGoogleHandlers();
-  } else if (tab.type === 'gmail') {
-    chromePage.innerHTML = buildGmailAppHTML();
-    renderGmailMain();
-    attachGmailFolderHandlers();
   } else if (tab.type === 'grok') {
     chromePage.innerHTML = buildGrokAppHTML();
     attachGrokHandlers();
@@ -1365,17 +1409,19 @@ function parseYoutubeUrl(url) {
   return { page: 'home' };
 }
 
-function navigateYoutube(url, title) {
+function navigateYoutube(url, title, fromHistory) {
   const tab = TABS.find(t => t.id === activeTabId);
   if (tab) {
     tab.url = url;
     tab.title = title || tab.title;
     tab.type = 'youtube';
     tab.favicon = 'assets/icons/fav-youtube.svg';
+    if (!fromHistory) pushTabHistory(tab);
   }
   renderTabbar();
   updateAddressBar();
   renderYoutubeContent(url);
+  updateNavButtons();
 }
 
 function ytVideoCardHTML(v) {
@@ -1860,6 +1906,7 @@ function openChrome() {
     renderTabbar();
     updateAddressBar();
     renderActivePage();
+    updateNavButtons();
   }
   bringWindowToFront(chromeWindow);
 }
@@ -3239,109 +3286,6 @@ function attachIdosHandlers() {
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 }
 
-// ── Gmail (embedded in Chrome) — shell only, content is placeholder ──
-const GMAIL_ACCOUNT_EMAIL = 'hidd3nfram3@gmail.com';
-const GMAIL_EMAILS = [
-  { id: 'google-sec', sender: 'Google', email: 'no-reply@accounts.google.com', subject: 'Bezpečnostní upozornění pro váš účet', preview: '[Náhled placeholder]', body: '[Obsah placeholder]', date: '25. 3. 2026', time: '09:14', unread: false },
-  { id: 'steam', sender: 'Steam', email: 'noreply@steampowered.com', subject: 'Tvůj týdenní souhrn nabídek', preview: '[Náhled placeholder]', body: '[Obsah placeholder]', date: '24. 3. 2026', time: '18:40', unread: false },
-  { id: 'discord-notif', sender: 'Discord', email: 'noreply@discord.com', subject: 'Nové aktivity ve tvých serverech', preview: '[Náhled placeholder]', body: '[Obsah placeholder]', date: '23. 3. 2026', time: '21:02', unread: false },
-  { id: 'nintendo', sender: 'Nintendo', email: 'newsletter@nintendo.com', subject: 'Newsletter: Novinky a nabídky', preview: '[Náhled placeholder]', body: '[Obsah placeholder]', date: '20. 3. 2026', time: '10:30', unread: false },
-  { id: 'youtube-notif', sender: 'YouTube', email: 'no-reply@youtube.com', subject: 'Nové video od kanálu, který sleduješ', preview: '[Náhled placeholder]', body: '[Obsah placeholder]', date: '18. 3. 2026', time: '17:20', unread: false }
-];
-let gmailOpenId = null;
-
-function buildGmailAppHTML() {
-  return `
-    <div class="gm-app">
-      <header class="gm-header">
-        <span class="gm-menu-icon">☰</span>
-        <div class="gm-logo">Gmail</div>
-        <div class="gm-search-wrap"><input class="gm-search-input" placeholder="Hledat v poště" /></div>
-        <span class="gm-avatar" title="${GMAIL_ACCOUNT_EMAIL}">L</span>
-      </header>
-      <div class="gm-body">
-        <aside class="gm-sidebar">
-          <button class="gm-compose-btn">✎ Napsat</button>
-          <div class="gm-folder active" data-folder="inbox">📥 Doručená pošta</div>
-          <div class="gm-folder" data-folder="starred">⭐ Se hvězdičkou</div>
-          <div class="gm-folder" data-folder="sent">📤 Odeslané</div>
-          <div class="gm-folder" data-folder="drafts">📝 Koncepty</div>
-          <div class="gm-folder" data-folder="spam">🚫 Spam</div>
-        </aside>
-        <main class="gm-main" id="gm-main"></main>
-      </div>
-    </div>
-  `;
-}
-
-function gmailInboxHTML() {
-  return `
-    <div class="gm-list">
-      ${GMAIL_EMAILS.map(m => `
-        <div class="gm-row${m.unread ? ' unread' : ''}" data-id="${m.id}">
-          <span class="gm-star">☆</span>
-          <span class="gm-sender">${m.sender}</span>
-          <span class="gm-subject">${m.subject} <span class="gm-preview">- ${m.preview}</span></span>
-          <span class="gm-date">${m.date}</span>
-        </div>
-      `).join('')}
-    </div>
-  `;
-}
-
-function gmailDetailHTML(m) {
-  return `
-    <div class="gm-detail">
-      <button class="gm-back-btn" id="gm-back-btn">← Zpět</button>
-      <div class="gm-detail-subject">${m.subject}</div>
-      <div class="gm-detail-meta">
-        <span class="gm-detail-avatar">${m.sender.charAt(0)}</span>
-        <div>
-          <div class="gm-detail-sender">${m.sender} <span class="gm-detail-email">&lt;${m.email}&gt;</span></div>
-          <div class="gm-detail-date">${m.date} ${m.time}</div>
-        </div>
-      </div>
-      <div class="gm-detail-body">${m.body.replace(/\n/g, '<br/>')}</div>
-    </div>
-  `;
-}
-
-function renderGmailMain() {
-  const main = document.getElementById('gm-main');
-  if (!main) return;
-  if (gmailOpenId) {
-    const m = GMAIL_EMAILS.find(e => e.id === gmailOpenId);
-    main.innerHTML = gmailDetailHTML(m);
-    document.getElementById('gm-back-btn').addEventListener('click', () => { gmailOpenId = null; renderGmailMain(); });
-  } else {
-    main.innerHTML = gmailInboxHTML();
-    main.querySelectorAll('.gm-row').forEach(row => {
-      row.addEventListener('click', () => {
-        gmailOpenId = row.dataset.id;
-        const email = GMAIL_EMAILS.find(e => e.id === gmailOpenId);
-        if (email) email.unread = false;
-        renderGmailMain();
-      });
-    });
-  }
-}
-
-function attachGmailFolderHandlers() {
-  document.querySelectorAll('.gm-folder').forEach(f => {
-    f.addEventListener('click', () => {
-      document.querySelectorAll('.gm-folder').forEach(x => x.classList.remove('active'));
-      f.classList.add('active');
-      gmailOpenId = null;
-      const main = document.getElementById('gm-main');
-      if (f.dataset.folder === 'inbox') {
-        renderGmailMain();
-      } else {
-        main.innerHTML = '<div class="gm-empty-state">Žádné zprávy.</div>';
-      }
-    });
-  });
-}
-
 // ── Grok (embedded in Chrome) — shell only, content is placeholder ──
 const GROK_CONVERSATIONS = [
   { id: 'c1', title: '[Konverzace placeholder 1]', date: '10. 3. 2026', messages: [
@@ -3505,12 +3449,15 @@ function openSelfData() {
   let tab = TABS.find(t => t.id === 'selfdata');
   if (!tab) {
     tab = { id: 'selfdata', type: 'selfdata', title: 'self_data.html — Dashboard', url: 'selfos.local/dashboard', favicon: 'assets/icons/fav-selfdata.svg' };
+    tab.history = [{ url: tab.url, title: tab.title }];
+    tab.historyIndex = 0;
     TABS.push(tab);
   }
   activeTabId = 'selfdata';
   renderTabbar();
   updateAddressBar();
   renderActivePage();
+  updateNavButtons();
   bringWindowToFront(chromeWindow);
 }
 
@@ -4222,7 +4169,6 @@ const EDITOR_SECTIONS = [
   { key: 'facerateForum', label: 'facerate.io — Forum', data: FACERATE_FORUM },
   { key: 'youtubeVideos', label: 'YouTube — videa', data: YT_HOME_VIDEOS, forceImageSlot: true, itemPrelude: ytEditorUrlControl },
   { key: 'youtubeComments', label: 'YouTube — komentáře', data: YT_COMMENTS },
-  { key: 'gmail', label: 'Gmail', data: GMAIL_EMAILS },
   { key: 'grok', label: 'Grok', data: GROK_CONVERSATIONS },
   { key: 'googleResults', label: 'Google — výsledky', data: GOOGLE_RESULTS },
   { key: 'googlePAA', label: 'Google — Lidé se také ptají', data: GOOGLE_PAA },

@@ -306,8 +306,10 @@ body {
 .chrome-nav-btn {
   width: 26px; height: 26px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  cursor: default;
+  cursor: pointer;
 }
+.chrome-nav-btn:hover { background: #e8eaed; }
+.chrome-nav-btn.disabled { color: #c1c4c8; cursor: default; pointer-events: none; }
 .chrome-address-bar {
   flex: 1;
   height: 30px;
@@ -2911,42 +2913,6 @@ body {
 .idos-login-submit:hover { background: #e29500; }
 .idos-login-register { font-size: 12.5px; color: #70757a; margin-top: 14px; text-align: center; }
 .idos-login-register span { color: #00477b; cursor: pointer; text-decoration: underline; }
-
-/* ── Gmail (embedded in Chrome) ── */
-.gm-app { height: 100%; display: flex; flex-direction: column; background: #fff; color: #202124; font-family: Arial, sans-serif; }
-.gm-header { height: 64px; flex-shrink: 0; display: flex; align-items: center; gap: 20px; padding: 0 20px; border-bottom: 1px solid #e0e0e0; }
-.gm-menu-icon { font-size: 18px; color: #5f6368; cursor: pointer; }
-.gm-logo { font-size: 20px; color: #5f6368; font-weight: 500; letter-spacing: -0.5px; }
-.gm-search-wrap { flex: 1; max-width: 600px; }
-.gm-search-input { width: 100%; height: 40px; background: #eaf1fb; border: none; border-radius: 8px; padding: 0 16px; font-size: 14px; outline: none; color: #202124; }
-.gm-avatar { width: 32px; height: 32px; border-radius: 50%; background: #1a73e8; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; cursor: default; flex-shrink: 0; }
-.gm-body { flex: 1; display: flex; min-height: 0; }
-.gm-sidebar { width: 200px; flex-shrink: 0; padding: 16px 8px; }
-.gm-compose-btn { width: 100%; background: #c2e7ff; border: none; border-radius: 16px; padding: 14px 20px; font-size: 14px; font-weight: 600; color: #001d35; cursor: pointer; margin-bottom: 16px; text-align: left; }
-.gm-compose-btn:hover { box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
-.gm-folder { padding: 8px 20px; border-radius: 0 16px 16px 0; font-size: 13.5px; color: #202124; cursor: pointer; margin-bottom: 2px; }
-.gm-folder:hover { background: #f1f3f4; }
-.gm-folder.active { background: #d3e3fd; font-weight: 700; }
-.gm-main { flex: 1; overflow-y: auto; }
-.gm-list { display: flex; flex-direction: column; }
-.gm-row { display: flex; align-items: center; gap: 16px; padding: 10px 20px; border-bottom: 1px solid #f1f1f1; cursor: pointer; font-size: 13.5px; }
-.gm-row:hover { background: #f2f2f2; }
-.gm-row.unread { font-weight: 700; background: #f2f6fc; }
-.gm-star { color: #c4c7c5; }
-.gm-sender { width: 180px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.gm-subject { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #202124; }
-.gm-preview { color: #5f6368; font-weight: 400; }
-.gm-date { flex-shrink: 0; color: #5f6368; font-size: 12.5px; }
-.gm-detail { padding: 20px 32px; max-width: 800px; }
-.gm-back-btn { background: none; border: none; color: #1a73e8; font-size: 13px; cursor: pointer; margin-bottom: 16px; }
-.gm-detail-subject { font-size: 22px; font-weight: 400; margin-bottom: 16px; }
-.gm-detail-meta { display: flex; gap: 12px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #f1f1f1; }
-.gm-detail-avatar { width: 40px; height: 40px; border-radius: 50%; background: #5f6368; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; flex-shrink: 0; }
-.gm-detail-sender { font-size: 14px; font-weight: 600; }
-.gm-detail-email { font-weight: 400; color: #5f6368; font-size: 12.5px; }
-.gm-detail-date { font-size: 12px; color: #5f6368; margin-top: 2px; }
-.gm-detail-body { font-size: 14px; line-height: 1.7; color: #202124; }
-.gm-empty-state { padding: 60px 20px; text-align: center; color: #5f6368; font-size: 14px; }
 
 /* ── Grok (embedded in Chrome) ── */
 .grok-app { height: 100%; display: flex; background: #000; color: #e7e9ea; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; }
