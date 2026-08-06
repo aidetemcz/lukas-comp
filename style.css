@@ -869,6 +869,14 @@ body {
   justify-content: center;
   gap: 14px;
   background: #1a1a1a;
+  overflow: hidden;
+}
+.trash-image-viewer .editor-uploaded-img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: min(460px, 58vh);
+  object-fit: contain;
 }
 .trash-photo-pixelated {
   width: auto;
