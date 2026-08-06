@@ -226,16 +226,42 @@
     <div class="photos-grid" id="photos-grid"></div>
   </div>
 
-  <!-- Photos file-preview modal -->
+  <!-- Photos file-preview modal (Windows Photos style) -->
   <div id="photos-modal-overlay" class="hidden">
     <div id="photos-modal">
-      <div class="photos-modal-titlebar">
-        <span id="photos-modal-name"></span>
-        <button class="explorer-close" id="photos-modal-close">✕</button>
+      <div class="pm-topbar">
+        <div class="pm-topbar-group">
+          <button class="pm-icon-btn" title="Upravit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+          <button class="pm-icon-btn" title="Otočit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.5a10 10 0 1 1-2.6-7.8"/><path d="M22 2v6h-6"/></svg></button>
+          <button class="pm-icon-btn" title="Odstranit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
+          <button class="pm-icon-btn" title="Tisk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button>
+          <button class="pm-icon-btn" title="Sdílet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+          <button class="pm-icon-btn" title="Další možnosti"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
+        </div>
+        <span id="photos-modal-name" class="pm-filename"></span>
+        <button class="pm-icon-btn pm-close" id="photos-modal-close" title="Zavřít"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
-      <div class="photos-modal-body">
+      <div class="pm-stage">
+        <button class="pm-nav pm-nav-prev" id="photos-modal-prev" title="Předchozí"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
         <div class="photos-modal-preview" id="photos-modal-preview"></div>
-        <div class="photos-modal-meta" id="photos-modal-meta"></div>
+        <button class="pm-nav pm-nav-next" id="photos-modal-next" title="Další"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+      <div class="pm-bottombar">
+        <button class="pm-icon-btn" title="Oblíbené"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
+        <button class="pm-icon-btn" id="photos-modal-info-btn" title="Informace"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button>
+        <span class="pm-bottom-meta"><span id="photos-modal-dims"></span><span class="pm-dot">·</span><span id="photos-modal-size"></span></span>
+        <div class="pm-zoom">
+          <button class="pm-icon-btn" title="Oddálit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+          <span class="pm-zoom-pct">100%</span>
+          <button class="pm-icon-btn" title="Přiblížit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        </div>
+      </div>
+      <div class="pm-info-panel hidden" id="photos-modal-info-panel">
+        <div class="pm-info-header">
+          <h4>Informace o souboru</h4>
+          <button class="pm-icon-btn" id="photos-modal-info-close" title="Zavřít informace"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <div id="photos-modal-meta"></div>
       </div>
     </div>
   </div>

@@ -2744,14 +2744,38 @@ const photosModalOverlay = document.getElementById('photos-modal-overlay');
 const photosModalName = document.getElementById('photos-modal-name');
 const photosModalPreview = document.getElementById('photos-modal-preview');
 const photosModalMeta = document.getElementById('photos-modal-meta');
+const photosModalPrevBtn = document.getElementById('photos-modal-prev');
+const photosModalNextBtn = document.getElementById('photos-modal-next');
+const photosModalInfoBtn = document.getElementById('photos-modal-info-btn');
+const photosModalInfoPanel = document.getElementById('photos-modal-info-panel');
+const photosModalInfoClose = document.getElementById('photos-modal-info-close');
+const photosModalDims = document.getElementById('photos-modal-dims');
+const photosModalSize = document.getElementById('photos-modal-size');
 
 let photosPath = [PHOTOS_TREE];
+let photosModalFiles = [];
+let photosModalIndex = -1;
 
 document.getElementById('photos-close-btn').addEventListener('click', () => {
   photosWindow.classList.add('hidden');
 });
 document.getElementById('photos-modal-close').addEventListener('click', closePhotoModal);
 photosModalOverlay.addEventListener('click', e => { if (e.target === photosModalOverlay) closePhotoModal(); });
+photosModalPrevBtn.addEventListener('click', () => navigatePhotoModal(-1));
+photosModalNextBtn.addEventListener('click', () => navigatePhotoModal(1));
+photosModalInfoBtn.addEventListener('click', () => photosModalInfoPanel.classList.toggle('hidden'));
+photosModalInfoClose.addEventListener('click', () => photosModalInfoPanel.classList.add('hidden'));
+document.addEventListener('keydown', e => {
+  if (photosModalOverlay.classList.contains('hidden')) return;
+  if (e.key === 'ArrowLeft') navigatePhotoModal(-1);
+  else if (e.key === 'ArrowRight') navigatePhotoModal(1);
+  else if (e.key === 'Escape') closePhotoModal();
+});
+window.addEventListener('resize', () => {
+  if (!photosModalOverlay.classList.contains('hidden') && photosModalIndex >= 0) {
+    sizeModalPreviewBox(photosModalFiles[photosModalIndex]);
+  }
+});
 photosBackBtn.addEventListener('click', () => {
   if (photosPath.length > 1) { photosPath.pop(); renderPhotos(); }
 });
@@ -2804,18 +2828,82 @@ function renderPhotos() {
 }
 
 function openPhotoModal(f) {
-  photosModalName.textContent = f.name;
-  photosModalPreview.innerHTML = buildPhotoPreview(f);
-  photosModalMeta.innerHTML = `
-    <h4>Informace o souboru</h4>
-    <div class="photos-meta-row"><span class="k">Název</span><span class="v">${f.name}</span></div>
-    <div class="photos-meta-row"><span class="k">Datum</span><span class="v">${f.date}</span></div>
-    <div class="photos-meta-row"><span class="k">Velikost</span><span class="v">${f.size}</span></div>
-    <div class="photos-meta-row"><span class="k">Rozměry</span><span class="v">${f.dims}</span></div>
-    <div class="photos-modal-desc">${f.desc}</div>
-  `;
+  const files = currentFolder().children.filter(c => c.type === 'file');
+  photosModalFiles = files;
+  photosModalIndex = files.indexOf(f);
+  photosModalInfoPanel.classList.add('hidden');
+  renderPhotoModalContent(f);
   photosModalOverlay.classList.remove('hidden');
 }
+
+function navigatePhotoModal(dir) {
+  if (photosModalFiles.length < 2) return;
+  photosModalIndex = (photosModalIndex + dir + photosModalFiles.length) % photosModalFiles.length;
+  renderPhotoModalContent(photosModalFiles[photosModalIndex]);
+}
+
+function renderPhotoModalContent(f) {
+  photosModalName.textContent = f.name;
+  photosModalPreview.innerHTML = buildPhotoPreview(f);
+  const showNav = photosModalFiles.length > 1;
+  photosModalPrevBtn.classList.toggle('hidden', !showNav);
+  photosModalNextBtn.classList.toggle('hidden', !showNav);
+  photosModalDims.textContent = f.dims;
+  photosModalSize.textContent = f.size;
+  photosModalMeta.innerHTML = `
+    <div class="photos-meta-row"><span class="k">Název</span><span class="v">${f.name}</span></div>
+    <div class="photos-meta-row"><span class="k">Datum</span><span class="v">${f.date}</span></div>
+    <div class="photos-meta-row"><span class="k">Velikost</span><span class="v" data-field="size">${f.size}</span></div>
+    <div class="photos-meta-row"><span class="k">Rozměry</span><span class="v" data-field="dims">${f.dims}</span></div>
+    <div class="photos-modal-desc">${f.desc}</div>
+  `;
+  if (f.image) {
+    const img = photosModalPreview.querySelector('img');
+    const applyRealDims = () => {
+      if (!img.naturalWidth) return;
+      const dimsText = `${img.naturalWidth} × ${img.naturalHeight}`;
+      const sizeText = formatBytes(dataUrlByteSize(f.image));
+      photosModalDims.textContent = dimsText;
+      photosModalSize.textContent = sizeText;
+      const sizeEl = photosModalMeta.querySelector('[data-field="size"]');
+      const dimsEl = photosModalMeta.querySelector('[data-field="dims"]');
+      if (sizeEl) sizeEl.textContent = sizeText;
+      if (dimsEl) dimsEl.textContent = dimsText;
+    };
+    if (img.complete) applyRealDims(); else img.addEventListener('load', applyRealDims);
+  } else {
+    requestAnimationFrame(() => sizeModalPreviewBox(f));
+  }
+}
+
+// Placeholder "photo" cards have no real pixels — size the box itself to the file's
+// declared aspect ratio (contained within the stage) so it behaves like a real <img>.
+function sizeModalPreviewBox(f) {
+  const pv = photosModalPreview.querySelector('.pv');
+  const stage = photosModalPreview.closest('.pm-stage');
+  const m = /(\d+)\s*[×x]\s*(\d+)/.exec(f.dims || '');
+  if (!pv || !stage || !m) return;
+  const w = Number(m[1]), h = Number(m[2]);
+  const availW = stage.clientWidth - 56;
+  const availH = stage.clientHeight - 56;
+  if (availW <= 0 || availH <= 0) return;
+  const scale = Math.min(availW / w, availH / h);
+  pv.style.width = `${Math.round(w * scale)}px`;
+  pv.style.height = `${Math.round(h * scale)}px`;
+}
+
+function dataUrlByteSize(dataUrl) {
+  const comma = dataUrl.indexOf(',');
+  const base64 = comma >= 0 ? dataUrl.slice(comma + 1) : dataUrl;
+  const padding = base64.endsWith('==') ? 2 : base64.endsWith('=') ? 1 : 0;
+  return Math.round(base64.length * 3 / 4 - padding);
+}
+
+function formatBytes(bytes) {
+  if (bytes >= 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1).replace('.', ',') + ' MB';
+  return `${Math.round(bytes / 1024)} KB`;
+}
+
 function closePhotoModal() {
   photosModalOverlay.classList.add('hidden');
 }
