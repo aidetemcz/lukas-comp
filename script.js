@@ -3456,9 +3456,9 @@ function openSelfData() {
 }
 
 // ── WhatsApp Desktop ──
-// Deliberately the opposite of the Máma Gmail note it replaced: cold, functional, no warmth,
-// no questions answered. She works shifts and is rarely home — never stated, only implied by
-// the silence between her messages and his one-word replies (and eventually no reply at all).
+// Cold, functional, no warmth, no questions answered. She works shifts and is rarely
+// home — never stated, only implied by the silence between her messages and his
+// one-word replies (and eventually no reply at all).
 const WHATSAPP_CHATS = [
   {
     id: 'mama',
