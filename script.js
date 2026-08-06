@@ -995,17 +995,21 @@ const FACERATE_SUBMISSIONS = [
   },
   {
     date: '5. 3. 2026',
-    score: '3.7',
+    score: '4.0',
     breakdown: [
       { label: 'Canthal tilt', value: -1.0 },
-      { label: 'Midface ratio', value: -1.0 },
-      { label: 'Jaw / gonial angle', value: -0.3 },
+      { label: 'Midface ratio', value: -0.8 },
+      { label: 'Jaw / gonial angle', value: -0.2 },
       { label: 'Skin & symetrie', value: 1.0 }
     ],
     comments: [
-      { author: 'chadaxis', text: 'small improvement, canthal tilt vypadá o chlup líp. keep mewing.' },
-      { author: 'PSL_verdict', text: '3.7. pořád LTN ale progress je progress.' },
-      { author: 'aleph_null', text: 'úhel pomáhá, ale nedej na to, je to jen fotka.' }
+      { author: 'PSL_verdict', text: '4.0. neutral canthal tilt, avg midface, soft jawline. skin carries. leanmaxx + haircut + gym, ez 5+ v pulroce' },
+      { author: 'chadaxis', text: 'face ma potencial ale tahle fotka je fr flat. zkus lepsi svetlo a eye-level angle, sundej brejle jestli je mas' },
+      { author: 'mogged4life', text: 'LTN pro ted. skin je W ale chybi frame 💀 delas ted spis skinnyfat nebo lean?' },
+      { author: 'hardmog99', text: 'hoodie + bathroom lighting nerf lol. nefot v zrcadle pod uhlem, vypada to zle vzdycky. daylight + front camera pls' },
+      { author: 'aleph_null', text: 'neni to spatny jen hodne prumerna fotka. front camera venku bude jinej vysledek. ted mas -0.5 z fotky same' },
+      { author: 'orbitalcel', text: 'oboci + vlasy by udelaly vic nez mewing tbh. hairmaxx first' },
+      { author: 'craniumx', text: 'keep lifting, sleepmaxx, skincare (retinoid + spf). za par mesicu +0.3 az +0.5 klidne, jsi mlady jeste' }
     ]
   },
   {
@@ -4250,7 +4254,7 @@ const EDITOR_SECTIONS = [
   { key: 'discord', label: 'Discord', data: DISCORD },
   { key: 'recycle', label: 'Koš', data: RECYCLE_ITEMS },
   { key: 'photos', label: 'Fotky a videa', data: PHOTOS_TREE },
-  { key: 'facerateSubmissions', label: 'facerate.io — Upload', data: FACERATE_SUBMISSIONS, forceImageSlot: true },
+  { key: 'facerateSubmissions', label: 'facerate.io — Upload', data: FACERATE_SUBMISSIONS, forceImageSlot: true, allowAddRemove: true },
   { key: 'facerateVotes', label: 'facerate.io — Vote', data: FACERATE_VOTES, forceImageSlot: true },
   { key: 'facerateLeaderboard', label: 'facerate.io — Leaderboard', data: FACERATE_LEADERBOARD },
   { key: 'facerateGuides', label: 'facerate.io — Guides', data: FACERATE_GUIDES },
