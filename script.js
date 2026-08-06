@@ -4293,14 +4293,14 @@ function dismissLockScreen() {
   lock.classList.add('dismissing');
   welcome.classList.remove('hidden');
   requestAnimationFrame(() => welcome.classList.add('visible'));
-  setTimeout(() => lock.classList.add('hidden'), 360);
+  setTimeout(() => lock.classList.add('hidden'), 250);
   setTimeout(() => {
     welcome.classList.remove('visible');
     setTimeout(() => {
       welcome.classList.add('hidden');
       revealDesktop();
-    }, 250);
-  }, 375);
+    }, 150);
+  }, 200);
 }
 
 document.getElementById('lock-screen').addEventListener('click', dismissLockScreen);
