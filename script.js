@@ -2263,12 +2263,6 @@ const DISCORD = {
           ]
         },
         {
-          name: 'vysledky-po-rocích', topic: 'before / after',
-          messages: [
-            { author: 'Frame_God', time: '20:00', date: '14. 3. 2026', texts: ['2 roky mewingu + 1 rok gymu. mírný glowup ale genetika je strop'], attachment: { type: 'blur', filename: 'before_after.png' }, reactions: [{ emoji: '🗿', count: 7 }] }
-          ]
-        },
-        {
           name: 'memy', topic: 'wojak nation',
           messages: [
             { author: 'mchmch', time: '15:00', date: '15. 3. 2026', texts: ['virgin scrolls looksmax before bed / chad has never heard of PSL'], attachment: { type: 'blur', filename: 'wojak_psl.png' }, reactions: [{ emoji: '🗿', count: 8 }, { emoji: '💀', count: 4 }] }
