@@ -871,8 +871,10 @@ body {
   background: #1a1a1a;
 }
 .trash-photo-pixelated {
-  width: 280px;
-  height: 280px;
+  width: auto;
+  height: min(460px, 58vh);
+  max-width: 90%;
+  aspect-ratio: 645 / 1024;
   border-radius: 6px;
   background:
     repeating-linear-gradient(0deg, #74777d 0 14px, #999da3 14px 28px, #86898f 28px 42px, #5f6268 42px 56px),
