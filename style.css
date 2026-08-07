@@ -781,9 +781,9 @@ body {
   overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
 }
-/* Koš shares the Fotky dark File Explorer chrome (.pfe-*/.photos-*), so it needs its
-   own background/size override — .explorer-titlebar etc. below stay untouched for
-   #trash-viewer-window, which keeps the original light look. */
+/* Koš shares the Fotky dark File Explorer chrome (the .pfe- and .photos- classes),
+   so it needs its own background/size override — .explorer-titlebar etc. below stay
+   untouched for #trash-viewer-window, which keeps the original light look. */
 #recycle-window { width: min(1040px, 95vw); height: min(700px, 88vh); background: #202020; color: #e0e0e0; }
 #trash-viewer-window { width: min(720px, 94vw); height: min(600px, 86vh); top: 80px; }
 #recycle-window.hidden, #trash-viewer-window.hidden { display: none; }
