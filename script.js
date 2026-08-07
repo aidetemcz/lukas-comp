@@ -1927,6 +1927,11 @@ function openChrome() {
 }
 
 // ── Recycle Bin ──
+const RECYCLE_TYPE_OPTIONS = [
+  { value: 'image-blur', label: 'obrázek' },
+  { value: 'text', label: 'text' },
+  { value: 'pdf', label: 'PDF' }
+];
 const RECYCLE_ITEMS = [
   {
     id: 'grok',
@@ -1971,11 +1976,21 @@ const RECYCLE_ITEMS = [
 
 const recycleWindow = document.getElementById('recycle-window');
 const recycleList = document.getElementById('recycle-list');
+const recycleSidebar = document.getElementById('recycle-sidebar');
+const rbViewBtn = document.getElementById('rb-view-btn');
+const rbViewMenu = document.getElementById('rb-view-menu');
+const rbSortBtn = document.getElementById('rb-sort-btn');
+const rbSortMenu = document.getElementById('rb-sort-menu');
+const rbStatusCount = document.getElementById('rb-status-count');
 const trashViewerWindow = document.getElementById('trash-viewer-window');
 const trashViewerIcon = document.getElementById('trash-viewer-icon');
 const trashViewerName = document.getElementById('trash-viewer-name');
 const trashViewerContent = document.getElementById('trash-viewer-content');
 const recycleContextMenu = document.getElementById('recycle-context-menu');
+let trashViewerCurrentItem = null;
+
+let rbViewMode = 'details'; // 'details' | 'grid' | 'list' — Koš defaults to Podrobnosti, unlike Fotky's grid default
+let rbSortBy = 'date';
 
 document.getElementById('recycle-close-btn').addEventListener('click', () => {
   recycleWindow.classList.add('hidden');
@@ -1983,32 +1998,126 @@ document.getElementById('recycle-close-btn').addEventListener('click', () => {
 document.getElementById('trash-viewer-close-btn').addEventListener('click', () => {
   trashViewerWindow.classList.add('hidden');
 });
+document.getElementById('rb-refresh-btn').addEventListener('click', () => renderRecycleList());
+rbViewBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  rbSortMenu.classList.add('hidden');
+  rbViewMenu.classList.toggle('hidden');
+});
+rbSortBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  rbViewMenu.classList.add('hidden');
+  rbSortMenu.classList.toggle('hidden');
+});
+document.addEventListener('click', () => {
+  rbViewMenu.classList.add('hidden');
+  rbSortMenu.classList.add('hidden');
+});
+rbViewMenu.querySelectorAll('.pfe-dropdown-item').forEach(el => {
+  el.addEventListener('click', () => { rbViewMode = el.dataset.view; renderRecycleList(); });
+});
+rbSortMenu.querySelectorAll('.pfe-dropdown-item').forEach(el => {
+  el.addEventListener('click', () => { rbSortBy = el.dataset.sort; renderRecycleList(); });
+});
+
+function sortRecycleItems(items) {
+  const arr = [...items];
+  if (rbSortBy === 'name') return arr.sort((a, b) => a.name.localeCompare(b.name));
+  if (rbSortBy === 'size') return arr.sort((a, b) => parseSizeToKB(b.size) - parseSizeToKB(a.size));
+  if (rbSortBy === 'location') return arr.sort((a, b) => (a.originalLocation || '').localeCompare(b.originalLocation || ''));
+  return arr.sort((a, b) => parseCzechDateSort(b.deletedDate) - parseCzechDateSort(a.deletedDate));
+}
+
+// Sidebar mirrors Fotky's (same .pfe-sidebar-item chrome) but Koš is always the active
+// leaf — clicking into "Fotky a videa" or one of its folders opens that window instead
+// (reuses openPhotos()/photosNavigateTo()/PHOTOS_TREE — Fotky's own code untouched).
+function renderRecycleSidebar() {
+  const rootFolders = PHOTOS_TREE.children.filter(c => c.type === 'folder');
+  recycleSidebar.innerHTML = `
+    <div class="pfe-sidebar-heading">Rychlý přístup</div>
+    <div class="pfe-sidebar-heading">Umístění</div>
+    <div class="pfe-sidebar-item" data-open-photos="1">${folderIconSVG('pfe-sidebar-icon')} Fotky a videa</div>
+    ${rootFolders.map(f => `<div class="pfe-sidebar-item nested" data-open-photos-folder="${escapeForAttr(f.name)}">${folderIconSVG('pfe-sidebar-icon tiny')} ${f.name}</div>`).join('')}
+    <div class="pfe-sidebar-item active" data-recycle-self="1">🗑 Koš (${RECYCLE_ITEMS.length})</div>
+  `;
+  recycleSidebar.querySelector('[data-open-photos]').addEventListener('click', () => openPhotos());
+  recycleSidebar.querySelectorAll('[data-open-photos-folder]').forEach(el => {
+    el.addEventListener('click', () => {
+      const folder = rootFolders.find(f => f.name === el.dataset.openPhotosFolder);
+      openPhotos();
+      if (folder) photosNavigateTo([PHOTOS_TREE, folder]);
+    });
+  });
+}
+
+function renderRecycleGridCard(item, i) {
+  return `<div class="photos-card" data-idx="${i}">
+    <div class="photos-thumb"><img src="${item.icon}" alt="" style="width:56px;height:56px;" /></div>
+    <div class="photos-card-name">${item.name}</div>
+    <div class="photos-card-date">${item.deletedDate}</div>
+  </div>`;
+}
+
+function renderRecycleRow(item, i) {
+  return `<div class="pfe-row" data-idx="${i}">
+    <input type="checkbox" class="pfe-row-check" />
+    <div class="pfe-row-icon"><img src="${item.icon}" alt="" /></div>
+    <div class="pfe-row-name">${item.name}</div>
+    <div class="pfe-row-meta">${item.deletedDate}</div>
+    <div class="pfe-row-meta">${item.size}</div>
+    <div class="pfe-row-meta">${item.originalLocation || ''}</div>
+  </div>`;
+}
 
 function renderRecycleList() {
-  const countLabel = document.getElementById('recycle-item-count');
-  if (countLabel) countLabel.textContent = `${RECYCLE_ITEMS.length} položek`;
-  recycleList.innerHTML = RECYCLE_ITEMS.map(item => `
-    <div class="explorer-row">
-      <span class="explorer-row-name"><img src="${item.icon}" alt="" /><span>${item.name}</span></span>
-      <span class="explorer-row-date">${item.deletedDate}</span>
-      <span class="explorer-row-size">${item.size}</span>
-    </div>
-  `).join('');
-  const rows = recycleList.querySelectorAll('.explorer-row');
-  rows.forEach((row, i) => {
-    const item = RECYCLE_ITEMS[i];
-    row.addEventListener('click', () => {
-      rows.forEach(r => r.classList.remove('selected'));
-      row.classList.add('selected');
+  renderRecycleSidebar();
+  rbViewMenu.querySelectorAll('.pfe-dropdown-item').forEach(el => el.classList.toggle('active', el.dataset.view === rbViewMode));
+  rbSortMenu.querySelectorAll('.pfe-dropdown-item').forEach(el => el.classList.toggle('active', el.dataset.sort === rbSortBy));
+
+  const ordered = sortRecycleItems(RECYCLE_ITEMS);
+  const isGrid = rbViewMode === 'grid';
+  recycleList.classList.toggle('pfe-view-details', rbViewMode === 'details');
+  recycleList.classList.toggle('pfe-view-list', rbViewMode === 'list');
+
+  const header = rbViewMode === 'details'
+    ? `<div class="pfe-details-header"><span class="pfe-row-check-spacer"></span><span class="pfe-col-name">Název</span><span>Datum smazání</span><span>Velikost</span><span>Původní umístění</span></div>`
+    : '';
+  recycleList.innerHTML = isGrid
+    ? ordered.map((item, i) => renderRecycleGridCard(item, i)).join('')
+    : header + ordered.map((item, i) => renderRecycleRow(item, i)).join('');
+
+  const rowEls = recycleList.querySelectorAll('.photos-card, .pfe-row');
+  rowEls.forEach(el => {
+    const item = ordered[Number(el.dataset.idx)];
+    el.addEventListener('click', () => {
+      rowEls.forEach(r => r.classList.remove('selected'));
+      el.classList.add('selected');
     });
-    row.addEventListener('dblclick', () => openTrashViewer(item));
-    row.addEventListener('contextmenu', e => {
+    el.addEventListener('dblclick', () => openRecycleItem(item));
+    el.addEventListener('contextmenu', e => {
       e.preventDefault();
-      rows.forEach(r => r.classList.remove('selected'));
-      row.classList.add('selected');
+      rowEls.forEach(r => r.classList.remove('selected'));
+      el.classList.add('selected');
       showRecycleContextMenu(e.clientX, e.clientY, item);
     });
   });
+  if (rbStatusCount) rbStatusCount.textContent = `${ordered.length} položek`;
+}
+
+// Images open in the same Windows Photos modal Fotky uses; everything else keeps using
+// the existing trash-viewer-window (already a workable Notepad/PDF-style viewer).
+function openRecycleItem(item) {
+  if (item.type === 'image-blur' || item.type === 'image-missing') openRecycleItemModal(item);
+  else openTrashViewer(item);
+}
+function recycleItemToModalFile(item) {
+  return { name: item.name, date: item.deletedDate, size: item.size, dims: '', desc: item.caption || '', image: item.image, preview: item.preview, _recycleSource: item };
+}
+function openRecycleItemModal(item) {
+  const imageItems = RECYCLE_ITEMS.filter(r => r.type === 'image-blur' || r.type === 'image-missing');
+  const adapted = imageItems.map(recycleItemToModalFile);
+  const target = adapted.find(a => a._recycleSource === item);
+  openPhotoModal(target, adapted, 'recycle');
 }
 
 function showRecycleContextMenu(x, y, item) {
@@ -2082,6 +2191,7 @@ function buildTrashViewerContent(item) {
 }
 
 function openTrashViewer(item) {
+  trashViewerCurrentItem = item;
   trashViewerIcon.src = item.icon;
   trashViewerName.textContent = item.name;
   trashViewerContent.innerHTML = buildTrashViewerContent(item);
@@ -2772,6 +2882,7 @@ let photosViewMode = 'grid'; // 'grid' | 'details' | 'list'
 let photosSortBy = 'name'; // 'name' | 'date' | 'size'
 let photosModalFiles = [];
 let photosModalIndex = -1;
+let photosModalSource = 'folder'; // 'folder' (Fotky tree) | 'recycle' (Koš)
 
 document.getElementById('photos-close-btn').addEventListener('click', () => {
   photosWindow.classList.add('hidden');
@@ -2970,10 +3081,11 @@ function renderPhotos() {
   photosStatusCount.textContent = `${ordered.length} položek`;
 }
 
-function openPhotoModal(f) {
-  const files = currentFolder().children.filter(c => c.type === 'file');
+function openPhotoModal(f, filesOverride, source) {
+  const files = filesOverride || currentFolder().children.filter(c => c.type === 'file');
   photosModalFiles = files;
   photosModalIndex = files.indexOf(f);
+  photosModalSource = source || 'folder';
   photosModalInfoPanel.classList.add('hidden');
   renderPhotoModalContent(f);
   photosModalOverlay.classList.remove('hidden');
@@ -3024,13 +3136,19 @@ function renderPhotoModalContent(f) {
 function sizeModalPreviewBox(f) {
   const pv = photosModalPreview.querySelector('.pv');
   const stage = photosModalPreview.closest('.pm-stage');
-  const m = /(\d+)\s*[×x]\s*(\d+)/.exec(f.dims || '');
-  if (!pv || !stage || !m) return;
-  const w = Number(m[1]), h = Number(m[2]);
+  if (!pv || !stage) return;
   const availW = stage.clientWidth - 56;
   const availH = stage.clientHeight - 56;
   if (availW <= 0 || availH <= 0) return;
-  const scale = Math.min(availW / w, availH / h);
+  const m = /(\d+)\s*[×x]\s*(\d+)/.exec(f.dims || '');
+  // No parseable dims (e.g. a Koš item, which carries no width/height metadata) — fall
+  // back to a fixed square-ish default, capped so it doesn't upscale past a reasonable
+  // size, instead of letting the placeholder's base width:100%/height:100% stretch it
+  // across the whole stage. Real declared dims (the Fotky case) keep scaling exactly as
+  // before — including upscaling small dims to fill the available stage.
+  const w = m ? Number(m[1]) : 420;
+  const h = m ? Number(m[2]) : 420;
+  const scale = m ? Math.min(availW / w, availH / h) : Math.min(availW / w, availH / h, 1);
   pv.style.width = `${Math.round(w * scale)}px`;
   pv.style.height = `${Math.round(h * scale)}px`;
 }
@@ -4054,6 +4172,22 @@ function renderEditorNode(node, path, forceImageSlot, sectionKey) {
         `;
         return;
       }
+      // Koš items: same idea as the photos preview dropdown above — `type` picks how
+      // buildTrashViewerContent() renders the item. Keep whatever legacy value an
+      // existing item has (e.g. 'grok') selectable even though it's not one of the
+      // 3 types Nat can pick for a brand new item.
+      if (key === 'type' && sectionKey === 'recycle') {
+        const opts = RECYCLE_TYPE_OPTIONS.some(o => o.value === val) ? RECYCLE_TYPE_OPTIONS : [...RECYCLE_TYPE_OPTIONS, { value: val, label: val }];
+        html += `
+          <div class="editor-field">
+            <label>Preview type</label>
+            <select data-path="${fieldPath}">
+              ${opts.map(o => `<option value="${o.value}" ${val === o.value ? 'selected' : ''}>${o.label}</option>`).join('')}
+            </select>
+          </div>
+        `;
+        return;
+      }
       if (EDITOR_PROTECTED_KEYS.has(key)) return;
       if (val === null || val === undefined) return;
       if (typeof val === 'string') {
@@ -4164,6 +4298,15 @@ function addEditorArrayItem(path) {
   // item, since renderPhotos() filters strictly on type === 'file'/'folder').
   if (path.startsWith('photos.')) {
     newItem = { type: 'file', name: 'Nový soubor', date: '', size: '', dims: '', preview: 'uploaded', desc: '' };
+  } else if (path === 'recycle') {
+    // RECYCLE_ITEMS mixes image/text/pdf/grok shapes — mirroring the last item's shape
+    // (like blankClone does elsewhere) would carry over fields (e.g. `messages`) that
+    // don't make sense for a fresh item, so build a clean image-type default instead.
+    newItem = {
+      id: 'new-' + Math.random().toString(36).slice(2, 10),
+      name: 'Nová položka', deletedDate: '', size: '', originalLocation: '',
+      icon: 'assets/icons/file-image.svg', type: 'image-blur', caption: ''
+    };
   } else if (isPlainObject(last)) newItem = blankClone(last);
   else if (typeof last === 'number') newItem = 0;
   else if (typeof last === 'string') newItem = '';
@@ -4233,9 +4376,15 @@ function refreshOpenWindowsAfterEdit() {
   if (!photosWindow.classList.contains('hidden')) renderPhotos();
   if (!photosModalOverlay.classList.contains('hidden')) {
     const openFile = photosModalFiles[photosModalIndex];
-    if (!openFile || !currentFolder().children.includes(openFile)) closePhotoModal();
+    const stillExists = photosModalSource === 'recycle'
+      ? !!openFile && RECYCLE_ITEMS.includes(openFile._recycleSource)
+      : !!openFile && currentFolder().children.includes(openFile);
+    if (!stillExists) closePhotoModal();
   }
   if (!recycleWindow.classList.contains('hidden')) renderRecycleList();
+  if (!trashViewerWindow.classList.contains('hidden') && !RECYCLE_ITEMS.includes(trashViewerCurrentItem)) {
+    trashViewerWindow.classList.add('hidden');
+  }
   if (!cs2Window.classList.contains('hidden')) document.getElementById('cs2-body').innerHTML = buildCs2BodyHTML();
   if (!haloWindow.classList.contains('hidden')) document.getElementById('halo-body').innerHTML = buildHaloBodyHTML();
   if (!whatsappWindow.classList.contains('hidden')) { renderWhatsAppChatList(); renderWhatsAppMain(); }
@@ -4507,7 +4656,7 @@ const EDITOR_SECTIONS = [
   { key: 'chromeTabs', label: 'Chrome — výchozí otevřené taby', data: INITIAL_TABS_TEMPLATE },
   { key: 'genericSites', label: 'Chrome — obsah odkazovaných stránek', data: GENERIC_SITES },
   { key: 'discord', label: 'Discord', data: DISCORD },
-  { key: 'recycle', label: 'Koš', data: RECYCLE_ITEMS },
+  { key: 'recycle', label: 'Koš', data: RECYCLE_ITEMS, allowAddRemove: true },
   { key: 'photos', label: 'Fotky a videa', data: PHOTOS_TREE, allowAddRemove: true },
   { key: 'facerateSubmissions', label: 'facerate.io — Upload', data: FACERATE_SUBMISSIONS, forceImageSlot: true, allowAddRemove: true },
   { key: 'facerateVotes', label: 'facerate.io — Vote', data: FACERATE_VOTES, forceImageSlot: true },
@@ -4542,7 +4691,7 @@ loadContentOverrides();
   [chromeWindow, '.chrome-titlebar'],
   [discordWindow, '.discord-titlebar'],
   [photosWindow, '.pfe-titlebar'],
-  [recycleWindow, '.explorer-titlebar'],
+  [recycleWindow, '.pfe-titlebar'],
   [trashViewerWindow, '.explorer-titlebar'],
   [cs2Window, '.cs2-titlebar'],
   [haloWindow, '.halo-titlebar'],

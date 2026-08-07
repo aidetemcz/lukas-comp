@@ -781,7 +781,10 @@ body {
   overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
 }
-#recycle-window { width: min(760px, 94vw); height: min(560px, 84vh); }
+/* Koš shares the Fotky dark File Explorer chrome (.pfe-*/.photos-*), so it needs its
+   own background/size override — .explorer-titlebar etc. below stay untouched for
+   #trash-viewer-window, which keeps the original light look. */
+#recycle-window { width: min(1040px, 95vw); height: min(700px, 88vh); background: #202020; color: #e0e0e0; }
 #trash-viewer-window { width: min(720px, 94vw); height: min(600px, 86vh); top: 80px; }
 #recycle-window.hidden, #trash-viewer-window.hidden { display: none; }
 
@@ -805,47 +808,6 @@ body {
   transition: background 0.1s, color 0.1s;
 }
 .explorer-close:hover { background: #e81123; color: #fff; }
-
-.explorer-toolbar {
-  height: 34px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  padding: 0 14px;
-  border-bottom: 1px solid #eee;
-  color: #666;
-  font-size: 12px;
-}
-
-.explorer-list-header {
-  display: flex;
-  padding: 8px 14px;
-  border-bottom: 1px solid #eee;
-  font-size: 12px;
-  color: #777;
-  flex-shrink: 0;
-}
-.explorer-col-name { flex: 1; }
-.explorer-col-date { width: 150px; }
-.explorer-col-size { width: 90px; text-align: right; }
-
-.explorer-list { flex: 1; overflow-y: auto; }
-.explorer-row {
-  display: flex;
-  align-items: center;
-  padding: 8px 14px;
-  cursor: default;
-  font-size: 13px;
-  color: #1f1f1f;
-  border-bottom: 1px solid #f5f5f5;
-}
-.explorer-row:hover { background: #f5f8fd; }
-.explorer-row.selected { background: #cfe4fc; }
-.explorer-row-name { flex: 1; display: flex; align-items: center; gap: 10px; min-width: 0; }
-.explorer-row-name img { width: 20px; height: 20px; flex-shrink: 0; }
-.explorer-row-name span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.explorer-row-date { width: 150px; color: #555; }
-.explorer-row-size { width: 90px; text-align: right; color: #555; }
 
 /* ── Context menu ── */
 .context-menu {
@@ -1641,8 +1603,10 @@ body {
   top: 0;
   background: #202020;
 }
-.pfe-details-header span:first-child, .photos-grid.pfe-view-details .pfe-row-name { flex: 1; min-width: 0; }
+.pfe-details-header span:first-child, .photos-grid.pfe-view-details .pfe-row-name, .pfe-col-name { flex: 1; min-width: 0; }
 .pfe-details-header span { width: 110px; flex-shrink: 0; }
+.pfe-details-header .pfe-row-check-spacer, .pfe-row .pfe-row-check { width: 15px; flex-shrink: 0; }
+.pfe-row-check { height: 15px; accent-color: #3a86ff; }
 .pfe-row {
   display: flex;
   align-items: center;
@@ -1653,7 +1617,7 @@ body {
   border-radius: 4px;
 }
 .photos-grid.pfe-view-list .pfe-row { padding: 6px 16px; }
-.photos-grid.pfe-view-list .pfe-row-meta { display: none; }
+.photos-grid.pfe-view-list .pfe-row-meta, .photos-grid.pfe-view-list .pfe-row-check { display: none; }
 .pfe-row:hover { background: #2b2b2b; }
 .pfe-row.selected { background: #1a3556; border-color: #3a86ff; }
 .pfe-row-icon { width: 20px; height: 20px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #f5c443; }
