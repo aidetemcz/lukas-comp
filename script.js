@@ -2685,7 +2685,7 @@ function pvIllustration(f) {
 }
 
 function buildPhotoPreview(f) {
-  if (f.image) return `<div class="pv pv-uploaded"><img src="${f.image}" alt="" /></div>`;
+  if (f.image) return `<div class="pv pv-uploaded"><img src="${f.image}" class="user-image-display" alt="" /></div>`;
   switch (f.preview) {
     case 'greentext': return pvGreentext(f);
     case 'meme': return pvMeme(f);

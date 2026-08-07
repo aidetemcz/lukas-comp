@@ -1,3 +1,33 @@
+/* ─────────────────────────────────────────────────────────────
+   UNIVERSAL RULE: user-uploaded images
+   Every place that displays a user-provided image MUST use these
+   classes and MUST respect object-fit: contain. Adding a new place
+   for user images? Just use this class — DO NOT reinvent sizing.
+   Fix history: 686d726 (fit-content), 64e78db (Windows Photos),
+   [this commit] (universal rule + regression tests).
+
+   This is a BASE/fallback rule only. Each display context still
+   needs its own scoped override for the max-width/max-height CAP
+   (e.g. ".chatgpt-photo-attachment .editor-uploaded-img { max-width:
+   380px; max-height: 500px; }") — percentage max-height only works
+   if the container has a DEFINITE height, so most contexts must
+   cap the <img> itself in absolute px rather than %. See the Fotky
+   modal fix for what happens when a wrapper's height is "auto,
+   capped by max-height" instead of definite: the % never resolves,
+   the image renders past its box, and gets silently clipped by an
+   ancestor's overflow:hidden.
+   ───────────────────────────────────────────────────────────── */
+img.editor-uploaded-img,
+img.user-image-display {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain; /* NEVER cover for a real user photo */
+  object-position: center;
+}
+
 /* Reset & base */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1754,16 +1784,22 @@ body {
 .photos-modal-preview > .pv.pv-illustration,
 .photos-modal-preview > .pv.pv-faceref,
 .photos-modal-preview > .pv.pv-selfie { box-shadow: none; }
+/* Real uploaded photo in the modal: the wrapper fills the stage with a
+   DEFINITE width+height (not just max-*), so the img's percentage
+   max-width/max-height below actually resolves — see the universal-rule
+   comment at the top of this file for why "auto height + max-height only"
+   silently breaks this and lets an ancestor's overflow:hidden clip the
+   photo. No box-shadow here (edge-to-edge on the dark stage, like the
+   real Windows Photos), unlike the fixed-size placeholder .pv cards above. */
 .photos-modal-preview > .pv.pv-uploaded {
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: 100%;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  width: 100%;
+  height: 100%;
+  box-shadow: none;
   background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: visible;
 }
 .photos-modal-preview > .pv.pv-uploaded img {
   width: auto;
@@ -1771,6 +1807,7 @@ body {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+  object-position: center;
   display: block;
   border-radius: 6px;
 }
@@ -3119,9 +3156,12 @@ body {
 .sd-card-delta { font-size: 11px; color: #6b6b6b; margin-top: 6px; font-family: 'Consolas', 'Courier New', monospace; }
 
 /* ── Uploaded image override (fills whatever placeholder box it replaces) ── */
-.editor-uploaded-img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.pv-uploaded { padding: 0; overflow: hidden; }
-.pv-uploaded img { width: 100%; height: 100%; object-fit: cover; }
+/* Fotky grid thumbnail: small fixed-size tile, deliberately cover-cropped
+   like any photo grid/list view (same convention as the facerate Vote
+   thumbnails). Scoped to the grid only — the modal has its own rule below
+   using the universal contain behavior. */
+.photos-thumb .pv-uploaded { width: 100%; height: 100%; padding: 0; overflow: hidden; }
+.photos-thumb .pv-uploaded img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 /* ── Content editor (hidden dev tool, Ctrl+Shift+E) ── */
 /* Docked as a side panel (not a full-screen takeover) so the desktop underneath stays
