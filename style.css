@@ -1183,6 +1183,7 @@ body {
   height: 1px;
   background: #3f4147;
 }
+.discord-empty-state { padding: 24px; text-align: center; color: #949ba4; font-size: 13px; }
 .discord-date-divider span { font-size: 11px; font-weight: 600; color: #949ba4; }
 
 .discord-msg {
@@ -1275,6 +1276,7 @@ body {
   flex-shrink: 0;
   padding: 0 16px 24px;
 }
+.discord-input.hidden { display: none; }
 .discord-input-box {
   display: block;
   background: #383a40;

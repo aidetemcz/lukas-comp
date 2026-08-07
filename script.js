@@ -2428,7 +2428,15 @@ document.getElementById('discord-close-btn').addEventListener('click', () => {
 });
 
 function getActiveServer() {
-  return DISCORD.servers.find(s => s.id === discordActiveServerId);
+  let server = DISCORD.servers.find(s => s.id === discordActiveServerId);
+  // The active server can vanish out from under us if it gets deleted via the content
+  // editor while Discord is open — fall back to the first remaining server instead of
+  // letting every render function below crash on `undefined.channels`.
+  if (!server && DISCORD.servers.length) {
+    server = DISCORD.servers[0];
+    discordActiveServerId = server.id;
+  }
+  return server;
 }
 
 function renderServerRail() {
@@ -2464,6 +2472,7 @@ function selectDiscordServer(id) {
 
 function renderChannelPanel() {
   const server = getActiveServer();
+  if (!server) { discordServerName.textContent = ''; discordChannelList.innerHTML = ''; return; }
   discordServerName.textContent = server.name;
   discordChannelList.innerHTML = server.channels.map(ch => {
     const isActive = ch.name === server.activeChannel;
@@ -2548,7 +2557,22 @@ function renderMessageBlocks(messages) {
 
 function renderServerChannel() {
   const server = getActiveServer();
-  const channel = server.channels.find(c => c.name === server.activeChannel);
+  if (!server) { discordMainHeader.innerHTML = ''; discordMessages.innerHTML = ''; discordInput.classList.add('hidden'); discordMemberPanel.classList.add('hidden'); return; }
+  let channel = server.channels.find(c => c.name === server.activeChannel);
+  // Same idea as getActiveServer(): the active channel may have just been deleted via
+  // the content editor — recover onto the first remaining channel instead of crashing.
+  if (!channel && server.channels.length) {
+    channel = server.channels[0];
+    server.activeChannel = channel.name;
+  }
+  if (!channel) {
+    discordMainHeader.innerHTML = '';
+    discordMessages.innerHTML = '<div class="discord-empty-state">Žádné kanály</div>';
+    discordInput.classList.add('hidden');
+    discordMemberPanel.classList.remove('hidden');
+    discordMemberPanel.innerHTML = renderMembers(server.members);
+    return;
+  }
   discordMainHeader.innerHTML = `<span class="discord-hash">#</span><span>${channel.name}</span><span class="discord-topic">${channel.topic}</span>`;
   discordMessages.innerHTML = renderMessageBlocks(channel.messages);
   discordMessages.scrollTop = discordMessages.scrollHeight;
@@ -2583,7 +2607,8 @@ function renderMembers(members) {
 
 function openDiscordDMs() {
   discordView = 'dm';
-  discordActiveDmId = discordActiveDmId || DISCORD.dms[0].id;
+  const activeDmStillExists = DISCORD.dms.some(d => d.id === discordActiveDmId);
+  if (!activeDmStillExists) discordActiveDmId = DISCORD.dms.length ? DISCORD.dms[0].id : null;
   renderServerRail();
 
   // channel panel becomes DM list
@@ -2606,6 +2631,13 @@ function openDiscordDMs() {
 
 function renderDMConversation() {
   const dm = DISCORD.dms.find(d => d.id === discordActiveDmId);
+  if (!dm) {
+    discordMainHeader.innerHTML = '';
+    discordMessages.innerHTML = '<div class="discord-empty-state">Žádné konverzace</div>';
+    discordInput.classList.add('hidden');
+    discordMemberPanel.classList.add('hidden');
+    return;
+  }
   discordMainHeader.innerHTML = `<span class="discord-avatar" style="background:${discordAvatarColor(dm.name)};width:24px;height:24px;font-size:11px">${dm.name.charAt(0).toUpperCase()}</span><span>${dm.name}</span>`;
   discordMessages.innerHTML = renderMessageBlocks(dm.messages);
   discordMessages.scrollTop = discordMessages.scrollHeight;
@@ -2620,8 +2652,13 @@ function openDiscord() {
   if (wasHidden) {
     discordView = 'server';
     discordActiveServerId = 'looksmaxx';
-    // ensure looksmaxx opens on self-hate-mondays
-    DISCORD.servers.find(s => s.id === 'looksmaxx').activeChannel = 'self-hate-mondays';
+    // ensure looksmaxx opens on self-hate-mondays (unless that server/channel got
+    // deleted via the content editor — getActiveServer()/renderServerChannel() below
+    // already know how to recover onto whatever's left)
+    const looksmaxx = DISCORD.servers.find(s => s.id === 'looksmaxx');
+    if (looksmaxx && looksmaxx.channels.some(c => c.name === 'self-hate-mondays')) {
+      looksmaxx.activeChannel = 'self-hate-mondays';
+    }
     renderServerRail();
     renderChannelPanel();
     renderServerChannel();
@@ -4371,7 +4408,11 @@ function fileToResizedDataUrl(file, maxDim, quality) {
 function refreshOpenWindowsAfterEdit() {
   if (!chromeWindow.classList.contains('hidden')) renderActivePage();
   if (!discordWindow.classList.contains('hidden')) {
-    if (discordView === 'dm') renderDMConversation(); else renderServerChannel();
+    // Full refresh, not just the message pane — adding/removing a server or channel
+    // (or renaming one) needs the rail and channel-list sidebar to catch up too, not
+    // just whichever conversation happens to be showing.
+    renderServerRail();
+    if (discordView === 'dm') openDiscordDMs(); else { renderChannelPanel(); renderServerChannel(); }
   }
   if (!photosWindow.classList.contains('hidden')) renderPhotos();
   if (!photosModalOverlay.classList.contains('hidden')) {
@@ -4655,7 +4696,7 @@ const EDITOR_SECTIONS = [
   { key: 'chromeHistory', label: 'Chrome — historie', data: HISTORY_DAYS },
   { key: 'chromeTabs', label: 'Chrome — výchozí otevřené taby', data: INITIAL_TABS_TEMPLATE },
   { key: 'genericSites', label: 'Chrome — obsah odkazovaných stránek', data: GENERIC_SITES },
-  { key: 'discord', label: 'Discord', data: DISCORD },
+  { key: 'discord', label: 'Discord', data: DISCORD, allowAddRemove: true },
   { key: 'recycle', label: 'Koš', data: RECYCLE_ITEMS, allowAddRemove: true },
   { key: 'photos', label: 'Fotky a videa', data: PHOTOS_TREE, allowAddRemove: true },
   { key: 'facerateSubmissions', label: 'facerate.io — Upload', data: FACERATE_SUBMISSIONS, forceImageSlot: true, allowAddRemove: true },
