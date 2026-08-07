@@ -2538,6 +2538,10 @@ function pFile(name, date, size, dims, preview, desc, extra) {
   return Object.assign({ type: 'file', name, date, size, dims, preview, desc }, extra || {});
 }
 
+// 'uploaded' has no dedicated pv-* renderer — buildPhotoPreview() falls through to the
+// generic pvIllustration() placeholder for it until a real photo is uploaded over it.
+const PHOTO_PREVIEW_TYPES = ['uploaded', 'illustration', 'meme', 'bank', 'cs2', 'savings', 'note', 'card', 'tweet', 'discord', 'faceref', 'selfie', 'greentext'];
+
 const PHOTOS_TREE = {
   name: 'Fotky a videa', type: 'folder',
   children: [
@@ -2739,7 +2743,16 @@ function pvSavings() {
 const photosWindow = document.getElementById('photos-window');
 const photosGrid = document.getElementById('photos-grid');
 const photosBreadcrumb = document.getElementById('photos-breadcrumb');
-const photosBackBtn = document.getElementById('photos-back-btn');
+const photosSidebar = document.getElementById('photos-sidebar');
+const photosBackBtn = document.getElementById('pfe-back-btn');
+const photosForwardBtn = document.getElementById('pfe-forward-btn');
+const photosUpBtn = document.getElementById('pfe-up-btn');
+const photosRefreshBtn = document.getElementById('pfe-refresh-btn');
+const photosViewBtn = document.getElementById('pfe-view-btn');
+const photosViewMenu = document.getElementById('pfe-view-menu');
+const photosSortBtn = document.getElementById('pfe-sort-btn');
+const photosSortMenu = document.getElementById('pfe-sort-menu');
+const photosStatusCount = document.getElementById('pfe-status-count');
 const photosModalOverlay = document.getElementById('photos-modal-overlay');
 const photosModalName = document.getElementById('photos-modal-name');
 const photosModalPreview = document.getElementById('photos-modal-preview');
@@ -2753,6 +2766,10 @@ const photosModalDims = document.getElementById('photos-modal-dims');
 const photosModalSize = document.getElementById('photos-modal-size');
 
 let photosPath = [PHOTOS_TREE];
+let photosHistory = [[PHOTOS_TREE]];
+let photosHistoryIndex = 0;
+let photosViewMode = 'grid'; // 'grid' | 'details' | 'list'
+let photosSortBy = 'name'; // 'name' | 'date' | 'size'
 let photosModalFiles = [];
 let photosModalIndex = -1;
 
@@ -2776,55 +2793,181 @@ window.addEventListener('resize', () => {
     sizeModalPreviewBox(photosModalFiles[photosModalIndex]);
   }
 });
-photosBackBtn.addEventListener('click', () => {
-  if (photosPath.length > 1) { photosPath.pop(); renderPhotos(); }
-});
 
 function currentFolder() { return photosPath[photosPath.length - 1]; }
+
+// All folder navigation (breadcrumb, sidebar, double-click) goes through this so back/
+// forward has a real history to move across — a plain "go up" (the ↑ button) does NOT
+// go through here, since moving up shouldn't erase forward history the way a fresh
+// navigation does.
+function photosNavigateTo(newPath) {
+  photosPath = newPath;
+  photosHistory = photosHistory.slice(0, photosHistoryIndex + 1);
+  photosHistory.push(newPath);
+  photosHistoryIndex = photosHistory.length - 1;
+  renderPhotos();
+}
+photosBackBtn.addEventListener('click', () => {
+  if (photosHistoryIndex > 0) { photosHistoryIndex--; photosPath = photosHistory[photosHistoryIndex]; renderPhotos(); }
+});
+photosForwardBtn.addEventListener('click', () => {
+  if (photosHistoryIndex < photosHistory.length - 1) { photosHistoryIndex++; photosPath = photosHistory[photosHistoryIndex]; renderPhotos(); }
+});
+photosUpBtn.addEventListener('click', () => {
+  if (photosPath.length > 1) photosNavigateTo(photosPath.slice(0, -1));
+});
+photosRefreshBtn.addEventListener('click', () => renderPhotos());
+document.querySelector('.pfe-crumb-root').addEventListener('click', () => photosNavigateTo([PHOTOS_TREE]));
+
+photosViewBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  photosSortMenu.classList.add('hidden');
+  photosViewMenu.classList.toggle('hidden');
+});
+photosSortBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  photosViewMenu.classList.add('hidden');
+  photosSortMenu.classList.toggle('hidden');
+});
+document.addEventListener('click', () => {
+  photosViewMenu.classList.add('hidden');
+  photosSortMenu.classList.add('hidden');
+});
+photosViewMenu.querySelectorAll('.pfe-dropdown-item').forEach(el => {
+  el.addEventListener('click', () => { photosViewMode = el.dataset.view; renderPhotos(); });
+});
+photosSortMenu.querySelectorAll('.pfe-dropdown-item').forEach(el => {
+  el.addEventListener('click', () => { photosSortBy = el.dataset.sort; renderPhotos(); });
+});
+
+function folderIconSVG(extraClass) {
+  return `<svg class="${extraClass || ''}" viewBox="0 0 24 24" fill="currentColor"><path d="M3 6a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6z"/></svg>`;
+}
 
 function renderPhotosBreadcrumb() {
   photosBreadcrumb.innerHTML = photosPath.map((node, i) => {
     const isCurrent = i === photosPath.length - 1;
-    const sep = i > 0 ? '<span class="photos-crumb-sep">›</span>' : '';
+    const sep = i > 0 ? '<span class="photos-crumb-sep">▸</span>' : '';
     return `${sep}<span class="photos-crumb${isCurrent ? ' current' : ''}" data-depth="${i}">${node.name}</span>`;
   }).join('');
   photosBreadcrumb.querySelectorAll('.photos-crumb').forEach(node => {
     node.addEventListener('click', () => {
       const depth = Number(node.dataset.depth);
-      if (depth < photosPath.length - 1) { photosPath = photosPath.slice(0, depth + 1); renderPhotos(); }
+      if (depth < photosPath.length - 1) photosNavigateTo(photosPath.slice(0, depth + 1));
     });
   });
-  photosBackBtn.disabled = photosPath.length <= 1;
+  photosBackBtn.disabled = photosHistoryIndex <= 0;
+  photosForwardBtn.disabled = photosHistoryIndex >= photosHistory.length - 1;
+  photosUpBtn.disabled = photosPath.length <= 1;
+}
+
+function renderPhotosSidebar() {
+  const rootFolders = PHOTOS_TREE.children.filter(c => c.type === 'folder');
+  const activeRootChild = photosPath[1];
+  photosSidebar.innerHTML = `
+    <div class="pfe-sidebar-heading">Rychlý přístup</div>
+    <div class="pfe-sidebar-heading">Umístění</div>
+    <div class="pfe-sidebar-item${photosPath.length === 1 ? ' active' : ''}" data-root="1">${folderIconSVG('pfe-sidebar-icon')} Fotky a videa</div>
+    ${rootFolders.map(f => `<div class="pfe-sidebar-item nested${activeRootChild === f ? ' active' : ''}" data-folder="${escapeForAttr(f.name)}">${folderIconSVG('pfe-sidebar-icon tiny')} ${f.name}</div>`).join('')}
+    <div class="pfe-sidebar-item" data-recycle="1">🗑 Koš</div>
+  `;
+  photosSidebar.querySelector('[data-root]').addEventListener('click', () => photosNavigateTo([PHOTOS_TREE]));
+  photosSidebar.querySelectorAll('[data-folder]').forEach(el => {
+    el.addEventListener('click', () => {
+      const folder = rootFolders.find(f => f.name === el.dataset.folder);
+      if (folder) photosNavigateTo([PHOTOS_TREE, folder]);
+    });
+  });
+  photosSidebar.querySelector('[data-recycle]').addEventListener('click', () => openRecycle());
+}
+
+function parseCzechDateSort(s) {
+  const m = /(\d+)\.\s*(\d+)\.\s*(\d+)/.exec(s || '');
+  return m ? Number(m[3]) * 10000 + Number(m[2]) * 100 + Number(m[1]) : 0;
+}
+function parseSizeToKB(s) {
+  const m = /([\d,.]+)\s*(KB|MB)/i.exec(s || '');
+  if (!m) return 0;
+  const num = parseFloat(m[1].replace(',', '.'));
+  return /MB/i.test(m[2]) ? num * 1024 : num;
+}
+function sortPhotoFiles(files) {
+  const arr = [...files];
+  if (photosSortBy === 'date') return arr.sort((a, b) => parseCzechDateSort(b.date) - parseCzechDateSort(a.date));
+  if (photosSortBy === 'size') return arr.sort((a, b) => parseSizeToKB(b.size) - parseSizeToKB(a.size));
+  return arr.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function renderPhotoGridCard(item, i) {
+  if (item.type === 'folder') {
+    return `<div class="photos-card" data-idx="${i}">
+      <div class="photos-thumb photos-folder-thumb">${folderIconSVG()}</div>
+      <div class="photos-card-name">${item.name}</div>
+      <div class="photos-card-date">${item.children.length} položek</div>
+    </div>`;
+  }
+  return `<div class="photos-card" data-idx="${i}">
+    <div class="photos-thumb">${buildPhotoPreview(item)}</div>
+    <div class="photos-card-name">${item.name}</div>
+    <div class="photos-card-date">${item.date}</div>
+  </div>`;
+}
+
+function renderPhotoRow(item, i) {
+  if (item.type === 'folder') {
+    return `<div class="pfe-row" data-idx="${i}">
+      <div class="pfe-row-icon">${folderIconSVG()}</div>
+      <div class="pfe-row-name">${item.name}</div>
+      <div class="pfe-row-meta">—</div>
+      <div class="pfe-row-meta">${item.children.length} položek</div>
+      <div class="pfe-row-meta">—</div>
+    </div>`;
+  }
+  return `<div class="pfe-row" data-idx="${i}">
+    <div class="pfe-row-icon">${buildPhotoPreview(item)}</div>
+    <div class="pfe-row-name">${item.name}</div>
+    <div class="pfe-row-meta">${item.date}</div>
+    <div class="pfe-row-meta">${item.size}</div>
+    <div class="pfe-row-meta">${item.dims}</div>
+  </div>`;
 }
 
 function renderPhotos() {
   renderPhotosBreadcrumb();
+  renderPhotosSidebar();
+  photosViewMenu.querySelectorAll('.pfe-dropdown-item').forEach(el => el.classList.toggle('active', el.dataset.view === photosViewMode));
+  photosSortMenu.querySelectorAll('.pfe-dropdown-item').forEach(el => el.classList.toggle('active', el.dataset.sort === photosSortBy));
+
   const folder = currentFolder();
-  const folders = folder.children.filter(c => c.type === 'folder');
-  const files = folder.children.filter(c => c.type === 'file');
+  const folders = [...folder.children.filter(c => c.type === 'folder')].sort((a, b) => a.name.localeCompare(b.name));
+  const files = sortPhotoFiles(folder.children.filter(c => c.type === 'file'));
   const ordered = folders.concat(files);
-  photosGrid.innerHTML = ordered.map((item, i) => {
-    if (item.type === 'folder') {
-      return `<div class="photos-card" data-idx="${i}">
-        <div class="photos-thumb photos-folder-thumb"><img src="assets/icons/folder.svg" alt="" /></div>
-        <div class="photos-card-name">${item.name}</div>
-        <div class="photos-card-date">${item.children.length} položek</div>
-      </div>`;
-    }
-    return `<div class="photos-card" data-idx="${i}">
-      <div class="photos-thumb">${buildPhotoPreview(item)}</div>
-      <div class="photos-card-name">${item.name}</div>
-      <div class="photos-card-date">${item.date}</div>
-    </div>`;
-  }).join('');
-  photosGrid.querySelectorAll('.photos-card').forEach(card => {
-    const item = ordered[Number(card.dataset.idx)];
-    card.addEventListener('click', () => {
-      if (item.type === 'folder') { photosPath.push(item); renderPhotos(); }
+
+  const isGrid = photosViewMode === 'grid';
+  photosGrid.classList.toggle('pfe-view-details', photosViewMode === 'details');
+  photosGrid.classList.toggle('pfe-view-list', photosViewMode === 'list');
+
+  const header = photosViewMode === 'details'
+    ? `<div class="pfe-details-header"><span>Název</span><span>Datum</span><span>Velikost</span><span>Rozměry</span></div>`
+    : '';
+  photosGrid.innerHTML = isGrid
+    ? ordered.map((item, i) => renderPhotoGridCard(item, i)).join('')
+    : header + ordered.map((item, i) => renderPhotoRow(item, i)).join('');
+
+  const cardEls = photosGrid.querySelectorAll('.photos-card, .pfe-row');
+  cardEls.forEach(el => {
+    const item = ordered[Number(el.dataset.idx)];
+    el.addEventListener('click', () => {
+      cardEls.forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+    });
+    el.addEventListener('dblclick', () => {
+      if (item.type === 'folder') photosNavigateTo([...photosPath, item]);
       else openPhotoModal(item);
     });
   });
   photosGrid.scrollTop = 0;
+  photosStatusCount.textContent = `${ordered.length} položek`;
 }
 
 function openPhotoModal(f) {
@@ -2913,6 +3056,8 @@ function openPhotos() {
   photosWindow.classList.remove('hidden');
   if (wasHidden) {
     photosPath = [PHOTOS_TREE];
+    photosHistory = [[PHOTOS_TREE]];
+    photosHistoryIndex = 0;
     renderPhotos();
   }
   bringWindowToFront(photosWindow);
@@ -3892,9 +4037,24 @@ function renderEditorNode(node, path, forceImageSlot, sectionKey) {
     let html = showImageSlot ? renderImageSlotControl(`${path}.image`, node.image) : '';
     Object.keys(node).forEach(key => {
       if (key === 'image') return;
-      if (EDITOR_PROTECTED_KEYS.has(key)) return;
       const val = node[key];
       const fieldPath = `${path}.${key}`;
+      // Photos file cards: let Nat pick the placeholder-card type from a dropdown instead
+      // of hiding it — `preview` is normally a protected key (see EDITOR_PROTECTED_KEYS)
+      // because free-text-editing a type discriminant elsewhere in the app is unsafe, but
+      // a constrained select of known preview types is exactly what she asked to control.
+      if (key === 'preview' && sectionKey === 'photos') {
+        html += `
+          <div class="editor-field">
+            <label>Typ náhledu</label>
+            <select data-path="${fieldPath}">
+              ${PHOTO_PREVIEW_TYPES.map(o => `<option value="${o}" ${val === o ? 'selected' : ''}>${o}</option>`).join('')}
+            </select>
+          </div>
+        `;
+        return;
+      }
+      if (EDITOR_PROTECTED_KEYS.has(key)) return;
       if (val === null || val === undefined) return;
       if (typeof val === 'string') {
         const isLong = val.length > 70 || val.includes('\n') || /<[a-z]/i.test(val);
@@ -3982,6 +4142,9 @@ function blankClone(value) {
     const out = {};
     Object.keys(value).forEach(k => { out[k] = blankClone(value[k]); });
     if ('role' in out && 'html' in out) out.role = 'user';
+    // Photos file card — blanking wiped `type`, but renderPhotos() filters strictly on
+    // type === 'file'/'folder', so a blanked type would make the new card invisible.
+    if ('preview' in out && 'date' in out && 'size' in out) { out.type = 'file'; out.preview = 'uploaded'; }
     return out;
   }
   if (typeof value === 'string') return '';
@@ -3995,7 +4158,13 @@ function addEditorArrayItem(path) {
   if (!arr) return;
   const last = arr.length > 0 ? arr[arr.length - 1] : null;
   let newItem;
-  if (isPlainObject(last)) newItem = blankClone(last);
+  // Every array under the photos section is a folder's `children` list (files and
+  // folders mixed) — always add a new FILE card, regardless of what the last sibling's
+  // shape happens to be (mirroring a folder's shape here would produce an invisible
+  // item, since renderPhotos() filters strictly on type === 'file'/'folder').
+  if (path.startsWith('photos.')) {
+    newItem = { type: 'file', name: 'Nový soubor', date: '', size: '', dims: '', preview: 'uploaded', desc: '' };
+  } else if (isPlainObject(last)) newItem = blankClone(last);
   else if (typeof last === 'number') newItem = 0;
   else if (typeof last === 'string') newItem = '';
   else newItem = {};
@@ -4062,6 +4231,10 @@ function refreshOpenWindowsAfterEdit() {
     if (discordView === 'dm') renderDMConversation(); else renderServerChannel();
   }
   if (!photosWindow.classList.contains('hidden')) renderPhotos();
+  if (!photosModalOverlay.classList.contains('hidden')) {
+    const openFile = photosModalFiles[photosModalIndex];
+    if (!openFile || !currentFolder().children.includes(openFile)) closePhotoModal();
+  }
   if (!recycleWindow.classList.contains('hidden')) renderRecycleList();
   if (!cs2Window.classList.contains('hidden')) document.getElementById('cs2-body').innerHTML = buildCs2BodyHTML();
   if (!haloWindow.classList.contains('hidden')) document.getElementById('halo-body').innerHTML = buildHaloBodyHTML();
@@ -4335,7 +4508,7 @@ const EDITOR_SECTIONS = [
   { key: 'genericSites', label: 'Chrome — obsah odkazovaných stránek', data: GENERIC_SITES },
   { key: 'discord', label: 'Discord', data: DISCORD },
   { key: 'recycle', label: 'Koš', data: RECYCLE_ITEMS },
-  { key: 'photos', label: 'Fotky a videa', data: PHOTOS_TREE },
+  { key: 'photos', label: 'Fotky a videa', data: PHOTOS_TREE, allowAddRemove: true },
   { key: 'facerateSubmissions', label: 'facerate.io — Upload', data: FACERATE_SUBMISSIONS, forceImageSlot: true, allowAddRemove: true },
   { key: 'facerateVotes', label: 'facerate.io — Vote', data: FACERATE_VOTES, forceImageSlot: true },
   { key: 'facerateLeaderboard', label: 'facerate.io — Leaderboard', data: FACERATE_LEADERBOARD },
@@ -4368,7 +4541,7 @@ loadContentOverrides();
 [
   [chromeWindow, '.chrome-titlebar'],
   [discordWindow, '.discord-titlebar'],
-  [photosWindow, '.explorer-titlebar'],
+  [photosWindow, '.pfe-titlebar'],
   [recycleWindow, '.explorer-titlebar'],
   [trashViewerWindow, '.explorer-titlebar'],
   [cs2Window, '.cs2-titlebar'],

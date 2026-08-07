@@ -212,18 +212,70 @@
     </div>
   </div>
 
-  <!-- Photos / File explorer window -->
+  <!-- Photos / File explorer window (Windows 11 File Explorer, dark) -->
   <div id="photos-window" class="hidden">
-    <div class="explorer-titlebar">
-      <img class="explorer-titlebar-icon" src="assets/icons/folder.svg" alt="" />
-      <span class="explorer-titlebar-name">Fotky a videa</span>
-      <button class="explorer-close" id="photos-close-btn">✕</button>
+    <div class="pfe-titlebar">
+      <img class="pfe-titlebar-icon" src="assets/icons/folder.svg" alt="" />
+      <span class="pfe-titlebar-name">Fotky a videa</span>
+      <div class="pfe-title-controls">
+        <button class="pfe-title-btn" title="Minimalizovat">─</button>
+        <button class="pfe-title-btn" title="Maximalizovat">☐</button>
+        <button class="pfe-title-btn pfe-title-close" id="photos-close-btn" title="Zavřít">✕</button>
+      </div>
     </div>
-    <div class="photos-toolbar">
-      <button class="photos-back-btn" id="photos-back-btn">‹</button>
-      <div class="photos-breadcrumb" id="photos-breadcrumb"></div>
+    <div class="pfe-ribbon">
+      <div class="pfe-nav-btns">
+        <button class="pfe-nav-btn" id="pfe-back-btn" title="Zpět">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="pfe-nav-btn" id="pfe-forward-btn" title="Vpřed">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <button class="pfe-nav-btn" id="pfe-up-btn" title="O úroveň výš">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+        </button>
+        <button class="pfe-nav-btn" id="pfe-refresh-btn" title="Obnovit">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.5a9.7 9.7 0 1 1-2.8-7"/><polyline points="21 3 21 9 15 9"/></svg>
+        </button>
+      </div>
+      <div class="pfe-breadcrumb-wrap">
+        <span class="pfe-crumb-root">Tento PC</span>
+        <span class="photos-crumb-sep">▸</span>
+        <div class="photos-breadcrumb" id="photos-breadcrumb"></div>
+      </div>
+      <div class="pfe-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Prohledat Fotky a videa</span></div>
     </div>
-    <div class="photos-grid" id="photos-grid"></div>
+    <div class="pfe-toolbar">
+      <button class="pfe-toolbar-btn pfe-toolbar-btn-primary" id="pfe-new-btn">+ Nový</button>
+      <div class="pfe-dropdown-wrap">
+        <button class="pfe-toolbar-btn" id="pfe-view-btn">☰ Zobrazit ▾</button>
+        <div class="pfe-dropdown-menu hidden" id="pfe-view-menu">
+          <div class="pfe-dropdown-item" data-view="grid">Velké ikony</div>
+          <div class="pfe-dropdown-item" data-view="details">Podrobnosti</div>
+          <div class="pfe-dropdown-item" data-view="list">Seznam</div>
+        </div>
+      </div>
+      <div class="pfe-dropdown-wrap">
+        <button class="pfe-toolbar-btn" id="pfe-sort-btn">↕ Řadit ▾</button>
+        <div class="pfe-dropdown-menu hidden" id="pfe-sort-menu">
+          <div class="pfe-dropdown-item" data-sort="name">Podle názvu</div>
+          <div class="pfe-dropdown-item" data-sort="date">Podle data</div>
+          <div class="pfe-dropdown-item" data-sort="size">Podle velikosti</div>
+        </div>
+      </div>
+      <button class="pfe-toolbar-btn" id="pfe-more-btn">⋯ Více</button>
+    </div>
+    <div class="pfe-body">
+      <div class="pfe-sidebar" id="photos-sidebar"></div>
+      <div class="pfe-main">
+        <div class="photos-grid" id="photos-grid"></div>
+      </div>
+    </div>
+    <div class="pfe-statusbar">
+      <span id="pfe-status-count"></span>
+      <span class="pfe-statusbar-spacer"></span>
+      <span class="pfe-statusbar-gear">⚙</span>
+    </div>
   </div>
 
   <!-- Photos file-preview modal (Windows Photos style) -->
