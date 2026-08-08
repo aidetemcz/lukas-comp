@@ -3752,14 +3752,52 @@ function attachGrokHandlers() {
 // gave up. The one output he can't fully control (facerate score) still drops. That gap
 // between disciplined effort and a worsening result is exactly where blackpill rhetoric
 // finds its opening — it offers an explanation ("genetics") for effort that isn't paying off.
-const SELF_DATA_METRICS = {
-  screentimeHours: [5.0, 5.4, 5.9, 6.3, 7.1, 7.6, 8.4, 9.0],
-  sleepHours: [7.0, 6.8, 6.6, 6.3, 6.1, 5.9, 5.7, 5.5],
-  exerciseMinutes: [38, 42, 40, 41, 39, 43, 40, 42],
-  mewingMinutes: [88, 92, 90, 91, 89, 93, 90, 91],
-  calorieDeficit: [290, 310, 295, 305, 300, 315, 290, 305],
-  cs2HoursPerDay: [5.0, 5.8, 6.5, 7.2, 8.0, 9.0, 10.0, 11.2]
+const SELF_DATA_METRICS = [
+  { nazev: 'Screentime', jednotka: 'h/den', prumer: 9.0, hodnoty: [5.0, 5.4, 5.9, 6.3, 7.1, 7.6, 8.4, 9.0] },
+  { nazev: 'Spánek', jednotka: 'h', prumer: 5.5, hodnoty: [7.0, 6.8, 6.6, 6.3, 6.1, 5.9, 5.7, 5.5] },
+  { nazev: 'Cvičení', jednotka: 'min/den', prumer: 42, hodnoty: [38, 42, 40, 41, 39, 43, 40, 42] },
+  { nazev: 'CS2', jednotka: 'h/den', prumer: 11.2, hodnoty: [5.0, 5.8, 6.5, 7.2, 8.0, 9.0, 10.0, 11.2] },
+  { nazev: 'Mewing', jednotka: 'min/den', prumer: 91, hodnoty: [88, 92, 90, 91, 89, 93, 90, 91] },
+  { nazev: 'Facerate skóre', jednotka: '/10', prumer: 3.1, hodnoty: [3.6, 3.8, 3.4, 4.0, 3.7, 3.4, 3.2, 3.1] },
+  { nazev: 'Kalorický deficit', jednotka: 'kcal', prumer: 305, hodnoty: [290, 310, 295, 305, 300, 315, 290, 305] }
+];
+// Pre-2026-schema exports/localStorage had this as a fixed object of English-keyed
+// arrays (no nazev/jednotka/prumer, no way to add/remove a metric). Maps those old
+// keys onto today's default metric names so an old backup can still be imported —
+// see normalizeLegacySelfDataMetrics().
+const SELF_DATA_LEGACY_KEY_MAP = {
+  screentimeHours: 'Screentime',
+  sleepHours: 'Spánek',
+  exerciseMinutes: 'Cvičení',
+  cs2HoursPerDay: 'CS2',
+  mewingMinutes: 'Mewing',
+  calorieDeficit: 'Kalorický deficit'
 };
+function normalizeLegacySelfDataMetrics(saved) {
+  if (Array.isArray(saved)) return saved; // already current shape
+  if (!isPlainObject(saved)) return null;
+  const merged = JSON.parse(JSON.stringify(SELF_DATA_METRICS));
+  Object.keys(saved).forEach(oldKey => {
+    const nazev = SELF_DATA_LEGACY_KEY_MAP[oldKey];
+    const metric = nazev && merged.find(m => m.nazev === nazev);
+    if (metric && Array.isArray(saved[oldKey])) metric.hodnoty = saved[oldKey];
+  });
+  return merged;
+}
+const SELF_DATA_METRICS_STORAGE_KEY = 'self_data_metrics';
+function saveSelfDataMetrics() {
+  try { localStorage.setItem(SELF_DATA_METRICS_STORAGE_KEY, JSON.stringify(SELF_DATA_METRICS)); } catch (e) { /* ignore quota errors here, the main save already surfaces them */ }
+}
+function loadSelfDataMetrics() {
+  try {
+    const raw = localStorage.getItem(SELF_DATA_METRICS_STORAGE_KEY);
+    if (!raw) return;
+    const normalized = normalizeLegacySelfDataMetrics(JSON.parse(raw));
+    if (normalized) { SELF_DATA_METRICS.length = 0; SELF_DATA_METRICS.push(...normalized); }
+  } catch (e) {
+    console.warn('Nepodařilo se načíst self_data metriky:', e);
+  }
+}
 
 function selfDataSparklineSVG(values) {
   const w = 320, h = 70, padL = 4, padR = 4, padT = 8, padB = 8;
@@ -3783,26 +3821,30 @@ function selfDataSparklineSVG(values) {
   return `<svg viewBox="0 0 ${w} ${h}" class="sd-spark" preserveAspectRatio="none">${gridlines}<path d="${pathD}" fill="none" stroke="#8ab4f8" stroke-width="1.6"/>${dots}</svg>`;
 }
 
-function selfDataCardHTML(label, values, unit) {
-  const last = values[values.length - 1];
-  const delta = last - values[0];
+// Shared by the dashboard card and the editor's live trend preview.
+function selfDataTrendText(metric) {
+  const values = metric.hodnoty || [];
+  if (values.length < 2) return '';
+  const delta = values[values.length - 1] - values[0];
   const deltaNum = Number.isInteger(delta) ? delta : Math.round(delta * 10) / 10;
   const deltaStr = (deltaNum > 0 ? '+' : '') + deltaNum;
+  return `${deltaStr}${metric.jednotka || ''} za 8 týdnů`;
+}
+
+function selfDataCardHTML(metric) {
   return `
     <div class="sd-card">
       <div class="sd-card-head">
-        <span class="sd-card-label">${label}</span>
-        <span class="sd-card-value">${last}${unit ? ' ' + unit : ''}</span>
+        <span class="sd-card-label">${metric.nazev}</span>
+        <span class="sd-card-value">${metric.prumer}${metric.jednotka ? ' ' + metric.jednotka : ''}</span>
       </div>
-      ${selfDataSparklineSVG(values)}
-      <div class="sd-card-delta">${deltaStr}${unit || ''} za 8 týdnů</div>
+      ${selfDataSparklineSVG(metric.hodnoty)}
+      <div class="sd-card-delta">${selfDataTrendText(metric)}</div>
     </div>
   `;
 }
 
 function buildSelfDataPageHTML() {
-  const m = SELF_DATA_METRICS;
-  const facerateScores = FACERATE_SUBMISSIONS.map(s => Number(s.score));
   return `
     <div class="sd-app">
       <div class="sd-header">
@@ -3810,13 +3852,7 @@ function buildSelfDataPageHTML() {
         <span class="sd-header-sub">osobní metriky · posledních 8 týdnů</span>
       </div>
       <div class="sd-grid">
-        ${selfDataCardHTML('Screentime', m.screentimeHours, 'h/den')}
-        ${selfDataCardHTML('Spánek', m.sleepHours, 'h')}
-        ${selfDataCardHTML('Cvičení', m.exerciseMinutes, 'min/den')}
-        ${selfDataCardHTML('CS2', m.cs2HoursPerDay, 'h/den')}
-        ${selfDataCardHTML('Mewing', m.mewingMinutes, 'min/den')}
-        ${selfDataCardHTML('Facerate skóre', facerateScores, '/10')}
-        ${selfDataCardHTML('Kalorický deficit', m.calorieDeficit, 'kcal')}
+        ${SELF_DATA_METRICS.map(m => selfDataCardHTML(m)).join('')}
       </div>
     </div>
   `;
@@ -4459,13 +4495,25 @@ function snapshotEditorDefaults() {
   editorDefaultsSnapshot = dump;
 }
 
+// selfDataMetrics moved from a fixed object-of-arrays to an array of metric objects
+// (see normalizeLegacySelfDataMetrics) — a plain deep-merge can't reconcile those two
+// shapes, so both load paths that touch EDITOR_SECTIONS data route through here.
+function applyEditorSectionData(section, savedValue) {
+  if (section.key === 'selfDataMetrics') {
+    const normalized = normalizeLegacySelfDataMetrics(savedValue);
+    if (normalized) { section.data.length = 0; section.data.push(...normalized); }
+    return;
+  }
+  deepMergeContentInto(section.data, savedValue);
+}
+
 function loadContentOverrides() {
   try {
     const raw = localStorage.getItem(CONTENT_STORAGE_KEY);
     if (!raw) return;
     const saved = JSON.parse(raw);
     EDITOR_SECTIONS.forEach(s => {
-      if (saved[s.key] !== undefined) deepMergeContentInto(s.data, saved[s.key]);
+      if (saved[s.key] !== undefined) applyEditorSectionData(s, saved[s.key]);
     });
   } catch (e) {
     console.warn('Nepodařilo se načíst uložený obsah editoru:', e);
@@ -4512,9 +4560,10 @@ function importContentJSONFile(file) {
     try {
       const saved = JSON.parse(reader.result);
       EDITOR_SECTIONS.forEach(s => {
-        if (saved[s.key] !== undefined) deepMergeContentInto(s.data, saved[s.key]);
+        if (saved[s.key] !== undefined) applyEditorSectionData(s, saved[s.key]);
       });
       saveContentOverrides();
+      saveSelfDataMetrics();
       renderEditorPanel(currentEditorSectionKey);
       refreshOpenWindowsAfterEdit();
     } catch (e) {
@@ -4538,6 +4587,8 @@ function resetContentToDefaults() {
     }
   });
   localStorage.removeItem(CONTENT_STORAGE_KEY);
+  localStorage.removeItem(SELF_DATA_METRICS_STORAGE_KEY);
+  sdmExpanded.clear();
   setEditorStatus('Vráceno na výchozí hodnoty.');
   renderEditorPanel(currentEditorSectionKey);
   refreshOpenWindowsAfterEdit();
@@ -4553,7 +4604,132 @@ function renderEditorPanel(sectionKey) {
   const section = EDITOR_SECTIONS.find(s => s.key === sectionKey);
   const panel = document.getElementById('editor-panel');
   if (!section) { panel.innerHTML = ''; return; }
+  if (sectionKey === 'selfDataMetrics') {
+    panel.innerHTML = `<h2 class="editor-section-title">${section.label}</h2>${renderSelfDataMetricsEditorHTML()}`;
+    return;
+  }
   panel.innerHTML = `<h2 class="editor-section-title">${section.label}</h2>${renderEditorNode(section.data, section.key, !!section.forceImageSlot, section.key)}`;
+}
+
+// ── self_data.html metriky: bespoke editor (dynamic metric set, collapsible cards) ──
+// Tracked by object reference rather than index so a mid-list add/remove never mixes
+// up which card is expanded.
+const sdmExpanded = new Set();
+
+function renderSelfDataMetricsEditorHTML() {
+  const rows = SELF_DATA_METRICS.map((m, i) => {
+    const isOpen = sdmExpanded.has(m);
+    return `
+      <div class="sdm-item">
+        <div class="sdm-header" data-sdm-toggle="${i}">
+          <span class="sdm-toggle-caret">${isOpen ? '▾' : '▸'}</span>
+          <span class="sdm-header-name">${escapeForAttr(m.nazev) || '(bez názvu)'}</span>
+          <span class="sdm-header-value">${m.prumer}${m.jednotka ? ' ' + escapeForAttr(m.jednotka) : ''}</span>
+        </div>
+        <div class="sdm-body${isOpen ? '' : ' collapsed'}">
+          <div class="sdm-field">
+            <label>Název</label>
+            <input type="text" data-sdm-idx="${i}" data-sdm-field="nazev" value="${escapeForAttr(m.nazev)}" />
+          </div>
+          <div class="sdm-field">
+            <label>Jednotka</label>
+            <input type="text" data-sdm-idx="${i}" data-sdm-field="jednotka" value="${escapeForAttr(m.jednotka)}" />
+          </div>
+          <div class="sdm-field">
+            <label>Průměr / aktuální hodnota</label>
+            <input type="text" data-sdm-idx="${i}" data-sdm-field="prumer" data-sdm-numeric="1" value="${m.prumer}" />
+          </div>
+          <div class="sdm-field">
+            <label>Týdenní hodnoty</label>
+            <div class="sdm-weeks">
+              ${m.hodnoty.map((v, wi) => `<input type="text" data-sdm-idx="${i}" data-sdm-week="${wi}" data-sdm-numeric="1" value="${v}" />`).join('')}
+            </div>
+          </div>
+          <div class="sdm-trend-preview">${selfDataTrendText(m)}</div>
+          <button type="button" class="sdm-remove-btn" data-sdm-remove="${i}">odstranit</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+  return `
+    <div class="sdm-panel">
+      <button type="button" class="sdm-add-btn" id="sdm-add-btn">+ přidat metriku</button>
+      ${rows || '<div class="sdm-trend-preview">Žádné metriky.</div>'}
+    </div>
+  `;
+}
+
+function parseNumericInput(raw, fallback) {
+  const n = parseFloat(String(raw).replace(',', '.'));
+  return isNaN(n) ? fallback : n;
+}
+
+// Re-renders just the one header line (name + current value) after a field edit,
+// instead of re-rendering the whole panel — keeps focus/cursor stable while typing.
+function refreshSelfDataMetricHeader(idx) {
+  const m = SELF_DATA_METRICS[idx];
+  const item = document.querySelectorAll('.sdm-item')[idx];
+  if (!m || !item) return;
+  item.querySelector('.sdm-header-name').textContent = m.nazev || '(bez názvu)';
+  item.querySelector('.sdm-header-value').textContent = `${m.prumer}${m.jednotka ? ' ' + m.jednotka : ''}`;
+  const preview = item.querySelector('.sdm-trend-preview');
+  if (preview) preview.textContent = selfDataTrendText(m);
+}
+
+function attachSelfDataMetricsHandlers() {
+  const panel = document.getElementById('editor-panel');
+  panel.addEventListener('input', e => {
+    const el = e.target;
+    if (el.dataset.sdmIdx === undefined) return;
+    const idx = Number(el.dataset.sdmIdx);
+    const m = SELF_DATA_METRICS[idx];
+    if (!m) return;
+    if (el.dataset.sdmWeek !== undefined) {
+      m.hodnoty[Number(el.dataset.sdmWeek)] = parseNumericInput(el.value, m.hodnoty[Number(el.dataset.sdmWeek)]);
+    } else if (el.dataset.sdmField === 'prumer') {
+      m.prumer = parseNumericInput(el.value, m.prumer);
+    } else if (el.dataset.sdmField) {
+      m[el.dataset.sdmField] = el.value;
+    } else {
+      return;
+    }
+    refreshSelfDataMetricHeader(idx);
+    scheduleSaveContentOverrides();
+    saveSelfDataMetrics();
+    refreshOpenWindowsAfterEdit();
+  });
+  panel.addEventListener('click', e => {
+    const toggle = e.target.closest('[data-sdm-toggle]');
+    if (toggle) {
+      const m = SELF_DATA_METRICS[Number(toggle.dataset.sdmToggle)];
+      if (m) { sdmExpanded.has(m) ? sdmExpanded.delete(m) : sdmExpanded.add(m); }
+      renderEditorPanel('selfDataMetrics');
+      return;
+    }
+    if (e.target.id === 'sdm-add-btn') {
+      const newMetric = { nazev: 'nová metrika', jednotka: '/den', prumer: 0, hodnoty: [0, 0, 0, 0, 0, 0, 0, 0] };
+      SELF_DATA_METRICS.push(newMetric);
+      sdmExpanded.add(newMetric);
+      scheduleSaveContentOverrides();
+      saveSelfDataMetrics();
+      renderEditorPanel('selfDataMetrics');
+      refreshOpenWindowsAfterEdit();
+      return;
+    }
+    const removeBtn = e.target.closest('[data-sdm-remove]');
+    if (removeBtn) {
+      const idx = Number(removeBtn.dataset.sdmRemove);
+      const m = SELF_DATA_METRICS[idx];
+      if (!m) return;
+      if (!confirm(`Opravdu odstranit ${m.nazev || 'tuto metriku'}?`)) return;
+      SELF_DATA_METRICS.splice(idx, 1);
+      sdmExpanded.delete(m);
+      scheduleSaveContentOverrides();
+      saveSelfDataMetrics();
+      renderEditorPanel('selfDataMetrics');
+      refreshOpenWindowsAfterEdit();
+    }
+  });
 }
 
 function selectEditorSection(key) {
@@ -4678,6 +4854,7 @@ document.getElementById('editor-import-input').addEventListener('change', e => {
   e.target.value = '';
 });
 attachEditorPanelHandlers();
+attachSelfDataMetricsHandlers();
 
 document.addEventListener('keydown', e => {
   if (e.ctrlKey && e.shiftKey && (e.key === 'E' || e.key === 'e')) {
@@ -4726,6 +4903,7 @@ const EDITOR_SECTIONS = [
 
 snapshotEditorDefaults();
 loadContentOverrides();
+loadSelfDataMetrics();
 
 // Make every app window draggable by its titlebar and focusable on click, like a real desktop.
 [
