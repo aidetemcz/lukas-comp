@@ -3820,15 +3820,34 @@ const CHATGPT_CONVERSATIONS_STORAGE_KEY = 'chatgpt_conversations';
 function saveChatgptConversations() {
   try { localStorage.setItem(CHATGPT_CONVERSATIONS_STORAGE_KEY, JSON.stringify(CHATGPT_CONVERSATIONS)); } catch (e) { /* ignore quota errors here, the main save already surfaces them */ }
 }
+// Distinguishes the current {titul, datum, zpravy:[{role,text}]} shape from the
+// pre-redesign {id, urlId, title, date, time, messages:[{role,html}]} shape (or any other
+// malformed/blank value) — without this check, stale saved/imported data silently overwrites
+// the correct defaults and every field renders as the literal string "undefined".
+function isValidChatgptConversation(c) {
+  return isPlainObject(c) && typeof c.titul === 'string' && Array.isArray(c.zpravy);
+}
+function isValidChatgptConversationsData(value) {
+  return Array.isArray(value) && value.length > 0 && value.every(isValidChatgptConversation);
+}
 function loadChatgptConversations() {
   try {
     const raw = localStorage.getItem(CHATGPT_CONVERSATIONS_STORAGE_KEY);
     if (!raw) return;
     const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) { CHATGPT_CONVERSATIONS.length = 0; CHATGPT_CONVERSATIONS.push(...parsed); }
+    if (isValidChatgptConversationsData(parsed)) {
+      CHATGPT_CONVERSATIONS.length = 0;
+      CHATGPT_CONVERSATIONS.push(...parsed);
+      return;
+    }
+    console.warn('Neplatná data v localStorage klíči "chatgpt_conversations" (starý formát nebo poškozená data) — obnovuji výchozí konverzace a ukládám je zpět pod tímto klíčem.');
   } catch (e) {
-    console.warn('Nepodařilo se načíst ChatGPT konverzace:', e);
+    console.warn('Nepodařilo se načíst ChatGPT konverzace, obnovuji výchozí:', e);
   }
+  // Self-heal: CHATGPT_CONVERSATIONS still holds the correct default at this point (nothing
+  // valid overrode it above), so persisting it now fixes this one key without the user
+  // having to do anything — no Reset, no manual localStorage edit.
+  saveChatgptConversations();
 }
 
 function selfDataSparklineSVG(values) {
@@ -4529,9 +4548,15 @@ function applyEditorSectionData(section, savedValue) {
   }
   // chatgpt moved from a fixed {id, urlId, title, date, time, messages} shape to
   // {titul, datum, zpravy} — a plain deep-merge can't reconcile those two shapes, so
-  // (like selfDataMetrics) a saved/imported array just replaces the whole thing.
+  // (like selfDataMetrics) a valid saved/imported array replaces the whole thing. Only
+  // apply it if it actually matches the current schema: this section is read from the
+  // shared overrides blob on every boot, and any pre-redesign save sitting in there
+  // (from editing an unrelated section back when chatgpt still had the old shape) would
+  // otherwise silently overwrite the correct defaults with data the renderer can't read,
+  // showing "undefined" everywhere. An invalid value is simply skipped, leaving
+  // section.data as whatever it already is (the untouched default, at boot time).
   if (section.key === 'chatgpt') {
-    if (Array.isArray(savedValue)) { section.data.length = 0; section.data.push(...savedValue); }
+    if (isValidChatgptConversationsData(savedValue)) { section.data.length = 0; section.data.push(...savedValue); }
     return;
   }
   deepMergeContentInto(section.data, savedValue);
