@@ -2705,7 +2705,7 @@ const PHOTOS_TREE = {
         pFile('bank_app_17032026.png', '17. 3. 2026', '410 KB', '1080 × 2340', 'bank',
           'Screenshot bankovní aplikace. Zůstatek 4 212 Kč, poznámka „TRK operace 180k“.'),
         pFile('cs2_stats_marec.png', '31. 3. 2026', '520 KB', '1920 × 1080', 'cs2',
-          'Screenshot statistik CS2: 340 hodin za březen. Prudký nárůst oproti prosinci (40 h) — eskapace.')
+          'Screenshot statistik CS2: 232 hodin za březen. Prudký nárůst oproti prosinci (40 h) — eskapace.')
       ]
     },
     {
@@ -2810,7 +2810,7 @@ function pvBank() {
   return `<div class="pv pv-bank"><div class="bank-top">Můj účet · běžný</div><div class="bank-balance">4 212 Kč</div><div class="bank-note">Poznámka: TRK operace 180k</div></div>`;
 }
 function pvCs2() {
-  return `<div class="pv pv-cs2"><div class="cs2-title">Counter-Strike 2 · březen 2026</div><div class="cs2-hours">340 h</div><div class="cs2-sub">prosinec: 40 h &nbsp;·&nbsp; rank: DMG</div></div>`;
+  return `<div class="pv pv-cs2"><div class="cs2-title">Counter-Strike 2 · březen 2026</div><div class="cs2-hours">232 h</div><div class="cs2-sub">prosinec: 40 h &nbsp;·&nbsp; rank: DMG</div></div>`;
 }
 function pvNote(f) {
   return `<div class="pv pv-note"><div class="note-title">${f.title}</div>${f.lines.map(l => `<div>${l}</div>`).join('')}</div>`;
@@ -3228,7 +3228,7 @@ const CS2_MONTHLY_HOURS = [
   { label: 'pro', hours: 40 },
   { label: 'led', hours: 85 },
   { label: 'úno', hours: 145 },
-  { label: 'bře', hours: 340 }
+  { label: 'bře', hours: 232 }
 ];
 
 const CS2_MATCHES = [
@@ -3291,7 +3291,7 @@ function buildCs2BodyHTML() {
     </div>
 
     <div class="cs2-stats-row">
-      <div class="cs2-stat-card warn"><div class="cs2-stat-value">340 h</div><div class="cs2-stat-label">Odehráno v březnu</div></div>
+      <div class="cs2-stat-card warn"><div class="cs2-stat-value">232 h</div><div class="cs2-stat-label">Odehráno v březnu</div></div>
       <div class="cs2-stat-card"><div class="cs2-stat-value">1.34</div><div class="cs2-stat-label">K/D ratio</div></div>
       <div class="cs2-stat-card"><div class="cs2-stat-value">42 %</div><div class="cs2-stat-label">Headshot %</div></div>
     </div>
