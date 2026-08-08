@@ -8,7 +8,7 @@
 
    This is a BASE/fallback rule only. Each display context still
    needs its own scoped override for the max-width/max-height CAP
-   (e.g. ".chatgpt-photo-attachment .editor-uploaded-img { max-width:
+   (e.g. ".discord-attachment-img .editor-uploaded-img { max-width:
    380px; max-height: 500px; }") — percentage max-height only works
    if the container has a DEFINITE height, so most contexts must
    cap the <img> itself in absolute px rather than %. See the Fotky
@@ -645,17 +645,25 @@ body {
   padding: 6px 0;
 }
 .chatgpt-conv-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   padding: 8px 10px;
   border-radius: 8px;
+  cursor: pointer;
+}
+.chatgpt-conv-item:hover { background: #ececec; }
+.chatgpt-conv-item.active { background: #ececec; }
+.chatgpt-conv-item-title {
   font-size: 13px;
   color: #2b2b2b;
-  cursor: pointer;
+  font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.chatgpt-conv-item:hover { background: #ececec; }
-.chatgpt-conv-item.active { background: #ececec; font-weight: 500; }
+.chatgpt-conv-item.active .chatgpt-conv-item-title { font-weight: 600; }
+.chatgpt-conv-item-date { font-size: 11px; color: #8e8e8e; }
 
 .chatgpt-sidebar-bottom {
   border-top: 1px solid #e5e5e5;
@@ -668,7 +676,12 @@ body {
   display: flex; align-items: center; justify-content: center;
   font-size: 12px; font-weight: 600; flex-shrink: 0;
 }
-.chatgpt-user-name { font-size: 13px; color: #2b2b2b; }
+.chatgpt-user-name { font-size: 13px; color: #2b2b2b; flex: 1; }
+.chatgpt-settings-btn {
+  background: none; border: none; color: #8e8e8e; font-size: 15px;
+  cursor: pointer; padding: 4px 6px; border-radius: 6px; flex-shrink: 0;
+}
+.chatgpt-settings-btn:hover { background: #ececec; color: #2b2b2b; }
 
 .chatgpt-main {
   flex: 1;
@@ -682,12 +695,23 @@ body {
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 0 20px;
   border-bottom: 1px solid #f0f0f0;
 }
-.chatgpt-model-name { font-size: 14px; font-weight: 600; color: #0d0d0d; }
-.chatgpt-conv-timestamp { font-size: 12px; color: #8e8e8e; }
+.chatgpt-model-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0d0d0d;
+  cursor: pointer;
+}
+.chatgpt-model-dropdown:hover { background: #f3f3f3; }
 
 .chatgpt-messages {
   flex: 1;
@@ -716,10 +740,6 @@ body {
   background: #000; border-radius: 6px;
 }
 .chatgpt-msg-row.assistant .chatgpt-msg-avatar img { width: 100%; height: 100%; border-radius: 6px; }
-.chatgpt-msg-row.user .chatgpt-msg-avatar {
-  background: #6b6f76; color: #fff; border-radius: 50%;
-  font-size: 12px; font-weight: 600;
-}
 .chatgpt-msg-bubble {
   font-size: 14.5px;
   line-height: 1.65;
@@ -736,34 +756,80 @@ body {
 .chatgpt-msg-bubble ul { margin: 6px 0 10px; padding-left: 20px; }
 .chatgpt-msg-bubble li { margin-bottom: 4px; }
 
-.chatgpt-photo-attachment {
-  display: inline-flex;
-  flex-direction: column;
+.chatgpt-composer {
+  flex-shrink: 0;
+  padding: 0 40px 22px;
+}
+.chatgpt-composer-box {
+  max-width: 700px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  background: #f4f4f4;
+  border: 1px solid #e5e5e5;
+  border-radius: 24px;
+  padding: 12px 18px;
+}
+.chatgpt-composer-input {
+  flex: 1;
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 14.5px;
+  color: #8e8e8e;
+  font-family: inherit;
+}
+
+.chatgpt-settings-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.28);
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  margin-bottom: 10px;
-  max-width: 380px;
-  max-height: 500px;
-  overflow: hidden;
+  z-index: 50;
 }
-.chatgpt-photo-attachment .editor-uploaded-img {
-  width: auto;
-  height: auto;
-  max-width: 380px;
-  max-height: 500px;
-  object-fit: contain;
+.chatgpt-settings-overlay.hidden { display: none; }
+.chatgpt-settings-modal {
+  width: min(440px, 90%);
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+  padding: 20px;
+}
+.chatgpt-settings-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  color: #0d0d0d;
+  margin-bottom: 16px;
+}
+.chatgpt-settings-close {
+  background: none; border: none; color: #8e8e8e; font-size: 14px;
+  cursor: pointer; padding: 2px 6px; border-radius: 4px;
+}
+.chatgpt-settings-close:hover { background: #f1f1f1; }
+.chatgpt-settings-field { margin-bottom: 14px; }
+.chatgpt-settings-field:last-child { margin-bottom: 0; }
+.chatgpt-settings-field label {
   display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4b4b4b;
+  margin-bottom: 6px;
 }
-.chatgpt-photo-pixelated {
-  width: 150px;
-  height: 150px;
-  border-radius: 10px;
-  background:
-    repeating-linear-gradient(0deg, #74777d 0 10px, #999da3 10px 20px, #86898f 20px 30px, #5f6268 30px 40px),
-    repeating-linear-gradient(90deg, rgba(0,0,0,0.18) 0 10px, rgba(255,255,255,0.08) 10px 20px);
-  background-blend-mode: multiply;
-  border: 1px solid #e0e0e0;
+.chatgpt-settings-field textarea {
+  width: 100%;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-family: inherit;
+  font-size: 13.5px;
+  color: #2b2b2b;
+  resize: vertical;
+  background: #fafafa;
 }
 
 /* ── Explorer-style windows (Recycle Bin, file viewer) ── */
@@ -3394,6 +3460,29 @@ body {
   text-transform: none;
 }
 .sdm-remove-btn:hover { color: #e5484d; }
+
+/* ── ChatGPT konverzace: bespoke editor (mirrors the self_data metrics editor) ── */
+.cce-panel { background: #0b0b0d; border: 1px solid #222226; border-radius: 6px; padding: 14px; font-family: 'Consolas', 'Courier New', monospace; color: #d4d4d4; }
+.cce-add-btn { display: block; width: 100%; background: #131316; border: 1px dashed #3a3a3e; color: #8ab4f8; padding: 10px; border-radius: 6px; font-size: 12px; font-family: inherit; cursor: pointer; margin-bottom: 14px; text-transform: none; }
+.cce-add-btn:hover { background: #1a1a1e; }
+.cce-empty { font-size: 11px; color: #6b6b6b; }
+.cce-item { background: #131316; border: 1px solid #222226; border-radius: 6px; margin-bottom: 10px; overflow: hidden; }
+.cce-item:last-child { margin-bottom: 0; }
+.cce-header { display: flex; align-items: center; gap: 10px; padding: 10px 14px; cursor: pointer; }
+.cce-header:hover { background: #1a1a1e; }
+.cce-toggle-caret { color: #6b6b6b; font-size: 10px; width: 10px; flex-shrink: 0; }
+.cce-header-title { flex: 1; min-width: 0; font-size: 13px; color: #f2f2f2; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cce-header-date { font-size: 12px; color: #8ab4f8; font-weight: 700; flex-shrink: 0; white-space: nowrap; }
+.cce-body { padding: 4px 14px 14px; border-top: 1px solid #222226; }
+.cce-body.collapsed { display: none; }
+.cce-field { margin-top: 12px; }
+.cce-field label { display: block; font-size: 10.5px; color: #9a9a9a; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
+.cce-field input[type="text"] { width: 100%; background: #0b0b0d; border: 1px solid #2a2a2e; border-radius: 4px; padding: 6px 8px; color: #f2f2f2; font-family: inherit; font-size: 12.5px; }
+.cce-field input[type="text"]:focus { outline: none; border-color: #8ab4f8; }
+.cce-field textarea { width: 100%; background: #0b0b0d; border: 1px solid #2a2a2e; border-radius: 4px; padding: 8px; color: #f2f2f2; font-family: inherit; font-size: 12.5px; line-height: 1.6; resize: vertical; }
+.cce-field textarea:focus { outline: none; border-color: #8ab4f8; }
+.cce-remove-btn { margin-top: 12px; background: none; border: none; color: #6b6b6b; font-size: 11px; font-family: inherit; cursor: pointer; padding: 4px 0; text-transform: none; }
+.cce-remove-btn:hover { color: #e5484d; }
 
 /* ── Uploaded image override (fills whatever placeholder box it replaces) ── */
 /* Fotky grid thumbnail: small fixed-size tile, deliberately cover-cropped

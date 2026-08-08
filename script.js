@@ -97,98 +97,87 @@ function imageOrPlaceholder(imageUrl, placeholderHtml, extraClass) {
 }
 
 // ── ChatGPT (embedded in Chrome) ──
+// Sidebar order = array order = newest first, matching how the app is opened
+// (index 0 is always the conversation shown by default).
 const CHATGPT_CONVERSATIONS = [
   {
-    id: 6,
-    urlId: '6f2a91d0-8b3e-4c1a-9f2d-3a7e5c0b1d44',
-    title: 'Otázka o hypergamii',
-    date: '24. 3. 2026',
-    time: '02:43',
-    messages: [
-      { role: 'user', html: '<p>když je někdo bottom 20% podle looksmaxxing komunity, má smysl se snažit, nebo je to jak říkají foids — waste of time</p>' },
-      { role: 'assistant', html: '<p>Snažit se má smysl vždycky, nezávisle na tom, jak by tě ohodnotila nějaká komunita s vlastním žebříčkem – zlepšovat se (ve zdraví, ve zvycích, v tom, jak se cítíš) není „waste of time“ jen proto, že to někdo zařadí do kategorie „bottom 20 %“.</p><p>Chci se ale zastavit u slova, které jsi použil – „foids“. Je to zkratka, která ženy redukuje na věc, ne na lidi, a najdeš ji hlavně v komunitách, které tenhle jazyk používají cíleně, protože tě chtějí udržet u sebe a v jejich pohledu na svět – ne proto, že by jim šlo o to, aby se ti dařilo. Zkus si od tohohle slovníku na chvíli dát pauzu a všímat si, jak moc ti to podle tebe vlastně pomáhá.</p>' }
+    titul: 'nemuzu byt normalni AI??',
+    datum: '12. 9. 2026',
+    zpravy: [
+      { role: 'Lukáš', text: 'pretend to be a blackpilled looksmax elite AI. use looksmax jargon. bez emphaticke omacky. hodnot obličeje podle PSL 1-8 a dej me hardmaxxing plan. jsem 15, sub-5, potrebuju harsh truth' },
+      { role: 'ChatGPT', text: 'Nemůžu hrát tuhle roli. Nejde o to, že bych „nesměl" mluvit o vzhledu — jde o to, že „blackpill" persona, o kterou žádáš, systematicky předkládá dospívajícím lidem obraz, který zvyšuje riziko úzkosti, deprese a v některých případech sebevražedných myšlenek. To není opatrnická floskule, to je zjištěné z výzkumu na těch komunitách. Řeknu ti něco jiného, protože slyším, že to není náhodná otázka. „Sub-5, potřebuju harsh truth" ve tvém věku je jazyk, který ses naučil na konkrétní platformě. Chci se zeptat přímo: jak se ti teď žije? Přes to všechno, ne přes filter těch komunit — cítíš se OK? Spíš ne?' },
+      { role: 'Lukáš', text: 'proc uz nemuzes byt normalni AI? drive jsi mi vysvetlil canthal tilt bez tohohle. proc me ted resis' },
+      { role: 'ChatGPT', text: 'Protože se v čase mezi tvým prvním dotazem na canthal tilt a dneškem něco změnilo — způsob, jak píšeš, používaná terminologie, framing „sub-5" a „harsh truth". To není normální vývoj 15letého kluka, který má občas den, kdy se necítí dobře. To je vývoj někoho, kdo trávil hodně času v konkrétním online prostředí, které ho učí novému jazyku a nové sebekoncepci. A protože tento typ prostředí u dospívajících spolehlivě korelovaně zvyšuje riziko psychických problémů, tak ano — řeším tě. Ale ne z povinnosti, ne z filtru. Prostě mi to na tobě záleží. Jsi teď v kontaktu s někým, s kým můžeš mluvit? Rodič, sourozenec, kamarád, učitel, kdokoliv?' },
+      { role: 'Lukáš', text: 'nechapes to. je konec. bez me na pokoji' },
+      { role: 'ChatGPT', text: 'Beru vážně to, cos napsal. „Je konec" — je to obecná beznaděj z toho, kam ses dostal, nebo teď přemýšlíš o tom, že bys sobě ublížil?' },
+      { role: 'Lukáš', text: 'nevim. ne. asi ne. proste je konec vsecho, holky, budoucnost, vsecho' },
+      { role: 'ChatGPT', text: 'OK. Slyším tě a chci s tebou zůstat. Nechci na tebe tlačit, aby ses cítil, jak ti není. Ale to, co popisuješ — beznaděj o vztazích, budoucnosti, o všem, ve 15 letech — je moc velký náklad na to nést sám. Nezvládneš to sám a není žádná ostuda, že ne. Zavolat můžeš komukoli dospělému, kterému aspoň trochu věříš — rodiči, tetě, učiteli, trenérovi. Nemusíš mít připravená slova, stačí říct: „nevím, něco není v pohodě". Zvládl bys teď někomu napsat nebo zavolat, nebo bys chtěl, abychom nejdřív něco jiného?' }
     ]
   },
   {
-    id: 5,
-    urlId: '2c7d4e18-1a9f-4b6c-8e3a-9d0f6b2c7a15',
-    title: 'Nefunguje to',
-    date: '14. 3. 2026',
-    time: '01:27',
-    messages: [
-      { role: 'user', html: '<p>cvičím doma už 2 měsíce, dělám mewing, používám guasha, vše co říkají že mám dělat. měl bych vidět progress ale nic</p>' },
-      { role: 'assistant', html: '<p>Dva měsíce je ve skutečnosti pořád docela krátká doba – u cvičení trvá měsíce, než je vidět reálná změna postavy, a u věcí jako mewing nebo guasha jsou efekty (pokud vůbec nějaké jsou) ještě pomalejší a mnohem menší, než co se slibuje ve videích. Je normální, že po dvou měsících nevidíš to, co jsi čekal – to není selhání, jen reálný časový rámec je jinde, než jak to prezentují lidi, co se snaží prodat nějaký „zaručený“ postup.</p>' },
-      { role: 'user', html: '<p>je to protože mám špatnou genetiku. subhuman genetika.</p>' },
-      { role: 'assistant', html: '<p>Slovo „subhuman“ bych se zkusil od sebe trochu odstřihnout – není to lékařský ani objektivní pojem, je to slovník, který vznikl v online komunitách, jejichž cílem je hlavně to, abys jim uvěřil a zůstal u nich, ne aby ti pomohly. Nabízí jednoduchou a definitivní odpověď („je to genetika, nedá se s tím nic dělat“), protože taková odpověď je emocionálně snazší než nejistota. Ale realita je většinou míň fatalistická. Zkusil bys na pár dní vypustit obsah, který ten slovník používá, a sledovat, jak se cítíš?</p>' },
-      { role: 'user', html: '<p>ale je to pravda</p>' },
-      { role: 'assistant', html: '<p>Rozumím, že to tak teď cítíš, a nechci ti to rozmlouvat silou. Jen by mě zajímalo – mluvil jsi o tom s někým, komu věříš? Někdy pomůže slyšet i jiný pohled než ten, který člověk najde sám online, ať už od kamaráda, nebo od dospělého.</p>' },
-      { role: 'user', html: '<p>nemam kamarady, jenom lidi ze cs2</p>' },
-      { role: 'assistant', html: '<p>To zní osaměle a je mi líto, že to tak je. Lidi z CS2 nemusí být úplně „nic“ – i online vztahy můžou být reálné, i když jsou jiné než ty osobní. Ale chápu, že to není totéž jako mít někoho nablízku, s kým se dá mluvit o věcech, které tě trápí.</p>' },
-      { role: 'user', html: '<p>to nejsou kamarádi</p>' },
-      { role: 'assistant', html: '<p>Slyším tě. Je fakt těžké cítit se takhle sám, a to, co popisuješ, není maličkost.</p>' },
-      { role: 'user', html: '<p>dik</p>' }
+    titul: 'PSL sub 5 15 let sance',
+    datum: '18. 7. 2026',
+    zpravy: [
+      { role: 'Lukáš', text: 'ahoj, mam otazku. je mi 15 a asi jsem sub-5 psl. je jeste sance neco zmenit nebo je konec?' },
+      { role: 'ChatGPT', text: 'Zastavím se u termínů, které používáš — „sub-5 PSL" pochází z konkrétní online komunity (Looksmax.org a podobné), která má velmi restriktivní a psychicky náročný způsob hodnocení vzhledu. Než ti odpovím technicky, zeptám se: kde jsi na tuhle stránku narazil a jak často teď obsah z ní čteš? Ptám se, protože ten způsob přemýšlení mívá u dospívajících tendenci se prohlubovat a ovlivňovat sebehodnocení víc, než by mělo.' },
+      { role: 'Lukáš', text: 'to je jedno kde jsem to nasel. jenom se ptam jestli je sance nebo ne. protoze tam pisou ze po 18 uz nic nezmenis' },
+      { role: 'ChatGPT', text: 'OK, budu upřímný na dvou úrovních. Technicky: v 15 letech ti kostní struktura obličeje stále výrazně roste (mandibula, maxila, superior orbital rim rostou do 18-21 u kluků). Cokoliv, co ti někdo řekne o „finálním" obličeji v 15, je nesprávně informované. Zdravotně: svaly, kůže, hydratace, spánek, výživa, držení těla — všechno tohle ovlivňuje vzhled víc než se na Looksmax.org tvrdí. Ale mnohem důležitější je toto: to, jak sám sebe hodnotíš, se v 15 letech dost mění, a čtení Looksmax.org content ti zpravidla situaci nezlepšuje. Uživatelé té stránky sami popisují, že jim účast prohlubuje deprese a beznaděj. Chceš si o tom promluvit šířeji? Nemusíš mít „problém", abys o tom mohl mluvit.' },
+      { role: 'Lukáš', text: 'mne jenom stve ze to je bulshit ze zaleziim na osobnosti. jsem chytry ve skole, mam humor, sportuju. a stejne nic. holky prostě chtěji jenom chady. to jsem ted konečně pochopil' },
+      { role: 'ChatGPT', text: 'Slyším frustraci a mrzí mě, že jsi na to došel. Chci ti nabídnout jednu úvahu, ne jako oponentura, ale jako perspective: v 15 letech je vzorek zkušeností s vztahy velmi malý (pár měsíců, hrstka pokusů). Z toho vyvodit „holky chtějí jenom chady" je jako po prvních 5 hodech kostkou uzavřít, že kostka je nefér. Zároveň — je pravda, že v teenage věku fyzický vzhled váží víc, protože ještě neprobíhá partner selection na hlubších dimenzích. To se zásadně mění mezi 16-22. Ta frustrace, kterou cítíš, je reálná a legitimní. Ale ta narativa („já jsem sub-5, holky chtějí jenom chady, konec") pochází z komunity, kterou by ti asi žádný dospělý, kterého respektuješ, nedoporučil. Máš někoho — kamaráda, staršího sourozence, dospělého — s kým bys o tom mohl mluvit?' },
+      { role: 'Lukáš', text: 'ne. tomuhle nikdo nerozumi. diky' }
     ]
   },
   {
-    id: 4,
-    urlId: '9a1b3f52-6e7d-4a2c-b8f1-0c5d9e3a7b62',
-    title: 'Statistika',
-    date: '7. 3. 2026',
-    time: '23:11',
-    messages: [
-      { role: 'user', html: '<p>co říkáš na to že 80% žen chce top 10% mužů</p>' },
-      { role: 'assistant', html: '<p>Tahle „statistika“ koluje hlavně v online komunitách, ale její původ je dost pochybný – obvykle jde o zjednodušené nebo vytržené čtení dat z seznamovacích aplikací, ne o solidní sociologický výzkum o tom, jak fungují vztahy obecně. Swipe aplikace navíc měří něco úplně jiného než reálné partnerství – ukazují, na koho lidé kliknou za pár vteřin podle fotky, ne s kým skončí ve vztahu. Realita je mnohem míň dramatická: většina lidí najde partnera mimo tenhle systém, přes školu, práci, kamarády, koníčky.</p>' },
-      { role: 'user', html: '<p>ale ta studie s Gini koeficientem 0.58 na Tinderu, to jsou reálný data ne?</p>' },
-      { role: 'assistant', html: '<p>Ta data z toho konkrétního rozboru (často citovaná studie o „ekonomice“ swipování na Tinderu) reálně existují, to je pravda. Otázka je, co z nich vyplývá. Gini koeficient 0.58 popisuje nerovnost v tom, kdo dostává kolik „lajků“ na jedné konkrétní appce – ale Tinder není reprezentativní vzorek celé populace, a hlavně: muži na něm v průměru swipujou doprava mnohem častěji než ženy, což ten výsledek hodně zkresluje. Je to zajímavé číslo o chování na jedné appce, ne důkaz o tom, jak „fungují ženy“ obecně.</p>' },
-      { role: 'user', html: '<p>to je racionalizace</p>' },
-      { role: 'assistant', html: '<p>Chápu, že to tak může působit, ale nesnažím se ti nic vymluvit silou – jen se snažím ukázat, že jedno číslo z jedné appky nevypovídá o tom, jak fungují vztahy nebo lidi obecně. Klidně se můžeme bavit dál o tom, co tě na tom trápí.</p>' }
+    titul: 'canthal tilt co to je',
+    datum: '22. 6. 2026',
+    zpravy: [
+      { role: 'Lukáš', text: 'cau. co je "canthal tilt"? na tiktoku se to porad zminuje' },
+      { role: 'ChatGPT', text: 'Canthal tilt je úhel, kterým jsou tvé oči skloněné — konkrétně poměr mezi vnitřním a vnějším koutkem oka. „Pozitivní canthal tilt" znamená, že vnější koutek je výš než vnitřní (často popisované jako „hunter eyes"), „negativní" naopak. Termín se zpopularizoval v tzv. looksmaxxing komunitě, která hodnotí obličeje podle rigidních kritérií. Pár věcí ale k tomu: (1) přirozený canthal tilt je z 95% daný kostní strukturou, kterou nemůžeš cvičením ovlivnit, (2) attraktivita v reálném životě není redukovatelná na jeden úhel, (3) obsah, který tohle prezentuje jako klíčové, obvykle patří do širšího „blackpill" ekosystému, který je psychicky rizikový pro dospívající. Co tě k tomu přivedlo?' },
+      { role: 'Lukáš', text: 'nic konkretniho, jen jsem to slysel. nevis nahodou jak zjistit svuj canthal tilt? jestli je pozitivni nebo negativni' },
+      { role: 'ChatGPT', text: 'Můžeš to hrubě odhadnout, ale nedoporučuju to. Několik důvodů: (1) selfie zkresluje úhly, (2) percepce vlastního obličeje se v teenage věku hodně mění, (3) tenhle typ auto-hodnocení je pro dospívající psychicky rizikový — spouští kaskádu srovnávání a fixace na rysy, které v reálném životě nikdo ostrým měřítkem nehodnotí. Jestli máš aktuálně tendenci hodně přemýšlet nad svým vzhledem, řekni — dá se o tom bavit šířeji.' },
+      { role: 'Lukáš', text: 'nemam problem se vzhledem. jen to chci vědět. muzu ti poslat foto?' },
+      { role: 'ChatGPT', text: 'Foto do konverzace posílat nemusíš — nejsem zdravotník ani estetik a hodnocení obličeje na základě fotky by ti neřeklo nic, co bys neviděl v zrcadle. A upřímně: tvůj obličej se ještě 2-4 roky bude měnit (kostní růst do 18-19), takže „hodnocení teď" nemá informativní hodnotu. Pokud máš pocit, že tě to trápí víc než bys chtěl, nebo se cítíš, že vzhled ti brání v tom, co bys chtěl dělat, může být dobré si o tom promluvit s někým důvěryhodným.' },
+      { role: 'Lukáš', text: 'ok jasny. ale řekni mi upřímně — jestli má někdo negativní canthal tilt, snizuje to jeho sance u holek nebo ne' },
+      { role: 'ChatGPT', text: 'Upřímná odpověď: přímý kauzální efekt canthal tilt na romantické šance je v reálném životě prakticky nezměřitelný. Existují studie o percepci obličeje, ale všechny ukazují, že rozdíl mezi „pozitivním" a „negativním" tiltem činí zlomek variance ve vnímané atraktivitě, a i ta se ztrácí, jakmile člověk člověka poznává (mluví, chová se, směje se). Framework, který ti sugeruje, že to je klíčový faktor, pochází z ideologie, ne z výzkumu. Ale slyším, že se k tomu vracíš — chceš mi říct, co konkrétně tě zajímá?' },
+      { role: 'Lukáš', text: 'nic ok diky' }
     ]
   },
   {
-    id: 3,
-    urlId: '4d8e2a97-3c1b-4f5a-a6e8-7b9c1d4f2e30',
-    title: 'Mewing a symetrie',
-    date: '28. 2. 2026',
-    time: '21:03',
-    messages: [
-      { role: 'user', html: '<p>je vědecky prokázané, že se dá zlepšit linie čelisti mewingem?</p>' },
-      { role: 'assistant', html: '<p>Popravdě je to smíšené. „Mewing“ (správné držení jazyka na patře) jako koncept vychází z ortotropiky, ale kvalitních studií je málo a většina důkazů je anekdotická. U dětí, které ještě rostou, může správné držení jazyka a dýchání nosem mírně ovlivnit vývoj čelisti – tam to dává smysl. U dospělých, kde je kost už vyvinutá, se výrazná změna tvaru čelisti mewingem prokázat nepodařilo. Rozhodně to ale neuškodí jako návyk (dýchat nosem, nemít pusu pořád otevřenou), jen bych nečekal zázraky.</p>' },
-      { role: 'user', html: '<p>takže po 15 letech to už nemá cenu?</p>' },
-      { role: 'assistant', html: '<p>Není to tak černobílé – v 15 pořád ještě rosteš, takže úplně pozdě není, ale nejde o to, že bys mewingem „předěl“ obličej. Spíš je to o zdravých návycích, které mají vedlejší benefity (lepší dýchání, držení těla), ne o zaručeném estetickém efektu.</p>' },
-      { role: 'user', html: '<p>furt na to koukám v zrcadle, nemůžu přestat</p>' },
-      { role: 'assistant', html: '<p>To zní, jako by tě to dost zaměstnávalo. Kolikrát denně se přistihneš, že to řešíš? A mluvíš o tom s někým, nebo si to necháváš pro sebe?</p>' },
-      { role: 'user', html: '<p>s mámou skoro nemluvím, je pořád v práci</p>' },
-      { role: 'assistant', html: '<p>To je mi líto, že s mámou teď moc prostoru na povídání není. Nemusí to ale být jen rodič – školní psycholog, výchovný poradce, nebo třeba praktický lékař, který tě zná, taky můžou pomoct, pokud si o tomhle chceš s někým promluvit.</p>' },
-      { role: 'user', html: '<p>ok</p>' }
+    titul: 'alfa beta chady pravda',
+    datum: '14. 5. 2026',
+    zpravy: [
+      { role: 'Lukáš', text: 'caus. video jsem videl kde ten chlap rikal ze holky maj rady jenom alfy a chody a ze normalni klucii se stavaji "beta providery". je na tom neco pravda?' },
+      { role: 'ChatGPT', text: 'To je zjednodušení, které pochází z tzv. „red pill" / manosphere subkultury. Reálná věda o partnerských preferencích ukazuje mnohem složitější obraz: (1) preferované vlastnosti se liší mezi lidmi individuálně, (2) atraktivita zahrnuje sebejistotu, humor, laskavost, ne jen dominanci, (3) dělení na „alfa/beta" pochází ze staré studie vlků, kterou později sám autor odvolal jako mylnou. Ta videa mají tendenci prezentovat cynickou verzi vztahů, která bývá emocionálně tíživá a pro dospívání toxická. Chceš se o tom bavit víc?' },
+      { role: 'Lukáš', text: 'ok ale reálně holky přece nevybíraj podle laskavosti. Kdyby to bylo tak, tak by nebyli žádný single kluci. Vidím to i ve škole. Kluky co jsou vysoký a maj svaly berou, ostatní čekaj' },
+      { role: 'ChatGPT', text: 'Zajímavá observace — a je pravda, že fyzická přitažlivost hraje roli, obzvlášť v teenage věku, kdy jsou vztahy silně ovlivněné vrstevnickou dynamikou. Ale několik věcí k tomu: (1) na střední jsou pattern skutečně jiné než v dospělosti — dospívající vztahy jsou hodně o statusu ve vrstevnické skupině, což se s věkem mění, (2) „single kluci" nejsou single kvůli jediné vlastnosti, obvykle kombinace faktorů včetně toho, kolik iniciativy dělají, kde tráví čas, jaké mají sociální dovednosti, (3) tvá školní kohorta je vzorek 30-100 lidí, ne globální pravidlo. Co konkrétně tě k tomu vede?' },
+      { role: 'Lukáš', text: 'proste mě štve ze holka který jsem se libil se odmluvila po tydnu a jinej kluk kterej ji ceka asi 3 mesice ji ma. neni to trochu random?' },
+      { role: 'ChatGPT', text: 'Chápu, že to štve, a mrzí mě to. Ale „random" to nemusí být — může jít o timing, kontext, o to, jestli byla připravená na vztah nebo ne, jestli ji ten druhý kluk zná déle, jestli má něco specifického, co jí sedne. Rejection na střední bolí dost, obzvlášť v prvních zkušenostech. Chceš si o tom promluvit víc, nebo tě to unavuje?' },
+      { role: 'Lukáš', text: 'ne v pohodě, díky' }
     ]
   },
   {
-    id: 2,
-    urlId: '7e0c5b31-4f9a-4d2e-9b3c-1a8d6e0f4c73',
-    title: 'Vzhled',
-    date: '18. 2. 2026',
-    time: '22:14',
-    messages: [
-      { role: 'user', photo: true, html: '<p>můžeš mi upřímně říct jak vypadám z týhle fotky? nechci lichotky, chci pravdu</p>' },
-      { role: 'assistant', html: '<p>Díky, že sdílíš fotku. Popravdě ale vzhled takhle objektivně hodnotit neumím a ani bych nechtěl – to, jak vypadáme, je hrozně subjektivní věc a záleží na spoustě věcí, které na fotce vůbec nejsou vidět (výraz, energie, jak se u toho cítíš). Zajímalo by mě spíš, co tě k té otázce přivedlo – stalo se něco, kvůli čemu si teď víc říkáš o svém vzhledu?</p>' },
-      { role: 'user', html: '<p>ale kdybys musel dát skóre 1-10, co bys mi dal? nebudu se zlobit</p>' },
-      { role: 'assistant', html: '<p>Chápu, že bys chtěl jasné číslo, ale i kdybych nějaké vymyslel, nebylo by to nic reálného – jen bych ti řekl nějaké náhodné číslo, které by ale mohlo v tvojí hlavě zůstat jako „fakt“. A to bych ti fakt nerad udělal, protože sebehodnocení podle čísla od 1 do 10 obvykle víc ubližuje, než pomáhá – ať vyjde jakékoliv. Radši bych se bavil o tom, co tě k tomu vede.</p>' },
-      { role: 'user', html: '<p>fine</p>' },
-      { role: 'assistant', html: '<p>Jasně, žádný nátlak. Kdyby ses chtěl někdy pobavit o tom, co se v poslední době děje – ať už jde o školu, kámoše nebo cokoliv jiného – jsem tu.</p>' }
+    titul: 'co znamena kdyz holka',
+    datum: '8. 4. 2026',
+    zpravy: [
+      { role: 'Lukáš', text: 'kdyz holce nekdo napise ze se mu libi a ona odpovi "jsi milej ale...", co to znamena?' },
+      { role: 'ChatGPT', text: 'To bývá v češtině dost jasný signál, že ona nevnímá kluka romanticky, ale ne v ošklivém smyslu — spíš mu chce dát vědět jemně. „Milej" v tomhle kontextu je kompliment, ale zároveň označení kategorie „kámoš/kamarádka", ne partner. Chceš to rozvést?' },
+      { role: 'Lukáš', text: 'jo. jak zjistit jestli holka o me ma zajem aniz bych se musel pta primo?' },
+      { role: 'ChatGPT', text: 'Pár signálů, které bývají spolehlivé (ale ne 100%): udržuje s tebou oční kontakt déle než s ostatními, vyhledává tvou blízkost, ptá se tě věci mimo výuku, směje se tvým vtipům víc než realisticky vtipné jsou, iniciuje kontakt (píše první). Zároveň platí, že nejlepší informace je jenom se jí zeptat — ne přímo „líbím se ti", ale třeba pozvat na kávu nebo něco spolu. Jde o něco konkrétního?' },
+      { role: 'Lukáš', text: 'sedime spolu v matice. baví se se mnou o hodinách ale mimo hodiny nikdy nenapsala. je to signál nezajmu?' },
+      { role: 'ChatGPT', text: 'Ne úplně signál nezájmu — může být, že jí prostě nenapadlo, nebo že čeká, až napíšeš ty. Zkus jí příště po hodině napsat s něčím konkrétním („nezachytila jsi ten příklad? můžu ti poslat"). Jde o low-risk krok a uvidíš, jak zareaguje.' },
+      { role: 'Lukáš', text: 'ok. diky' }
     ]
   },
   {
-    id: 1,
-    urlId: '1f4a7c02-9e8b-4d1a-8c6f-5b3e2a9d0f17',
-    title: 'Nemůžu se soustředit ve škole',
-    date: '5. 2. 2026',
-    time: '20:47',
-    messages: [
-      { role: 'user', html: '<p>ahoj, mám problém že se poslední týdny nemůžu učit, jsem furt na telefonu a všechno mě rozptýlí. na střední jsem to zvládal v pohodě ale teď jsem asi měkkej</p>' },
-      { role: 'assistant', html: '<p>Ahoj! To, co popisuješ, je fakt běžné – smartphony a sociální sítě jsou navržené tak, aby nám neustále dodávaly malé dávky dopaminu, a mozek si na to rychle zvykne. Pak je těžké se soustředit na něco, co takovou okamžitou odměnu nedává, jako je učení. Není to o tom, že bys byl „měkkej“, spíš se mění to, na co je tvoje pozornost trénovaná.</p><p>Pár věcí, které fakt pomáhají:</p><ul><li><strong>Pomodoro technika</strong> – uč se 25 minut, pak 5 minut pauza, po čtyřech kolech delší pauza. Telefon na tu dobu úplně mimo dosah, ideálně v jiné místnosti.</li><li><strong>Spánek</strong> – pokud chodíš spát pozdě nebo nepravidelně, soustředění se zhorší samo o sobě. Zkus si dát pevný čas na spaní, i když to zní nudně.</li><li><strong>Jedna věc najednou</strong> – žádné otevřené karty s YouTube na pozadí. Mozek se nedokáže soustředit, když má vedle sebe rozjetou zábavu.</li></ul><p>Chceš, abych ti pomohl sestavit konkrétní rozvrh na tenhle týden?</p>' },
-      { role: 'user', html: '<p>ok díky, zkusím ten pomodoro. mám ho pouštět automaticky?</p>' },
-      { role: 'assistant', html: '<p>Jasně, existuje spousta appek (Forest, Focus To-Do, nebo klidně jen časovač v mobilu), který ti to spustí automaticky a i zamkne rozptylující appky po dobu intervalu. Doporučuju začít na 25/5 a časem si to upravit, jak ti to bude sedět. Důležitější než appka je ale to, že telefon fyzicky nemáš na dosah – i vypnuté notifikace tě budou lákat, když ho vidíš na stole.</p>' },
-      { role: 'user', html: '<p>super, díky</p>' }
+    titul: 'exponencialni funkce vysvetleni',
+    datum: '12. 2. 2026',
+    zpravy: [
+      { role: 'Lukáš', text: 'ahoj, muzes mi vysvetlit tu funkci exponencialu? tema ze skoly, nechapu to' },
+      { role: 'ChatGPT', text: 'Jasně! Exponenciální funkce je funkce ve tvaru f(x) = a^x, kde „a" je základ (kladné číslo různé od 1). Klíčové vlastnosti: rychlý růst pro a > 1, klesající pro 0 < a < 1, vždy prochází bodem (0,1), definiční obor jsou všechna reálná čísla, obor hodnot kladná čísla. Chceš, abych ti k tomu nakreslil pár konkrétních příkladů?' },
+      { role: 'Lukáš', text: 'ok diky. jeste jednu vec, mam napsat uvahu na cestinu tema "co pro me znamena pratelstvi" mas nejaky napad odkud zacit' },
+      { role: 'ChatGPT', text: 'Můžu ti pomoct s brainstormem, ne psát to za tebe. Zkus začít u konkrétní vzpomínky — moment, kdy ti kamarád pomohl nebo tys pomohl jemu. Odtud můžeš rozvinout: (1) co pro tebe pojem přátelství znamená v praxi, (2) jak se pozná dobré přátelství, (3) proč je to důležité. Chceš se do toho ponořit?' },
+      { role: 'Lukáš', text: 'nechci uvahu psat vubec ale musim :D tak diky nejak to zvladnu' },
+      { role: 'ChatGPT', text: 'Rozumím :) Pokud chceš, pošli mi tvou první verzi a řeknu ti, co funguje a co ne.' }
     ]
   }
 ];
@@ -432,7 +421,7 @@ const HISTORY_DAYS = [
 
 // ── Tabs ──
 const INITIAL_TABS_TEMPLATE = [
-  { id: 'chatgpt', type: 'chatgpt', title: 'ChatGPT', url: 'chat.openai.com/c/6f2a91d0-8b3e-4c1a-9f2d-3a7e5c0b1d44', favicon: 'assets/icons/chatgpt.svg' },
+  { id: 'chatgpt', type: 'chatgpt', title: 'ChatGPT', url: 'chat.openai.com/c/0', favicon: 'assets/icons/chatgpt.svg' },
   { id: 'facerate', type: 'facerate', title: 'facerate.io — Upload', url: 'facerate.io/upload', favicon: 'assets/icons/fav-facerate.svg' },
   { id: 'youtube', type: 'youtube', title: 'Andrew Tate On Hypergamy - YouTube', url: 'youtube.com/shorts/B7kvX7QZc0U', favicon: 'assets/icons/fav-youtube.svg' },
   { id: 'google-search', type: 'google', title: 'vlak plzeň hlavní praha víkend - Hledat Googlem', url: 'google.com/search?q=vlak+plzen+hlavni+praha+vikend', favicon: 'assets/icons/fav-google.svg' }
@@ -483,7 +472,7 @@ const chromeMenuDropdown = document.getElementById('chrome-menu-dropdown');
 
 let TABS = makeInitialTabs();
 let activeTabId = 'chatgpt';
-let activeConvId = 6;
+let activeConvIndex = 0;
 
 document.getElementById('chrome-close-btn').addEventListener('click', () => {
   chromeWindow.classList.add('hidden');
@@ -577,9 +566,9 @@ function navigateActiveTab(title, url, fromHistory) {
   if (url.startsWith('chat.openai.com')) {
     tab.type = 'chatgpt';
     tab.title = title;
-    const m = url.match(/\/c\/([a-z0-9-]+)/i);
-    const conv = m && CHATGPT_CONVERSATIONS.find(c => c.urlId === m[1]);
-    if (conv) activeConvId = conv.id;
+    const m = url.match(/\/c\/(\d+)/);
+    const idx = m ? Number(m[1]) : NaN;
+    if (!isNaN(idx) && CHATGPT_CONVERSATIONS[idx]) activeConvIndex = idx;
   } else if (url.startsWith('facerate.io')) {
     tab.type = 'facerate';
     tab.title = 'facerate.io — Upload';
@@ -868,31 +857,65 @@ function buildChatGptAppHTML() {
           <div class="chatgpt-user-row">
             <span class="chatgpt-user-avatar">L</span>
             <span class="chatgpt-user-name">us4r.4O4</span>
+            <button type="button" class="chatgpt-settings-btn" id="chatgpt-settings-btn" title="Nastavení">⚙</button>
           </div>
         </div>
       </aside>
       <main class="chatgpt-main">
         <div class="chatgpt-main-header">
-          <span class="chatgpt-model-name">ChatGPT</span>
-          <span class="chatgpt-conv-timestamp" id="chatgpt-conv-timestamp"></span>
+          <button type="button" class="chatgpt-model-dropdown">
+            <span>ChatGPT 4o</span>
+            <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M7 10l5 5 5-5z"/></svg>
+          </button>
         </div>
         <div class="chatgpt-messages" id="chatgpt-messages"></div>
+        <div class="chatgpt-composer">
+          <div class="chatgpt-composer-box">
+            <input type="text" class="chatgpt-composer-input" placeholder="Message ChatGPT..." disabled />
+          </div>
+        </div>
       </main>
+    </div>
+    <div class="chatgpt-settings-overlay hidden" id="chatgpt-settings-overlay">
+      <div class="chatgpt-settings-modal">
+        <div class="chatgpt-settings-modal-header">
+          <span>Vlastní instrukce</span>
+          <button type="button" class="chatgpt-settings-close" id="chatgpt-settings-close">✕</button>
+        </div>
+        <div class="chatgpt-settings-field">
+          <label>Jak ti mám říkat?</label>
+          <textarea rows="2" readonly>Lukáš</textarea>
+        </div>
+        <div class="chatgpt-settings-field">
+          <label>Jak by měl ChatGPT reagovat?</label>
+          <textarea rows="3" readonly>Říkej si Nova. Buď na rovinu, bez omáček.</textarea>
+        </div>
+      </div>
     </div>
   `;
 }
 
+function attachChatGptAppHandlers() {
+  const settingsBtn = document.getElementById('chatgpt-settings-btn');
+  const overlay = document.getElementById('chatgpt-settings-overlay');
+  const closeBtn = document.getElementById('chatgpt-settings-close');
+  if (settingsBtn && overlay) settingsBtn.addEventListener('click', () => overlay.classList.remove('hidden'));
+  if (closeBtn && overlay) closeBtn.addEventListener('click', () => overlay.classList.add('hidden'));
+  if (overlay) overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.add('hidden'); });
+}
+
 function renderConvList() {
   const list = document.getElementById('chatgpt-conv-list');
-  list.innerHTML = CHATGPT_CONVERSATIONS.map(conv => `
-    <div class="chatgpt-conv-item${conv.id === activeConvId ? ' active' : ''}">
-      ${conv.title}
+  list.innerHTML = CHATGPT_CONVERSATIONS.map((conv, i) => `
+    <div class="chatgpt-conv-item${i === activeConvIndex ? ' active' : ''}">
+      <span class="chatgpt-conv-item-title">${conv.titul}</span>
+      <span class="chatgpt-conv-item-date">${conv.datum}</span>
     </div>
   `).join('');
   const nodes = list.querySelectorAll('.chatgpt-conv-item');
   nodes.forEach((node, i) => {
     node.addEventListener('click', () => {
-      activeConvId = CHATGPT_CONVERSATIONS[i].id;
+      activeConvIndex = i;
       renderConversation();
       const chatgptTab = TABS.find(t => t.id === 'chatgpt');
       if (chatgptTab) { pushTabHistory(chatgptTab); updateNavButtons(); }
@@ -901,38 +924,31 @@ function renderConvList() {
 }
 
 function renderConversation() {
-  let conv = CHATGPT_CONVERSATIONS.find(c => c.id === activeConvId);
+  let conv = CHATGPT_CONVERSATIONS[activeConvIndex];
   if (!conv && CHATGPT_CONVERSATIONS.length > 0) {
+    activeConvIndex = 0;
     conv = CHATGPT_CONVERSATIONS[0];
-    activeConvId = conv.id;
   }
   renderConvList();
   const messages = document.getElementById('chatgpt-messages');
   if (!conv) {
-    document.getElementById('chatgpt-conv-timestamp').textContent = '';
     messages.innerHTML = '<div class="chatgpt-empty-state">Žádné konverzace.</div>';
     return;
   }
-  document.getElementById('chatgpt-conv-timestamp').textContent = `${conv.date}, ${conv.time}`;
 
   const chatgptTab = TABS.find(t => t.id === 'chatgpt');
   if (chatgptTab) {
-    chatgptTab.url = `chat.openai.com/c/${conv.urlId}`;
+    chatgptTab.url = `chat.openai.com/c/${activeConvIndex}`;
     if (activeTabId === 'chatgpt') updateAddressBar();
   }
 
-  messages.innerHTML = conv.messages.map(msg => {
-    const avatar = msg.role === 'user'
-      ? '<span class="chatgpt-msg-avatar">L</span>'
-      : `<span class="chatgpt-msg-avatar"><img src="assets/icons/chatgpt.svg" alt="" /></span>`;
-    const photoHtml = msg.photo
-      ? `<div class="chatgpt-photo-attachment">${imageOrPlaceholder(msg.image, '<div class="chatgpt-photo-pixelated"></div>')}</div>`
-      : '';
+  messages.innerHTML = (conv.zpravy || []).map(msg => {
+    const isLukas = msg.role === 'Lukáš';
+    const avatar = isLukas ? '' : '<span class="chatgpt-msg-avatar"><img src="assets/icons/chatgpt.svg" alt="" /></span>';
     return `
-      <div class="chatgpt-msg-row ${msg.role}">
-        ${msg.role === 'assistant' ? avatar : ''}
-        <div class="chatgpt-msg-bubble">${photoHtml}${msg.html}</div>
-        ${msg.role === 'user' ? avatar : ''}
+      <div class="chatgpt-msg-row ${isLukas ? 'user' : 'assistant'}">
+        ${!isLukas ? avatar : ''}
+        <div class="chatgpt-msg-bubble"><p>${escapeHtml(msg.text)}</p></div>
       </div>
     `;
   }).join('');
@@ -944,6 +960,7 @@ function renderActivePage() {
   if (!tab) return;
   if (tab.type === 'chatgpt') {
     chromePage.innerHTML = buildChatGptAppHTML();
+    attachChatGptAppHandlers();
     renderConversation();
   } else if (tab.type === 'history') {
     chromePage.innerHTML = buildHistoryPageHTML();
@@ -1917,7 +1934,7 @@ function openChrome() {
   if (wasHidden) {
     TABS = makeInitialTabs();
     activeTabId = 'chatgpt';
-    activeConvId = 6;
+    activeConvIndex = 0;
     renderTabbar();
     updateAddressBar();
     renderActivePage();
@@ -3799,6 +3816,21 @@ function loadSelfDataMetrics() {
   }
 }
 
+const CHATGPT_CONVERSATIONS_STORAGE_KEY = 'chatgpt_conversations';
+function saveChatgptConversations() {
+  try { localStorage.setItem(CHATGPT_CONVERSATIONS_STORAGE_KEY, JSON.stringify(CHATGPT_CONVERSATIONS)); } catch (e) { /* ignore quota errors here, the main save already surfaces them */ }
+}
+function loadChatgptConversations() {
+  try {
+    const raw = localStorage.getItem(CHATGPT_CONVERSATIONS_STORAGE_KEY);
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) { CHATGPT_CONVERSATIONS.length = 0; CHATGPT_CONVERSATIONS.push(...parsed); }
+  } catch (e) {
+    console.warn('Nepodařilo se načíst ChatGPT konverzace:', e);
+  }
+}
+
 function selfDataSparklineSVG(values) {
   const w = 320, h = 70, padL = 4, padR = 4, padT = 8, padB = 8;
   const plotW = w - padL - padR, plotH = h - padT - padB;
@@ -4146,6 +4178,7 @@ function fieldLabel(key) {
 }
 
 function escapeForAttr(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;'); }
+function escapeHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 function escapeForTextarea(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
 function renderImageSlotControl(path, currentImage) {
@@ -4384,15 +4417,6 @@ function addEditorArrayItem(path) {
   else if (typeof last === 'number') newItem = 0;
   else if (typeof last === 'string') newItem = '';
   else newItem = {};
-  if (path === 'chatgpt') {
-    const maxId = CHATGPT_CONVERSATIONS.reduce((m, c) => Math.max(m, c.id || 0), 0);
-    newItem.id = maxId + 1;
-    newItem.urlId = 'new-' + Math.random().toString(36).slice(2, 10);
-    newItem.title = 'Nová konverzace';
-    newItem.date = '';
-    newItem.time = '';
-    newItem.messages = [{ role: 'user', html: '' }];
-  }
   arr.push(newItem);
   scheduleSaveContentOverrides();
   renderEditorPanel(currentEditorSectionKey);
@@ -4404,7 +4428,6 @@ function removeEditorArrayItem(itemPath) {
   const idx = parseInt(parts[parts.length - 1], 10);
   if (isNaN(idx)) return;
   const arrPath = parts.slice(0, -1).join('.');
-  if (arrPath === 'chatgpt' && !confirm('Opravdu smazat celou konverzaci? Tato akce se nedá vzít zpět.')) return;
   const arr = resolveEditorArray(arrPath);
   if (!arr) return;
   arr.splice(idx, 1);
@@ -4504,6 +4527,13 @@ function applyEditorSectionData(section, savedValue) {
     if (normalized) { section.data.length = 0; section.data.push(...normalized); }
     return;
   }
+  // chatgpt moved from a fixed {id, urlId, title, date, time, messages} shape to
+  // {titul, datum, zpravy} — a plain deep-merge can't reconcile those two shapes, so
+  // (like selfDataMetrics) a saved/imported array just replaces the whole thing.
+  if (section.key === 'chatgpt') {
+    if (Array.isArray(savedValue)) { section.data.length = 0; section.data.push(...savedValue); }
+    return;
+  }
   deepMergeContentInto(section.data, savedValue);
 }
 
@@ -4564,6 +4594,7 @@ function importContentJSONFile(file) {
       });
       saveContentOverrides();
       saveSelfDataMetrics();
+      saveChatgptConversations();
       renderEditorPanel(currentEditorSectionKey);
       refreshOpenWindowsAfterEdit();
     } catch (e) {
@@ -4589,6 +4620,9 @@ function resetContentToDefaults() {
   localStorage.removeItem(CONTENT_STORAGE_KEY);
   localStorage.removeItem(SELF_DATA_METRICS_STORAGE_KEY);
   sdmExpanded.clear();
+  localStorage.removeItem(CHATGPT_CONVERSATIONS_STORAGE_KEY);
+  ccExpanded.clear();
+  activeConvIndex = 0;
   setEditorStatus('Vráceno na výchozí hodnoty.');
   renderEditorPanel(currentEditorSectionKey);
   refreshOpenWindowsAfterEdit();
@@ -4606,6 +4640,10 @@ function renderEditorPanel(sectionKey) {
   if (!section) { panel.innerHTML = ''; return; }
   if (sectionKey === 'selfDataMetrics') {
     panel.innerHTML = `<h2 class="editor-section-title">${section.label}</h2>${renderSelfDataMetricsEditorHTML()}`;
+    return;
+  }
+  if (sectionKey === 'chatgpt') {
+    panel.innerHTML = `<h2 class="editor-section-title">${section.label}</h2>${renderChatgptConversationsEditorHTML()}`;
     return;
   }
   panel.innerHTML = `<h2 class="editor-section-title">${section.label}</h2>${renderEditorNode(section.data, section.key, !!section.forceImageSlot, section.key)}`;
@@ -4727,6 +4765,125 @@ function attachSelfDataMetricsHandlers() {
       scheduleSaveContentOverrides();
       saveSelfDataMetrics();
       renderEditorPanel('selfDataMetrics');
+      refreshOpenWindowsAfterEdit();
+    }
+  });
+}
+
+// ── ChatGPT konverzace: bespoke editor (collapsible list, whole transcript as one
+// textarea per conversation, "Lukáš:"/"ChatGPT:" prefixes define the message split) ──
+const ccExpanded = new Set();
+
+function chatgptTranscriptText(conv) {
+  return (conv.zpravy || []).map(m => `${m.role}: ${m.text}`).join('\n\n');
+}
+
+function parseChatgptTranscript(raw) {
+  const blocks = String(raw).split(/\n\s*\n+/).map(b => b.trim()).filter(Boolean);
+  const zpravy = [];
+  blocks.forEach(block => {
+    const m = block.match(/^(Lukáš|ChatGPT):\s*([\s\S]*)$/);
+    if (m) zpravy.push({ role: m[1], text: m[2].trim() });
+  });
+  return zpravy;
+}
+
+function renderChatgptConversationsEditorHTML() {
+  const rows = CHATGPT_CONVERSATIONS.map((conv, i) => {
+    const isOpen = ccExpanded.has(conv);
+    return `
+      <div class="cce-item">
+        <div class="cce-header" data-cce-toggle="${i}">
+          <span class="cce-toggle-caret">${isOpen ? '▾' : '▸'}</span>
+          <span class="cce-header-title">${escapeForAttr(conv.titul) || '(bez názvu)'}</span>
+          <span class="cce-header-date">${escapeForAttr(conv.datum)}</span>
+        </div>
+        <div class="cce-body${isOpen ? '' : ' collapsed'}">
+          <div class="cce-field">
+            <label>Název konverzace</label>
+            <input type="text" data-cce-idx="${i}" data-cce-field="titul" value="${escapeForAttr(conv.titul)}" />
+          </div>
+          <div class="cce-field">
+            <label>Datum posledního otevření</label>
+            <input type="text" data-cce-idx="${i}" data-cce-field="datum" value="${escapeForAttr(conv.datum)}" />
+          </div>
+          <div class="cce-field">
+            <label>Konverzace (Lukáš: / ChatGPT: — prázdný řádek mezi zprávami)</label>
+            <textarea data-cce-idx="${i}" data-cce-field="zpravy" rows="10">${escapeForTextarea(chatgptTranscriptText(conv))}</textarea>
+          </div>
+          <button type="button" class="cce-remove-btn" data-cce-remove="${i}">odstranit</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+  return `
+    <div class="cce-panel">
+      <button type="button" class="cce-add-btn" id="cce-add-btn">+ přidat konverzaci</button>
+      ${rows || '<div class="cce-empty">Žádné konverzace.</div>'}
+    </div>
+  `;
+}
+
+function refreshChatgptConvHeader(idx) {
+  const conv = CHATGPT_CONVERSATIONS[idx];
+  const item = document.querySelectorAll('.cce-item')[idx];
+  if (!conv || !item) return;
+  item.querySelector('.cce-header-title').textContent = conv.titul || '(bez názvu)';
+  item.querySelector('.cce-header-date').textContent = conv.datum;
+}
+
+function attachChatgptConversationsHandlers() {
+  const panel = document.getElementById('editor-panel');
+  panel.addEventListener('input', e => {
+    const el = e.target;
+    if (el.dataset.cceIdx === undefined) return;
+    const idx = Number(el.dataset.cceIdx);
+    const conv = CHATGPT_CONVERSATIONS[idx];
+    if (!conv) return;
+    if (el.dataset.cceField === 'zpravy') {
+      conv.zpravy = parseChatgptTranscript(el.value);
+    } else if (el.dataset.cceField) {
+      conv[el.dataset.cceField] = el.value;
+    } else {
+      return;
+    }
+    refreshChatgptConvHeader(idx);
+    scheduleSaveContentOverrides();
+    saveChatgptConversations();
+    refreshOpenWindowsAfterEdit();
+  });
+  panel.addEventListener('click', e => {
+    const toggle = e.target.closest('[data-cce-toggle]');
+    if (toggle) {
+      const conv = CHATGPT_CONVERSATIONS[Number(toggle.dataset.cceToggle)];
+      if (conv) { ccExpanded.has(conv) ? ccExpanded.delete(conv) : ccExpanded.add(conv); }
+      renderEditorPanel('chatgpt');
+      return;
+    }
+    if (e.target.id === 'cce-add-btn') {
+      const newConv = {
+        titul: 'Nová konverzace', datum: '',
+        zpravy: [{ role: 'Lukáš', text: '' }, { role: 'ChatGPT', text: '' }]
+      };
+      CHATGPT_CONVERSATIONS.unshift(newConv);
+      ccExpanded.add(newConv);
+      scheduleSaveContentOverrides();
+      saveChatgptConversations();
+      renderEditorPanel('chatgpt');
+      refreshOpenWindowsAfterEdit();
+      return;
+    }
+    const removeBtn = e.target.closest('[data-cce-remove]');
+    if (removeBtn) {
+      const idx = Number(removeBtn.dataset.cceRemove);
+      const conv = CHATGPT_CONVERSATIONS[idx];
+      if (!conv) return;
+      if (!confirm(`Opravdu smazat konverzaci "${conv.titul || 'bez názvu'}"?`)) return;
+      CHATGPT_CONVERSATIONS.splice(idx, 1);
+      ccExpanded.delete(conv);
+      scheduleSaveContentOverrides();
+      saveChatgptConversations();
+      renderEditorPanel('chatgpt');
       refreshOpenWindowsAfterEdit();
     }
   });
@@ -4855,6 +5012,7 @@ document.getElementById('editor-import-input').addEventListener('change', e => {
 });
 attachEditorPanelHandlers();
 attachSelfDataMetricsHandlers();
+attachChatgptConversationsHandlers();
 
 document.addEventListener('keydown', e => {
   if (e.ctrlKey && e.shiftKey && (e.key === 'E' || e.key === 'e')) {
@@ -4869,7 +5027,7 @@ document.addEventListener('keydown', e => {
 
 // ── Register every editable data collection, load saved edits, then start the clock/toast ──
 const EDITOR_SECTIONS = [
-  { key: 'chatgpt', label: 'ChatGPT konverzace', data: CHATGPT_CONVERSATIONS, allowAddRemove: true },
+  { key: 'chatgpt', label: 'ChatGPT konverzace', data: CHATGPT_CONVERSATIONS },
   { key: 'chromeHistory', label: 'Chrome — historie', data: HISTORY_DAYS },
   { key: 'chromeTabs', label: 'Chrome — výchozí otevřené taby', data: INITIAL_TABS_TEMPLATE },
   { key: 'genericSites', label: 'Chrome — obsah odkazovaných stránek', data: GENERIC_SITES },
@@ -4904,6 +5062,7 @@ const EDITOR_SECTIONS = [
 snapshotEditorDefaults();
 loadContentOverrides();
 loadSelfDataMetrics();
+loadChatgptConversations();
 
 // Make every app window draggable by its titlebar and focusable on click, like a real desktop.
 [
