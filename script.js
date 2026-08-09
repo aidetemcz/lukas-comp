@@ -4559,6 +4559,27 @@ function applyEditorSectionData(section, savedValue) {
     if (isValidChatgptConversationsData(savedValue)) { section.data.length = 0; section.data.push(...savedValue); }
     return;
   }
+  // recycle & photos both support add/remove via the generic editor (allowAddRemove),
+  // but deepMergeContentInto's array branch only ever edits fields *within* an array's
+  // existing bounds: source indices past target.length are silently skipped (an added
+  // item never gets merged in — it just vanishes on the next load), and target is never
+  // truncated down to source.length when it shrinks (a removed item's slot survives,
+  // filled with a duplicate of whatever the merge happened to shift into it). Both
+  // symptoms match exactly what was reported: added files disappearing and deleted files
+  // reappearing after a refresh. Like selfDataMetrics/chatgpt, saved data for these two
+  // sections now replaces the defaults wholesale so structural changes (not just field
+  // edits) actually persist.
+  if (section.key === 'recycle') {
+    if (Array.isArray(savedValue)) { section.data.length = 0; section.data.push(...savedValue); }
+    return;
+  }
+  if (section.key === 'photos') {
+    if (isPlainObject(savedValue) && Array.isArray(savedValue.children)) {
+      Object.keys(section.data).forEach(k => delete section.data[k]);
+      Object.assign(section.data, savedValue);
+    }
+    return;
+  }
   deepMergeContentInto(section.data, savedValue);
 }
 
