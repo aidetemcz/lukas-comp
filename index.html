@@ -6,7 +6,22 @@
   <title>Lukas-PC</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body> 
+
+  <!-- Lock screen (Windows-style intro) -->
+  <div id="lock-screen">
+    <div class="lock-screen-content">
+      <div class="lock-time" id="lock-time">16:47</div>
+      <div class="lock-date" id="lock-date">sobota 28. března</div>
+    </div>
+    <div class="lock-hint">Klikněte nebo stiskněte libovolnou klávesu</div>
+  </div>
+
+  <!-- Welcome transition (Windows sign-in style) -->
+  <div id="welcome-screen" class="hidden">
+    <div class="welcome-spinner"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="welcome-text">Vítejte</div>
+  </div>
 
   <!-- Desktop -->
   <div id="desktop">
@@ -18,12 +33,6 @@
       <div class="icon" data-app="folder-photos">
         <img src="assets/icons/folder.svg" alt="složka" />
         <span>Fotky a videa</span>
-      </div>
-
-      <!-- Folder: Deník -->
-      <div class="icon" data-app="diary">
-        <img src="assets/icons/notepad.svg" alt="poznámkový blok" />
-        <span>denik_soukrome.txt</span>
       </div>
 
       <!-- App: Chrome -->
@@ -50,6 +59,12 @@
         <span>Counter-Strike 2</span>
       </div>
 
+      <!-- App: self_data.html -->
+      <div class="icon" data-app="self-data">
+        <img src="assets/icons/selfdata.svg" alt="self_data.html" />
+        <span>self_data.html</span>
+      </div>
+
       <!-- Recycle Bin -->
       <div class="icon" data-app="recycle">
         <img src="assets/icons/recycle.svg" alt="Koš" />
@@ -67,19 +82,364 @@
       </button>
       <div id="taskbar-apps"></div>
       <div id="taskbar-right">
+        <div class="systray" id="systray">
+          <span class="systray-icon" id="systray-discord" title="Discord">
+            <img src="assets/icons/discord.svg" alt="" />
+            <span class="systray-badge">3</span>
+          </span>
+          <span class="systray-icon" id="systray-whatsapp" title="WhatsApp">
+            <img src="assets/icons/whatsapp.svg" alt="" />
+            <span class="systray-badge">2</span>
+          </span>
+          <span class="systray-icon" id="systray-steam" title="Steam">
+            <img src="assets/icons/steam.svg" alt="" />
+          </span>
+          <span class="systray-icon" title="Wi-Fi: Připojeno">
+            <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 20a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2zM7.8 14.8a6 6 0 0 1 8.4 0l-1.6 1.6a3.8 3.8 0 0 0-5.2 0zM4.4 11.4a11 11 0 0 1 15.2 0l-1.6 1.6a8.8 8.8 0 0 0-12 0z"/></svg>
+          </span>
+          <span class="systray-icon" title="Hlasitost">
+            <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M4 9v6h4l5 5V4L8 9zm11.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>
+          </span>
+          <span class="systray-icon systray-battery" title="Baterie: 34 %">
+            <svg viewBox="0 0 24 12" width="20" height="10"><rect x="1" y="1" width="19" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.3"/><rect x="21" y="4" width="2" height="4" rx="1" fill="currentColor"/><rect x="2.5" y="2.5" width="6.5" height="7" rx="1" fill="currentColor"/></svg>
+            <span class="systray-battery-pct">34%</span>
+          </span>
+        </div>
         <span id="taskbar-time"></span>
+      </div>
+    </div>
+
+    <!-- Start menu -->
+    <div id="start-menu" class="hidden">
+      <input class="start-menu-search" placeholder="Hledat" />
+      <div class="start-menu-grid" id="start-menu-grid"></div>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast-notification" class="hidden">
+      <img class="toast-icon" src="assets/icons/discord.svg" alt="" />
+      <div class="toast-body">
+        <div class="toast-title" id="toast-title"></div>
+        <div class="toast-text" id="toast-text"></div>
       </div>
     </div>
 
   </div>
 
-  <!-- Modal: Update/Loading placeholder -->
-  <div id="modal-overlay" class="hidden">
-    <div id="modal">
-      <div id="modal-title"></div>
-      <div id="modal-body"></div>
-      <button id="modal-close">Zavřít</button>
+  <!-- WhatsApp Desktop window -->
+  <div id="whatsapp-window" class="hidden">
+    <div class="wa-titlebar">
+      <img class="wa-titlebar-icon" src="assets/icons/whatsapp.svg" alt="" />
+      <span class="wa-titlebar-name">WhatsApp</span>
+      <button class="wa-close" id="whatsapp-close-btn">✕</button>
     </div>
+    <div class="wa-app">
+      <aside class="wa-sidebar">
+        <div class="wa-sidebar-header">
+          <span class="wa-self-avatar">L</span>
+          <span class="wa-sidebar-title">Chaty</span>
+        </div>
+        <div class="wa-chat-list" id="wa-chat-list"></div>
+      </aside>
+      <main class="wa-main" id="wa-main"></main>
+    </div>
+  </div>
+
+  <!-- Chrome browser window -->
+  <div id="chrome-window" class="hidden">
+    <div class="chrome-titlebar">
+      <div class="chrome-traffic-lights"><span></span><span></span><span></span></div>
+      <div class="chrome-tabbar" id="chrome-tabbar"></div>
+      <button class="chrome-close" id="chrome-close-btn">✕</button>
+    </div>
+    <div class="chrome-toolbar">
+      <div class="chrome-nav-btns">
+        <span class="chrome-nav-btn disabled" id="chrome-nav-back">‹</span>
+        <span class="chrome-nav-btn disabled" id="chrome-nav-forward">›</span>
+        <span class="chrome-nav-btn">⟳</span>
+      </div>
+      <div class="chrome-address-bar">
+        <svg class="chrome-lock-icon" viewBox="0 0 24 24" width="11" height="11">
+          <path fill="currentColor" d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm3 8H9V6a3 3 0 0 1 6 0v3z"/>
+        </svg>
+        <input id="chrome-address-text" value="chat.openai.com/c/6f2a91d0-8b3e-4c1a-9f2d-3a7e5c0b1d44" />
+      </div>
+      <div class="chrome-toolbar-right">
+        <button class="chrome-menu-btn" id="chrome-menu-btn">⋮</button>
+        <div class="chrome-menu-dropdown hidden" id="chrome-menu-dropdown">
+          <div class="chrome-menu-item" id="chrome-menu-history">
+            <span>Historie</span><span class="chrome-menu-shortcut">Ctrl+H</span>
+          </div>
+          <div class="chrome-menu-item">Stažené soubory<span class="chrome-menu-shortcut">Ctrl+J</span></div>
+          <div class="chrome-menu-item">Záložky</div>
+          <div class="chrome-menu-sep"></div>
+          <div class="chrome-menu-item">Nastavení</div>
+        </div>
+      </div>
+    </div>
+    <div class="chrome-page" id="chrome-page"></div>
+    <div class="chrome-statusbar hidden" id="chrome-statusbar"></div>
+  </div>
+
+  <!-- Discord window -->
+  <div id="discord-window" class="hidden">
+    <div class="discord-titlebar">
+      <img class="discord-titlebar-icon" src="assets/icons/discord.svg" alt="" />
+      <span class="discord-titlebar-name">Discord</span>
+      <button class="discord-close" id="discord-close-btn">✕</button>
+    </div>
+    <div class="discord-app">
+      <div class="discord-server-rail" id="discord-server-rail"></div>
+      <div class="discord-channel-panel">
+        <div class="discord-channel-header" id="discord-server-name"></div>
+        <div class="discord-channel-list" id="discord-channel-list"></div>
+        <div class="discord-user-footer">
+          <span class="discord-avatar discord-avatar-default" id="discord-self-avatar"></span>
+          <div class="discord-user-footer-info">
+            <span class="discord-user-footer-name">hidd3nfram3</span>
+            <span class="discord-user-footer-status">online</span>
+          </div>
+        </div>
+      </div>
+      <div class="discord-main">
+        <div class="discord-main-header" id="discord-main-header"></div>
+        <div class="discord-messages" id="discord-messages"></div>
+        <div class="discord-input" id="discord-input">
+          <span class="discord-input-box" id="discord-input-box"></span>
+        </div>
+      </div>
+      <div class="discord-member-panel" id="discord-member-panel"></div>
+    </div>
+  </div>
+
+  <!-- Photos / File explorer window (Windows 11 File Explorer, dark) -->
+  <div id="photos-window" class="hidden">
+    <div class="pfe-titlebar">
+      <img class="pfe-titlebar-icon" src="assets/icons/folder.svg" alt="" />
+      <span class="pfe-titlebar-name">Fotky a videa</span>
+      <div class="pfe-title-controls">
+        <button class="pfe-title-btn" title="Minimalizovat">─</button>
+        <button class="pfe-title-btn" title="Maximalizovat">☐</button>
+        <button class="pfe-title-btn pfe-title-close" id="photos-close-btn" title="Zavřít">✕</button>
+      </div>
+    </div>
+    <div class="pfe-ribbon">
+      <div class="pfe-nav-btns">
+        <button class="pfe-nav-btn" id="pfe-back-btn" title="Zpět">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="pfe-nav-btn" id="pfe-forward-btn" title="Vpřed">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <button class="pfe-nav-btn" id="pfe-up-btn" title="O úroveň výš">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+        </button>
+        <button class="pfe-nav-btn" id="pfe-refresh-btn" title="Obnovit">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.5a9.7 9.7 0 1 1-2.8-7"/><polyline points="21 3 21 9 15 9"/></svg>
+        </button>
+      </div>
+      <div class="pfe-breadcrumb-wrap">
+        <span class="pfe-crumb-root">Tento PC</span>
+        <span class="photos-crumb-sep">▸</span>
+        <div class="photos-breadcrumb" id="photos-breadcrumb"></div>
+      </div>
+      <div class="pfe-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Prohledat Fotky a videa</span></div>
+    </div>
+    <div class="pfe-toolbar">
+      <button class="pfe-toolbar-btn pfe-toolbar-btn-primary" id="pfe-new-btn">+ Nový</button>
+      <div class="pfe-dropdown-wrap">
+        <button class="pfe-toolbar-btn" id="pfe-view-btn">☰ Zobrazit ▾</button>
+        <div class="pfe-dropdown-menu hidden" id="pfe-view-menu">
+          <div class="pfe-dropdown-item" data-view="grid">Velké ikony</div>
+          <div class="pfe-dropdown-item" data-view="details">Podrobnosti</div>
+          <div class="pfe-dropdown-item" data-view="list">Seznam</div>
+        </div>
+      </div>
+      <div class="pfe-dropdown-wrap">
+        <button class="pfe-toolbar-btn" id="pfe-sort-btn">↕ Řadit ▾</button>
+        <div class="pfe-dropdown-menu hidden" id="pfe-sort-menu">
+          <div class="pfe-dropdown-item" data-sort="name">Podle názvu</div>
+          <div class="pfe-dropdown-item" data-sort="date">Podle data</div>
+          <div class="pfe-dropdown-item" data-sort="size">Podle velikosti</div>
+        </div>
+      </div>
+      <button class="pfe-toolbar-btn" id="pfe-more-btn">⋯ Více</button>
+    </div>
+    <div class="pfe-body">
+      <div class="pfe-sidebar" id="photos-sidebar"></div>
+      <div class="pfe-main">
+        <div class="photos-grid" id="photos-grid"></div>
+      </div>
+    </div>
+    <div class="pfe-statusbar">
+      <span id="pfe-status-count"></span>
+      <span class="pfe-statusbar-spacer"></span>
+      <span class="pfe-statusbar-gear">⚙</span>
+    </div>
+  </div>
+
+  <!-- Photos file-preview modal (Windows Photos style) -->
+  <div id="photos-modal-overlay" class="hidden">
+    <div id="photos-modal">
+      <div class="pm-topbar">
+        <div class="pm-topbar-group">
+          <button class="pm-icon-btn" title="Upravit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+          <button class="pm-icon-btn" title="Otočit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.5a10 10 0 1 1-2.6-7.8"/><path d="M22 2v6h-6"/></svg></button>
+          <button class="pm-icon-btn" title="Odstranit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
+          <button class="pm-icon-btn" title="Tisk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button>
+          <button class="pm-icon-btn" title="Sdílet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+          <button class="pm-icon-btn" title="Další možnosti"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
+        </div>
+        <span id="photos-modal-name" class="pm-filename"></span>
+        <button class="pm-icon-btn pm-close" id="photos-modal-close" title="Zavřít"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="pm-stage">
+        <button class="pm-nav pm-nav-prev" id="photos-modal-prev" title="Předchozí"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <div class="photos-modal-preview" id="photos-modal-preview"></div>
+        <button class="pm-nav pm-nav-next" id="photos-modal-next" title="Další"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+      <div class="pm-bottombar">
+        <button class="pm-icon-btn" title="Oblíbené"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
+        <button class="pm-icon-btn" id="photos-modal-info-btn" title="Informace"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button>
+        <span class="pm-bottom-meta"><span id="photos-modal-dims"></span><span class="pm-dot">·</span><span id="photos-modal-size"></span></span>
+        <div class="pm-zoom">
+          <button class="pm-icon-btn" title="Oddálit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+          <span class="pm-zoom-pct">100%</span>
+          <button class="pm-icon-btn" title="Přiblížit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        </div>
+      </div>
+      <div class="pm-info-panel hidden" id="photos-modal-info-panel">
+        <div class="pm-info-header">
+          <h4>Informace o souboru</h4>
+          <button class="pm-icon-btn" id="photos-modal-info-close" title="Zavřít informace"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <div id="photos-modal-meta"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recycle Bin window (Windows 11 File Explorer, dark — shares .pfe-*/.photos-* chrome with Fotky) -->
+  <div id="recycle-window" class="hidden">
+    <div class="pfe-titlebar">
+      <img class="pfe-titlebar-icon" src="assets/icons/recycle.svg" alt="" />
+      <span class="pfe-titlebar-name">Koš</span>
+      <div class="pfe-title-controls">
+        <button class="pfe-title-btn" title="Minimalizovat">─</button>
+        <button class="pfe-title-btn" title="Maximalizovat">☐</button>
+        <button class="pfe-title-btn pfe-title-close" id="recycle-close-btn" title="Zavřít">✕</button>
+      </div>
+    </div>
+    <div class="pfe-ribbon">
+      <div class="pfe-nav-btns">
+        <button class="pfe-nav-btn" id="rb-back-btn" title="Zpět" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="pfe-nav-btn" id="rb-forward-btn" title="Vpřed" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <button class="pfe-nav-btn" id="rb-up-btn" title="O úroveň výš" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+        </button>
+        <button class="pfe-nav-btn" id="rb-refresh-btn" title="Obnovit">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.5a9.7 9.7 0 1 1-2.8-7"/><polyline points="21 3 21 9 15 9"/></svg>
+        </button>
+      </div>
+      <div class="pfe-breadcrumb-wrap">
+        <span class="pfe-crumb-root">Tento PC</span>
+        <span class="photos-crumb-sep">▸</span>
+        <span class="photos-crumb current">Koš</span>
+      </div>
+      <div class="pfe-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Prohledat Koš</span></div>
+    </div>
+    <div class="pfe-toolbar">
+      <button class="pfe-toolbar-btn" id="rb-restore-all-btn">Obnovit vše</button>
+      <button class="pfe-toolbar-btn" id="rb-empty-btn">Vysypat koš</button>
+      <div class="pfe-dropdown-wrap">
+        <button class="pfe-toolbar-btn" id="rb-view-btn">☰ Zobrazit ▾</button>
+        <div class="pfe-dropdown-menu hidden" id="rb-view-menu">
+          <div class="pfe-dropdown-item" data-view="details">Podrobnosti</div>
+          <div class="pfe-dropdown-item" data-view="grid">Velké ikony</div>
+          <div class="pfe-dropdown-item" data-view="list">Seznam</div>
+        </div>
+      </div>
+      <div class="pfe-dropdown-wrap">
+        <button class="pfe-toolbar-btn" id="rb-sort-btn">↕ Řadit ▾</button>
+        <div class="pfe-dropdown-menu hidden" id="rb-sort-menu">
+          <div class="pfe-dropdown-item" data-sort="date">Datum smazání</div>
+          <div class="pfe-dropdown-item" data-sort="name">Název</div>
+          <div class="pfe-dropdown-item" data-sort="size">Velikost</div>
+          <div class="pfe-dropdown-item" data-sort="location">Původní umístění</div>
+        </div>
+      </div>
+      <button class="pfe-toolbar-btn" id="rb-more-btn">⋯ Více</button>
+    </div>
+    <div class="pfe-body">
+      <div class="pfe-sidebar" id="recycle-sidebar"></div>
+      <div class="pfe-main">
+        <div class="photos-grid" id="recycle-list"></div>
+      </div>
+    </div>
+    <div class="pfe-statusbar">
+      <span id="rb-status-count"></span>
+      <span class="pfe-statusbar-spacer"></span>
+      <span class="pfe-statusbar-gear">⚙</span>
+    </div>
+  </div>
+
+  <!-- Trash file viewer window -->
+  <div id="trash-viewer-window" class="hidden">
+    <div class="explorer-titlebar">
+      <img class="explorer-titlebar-icon" id="trash-viewer-icon" src="" alt="" />
+      <span class="explorer-titlebar-name" id="trash-viewer-name"></span>
+      <button class="explorer-close" id="trash-viewer-close-btn">✕</button>
+    </div>
+    <div class="trash-viewer-content" id="trash-viewer-content"></div>
+  </div>
+
+  <!-- Recycle bin context menu -->
+  <div class="context-menu hidden" id="recycle-context-menu">
+    <div class="context-menu-item" id="context-menu-open">Zobrazit</div>
+    <div class="context-menu-item" id="context-menu-restore">Obnovit</div>
+  </div>
+
+  <!-- Counter-Strike 2 launcher window -->
+  <div id="cs2-window" class="hidden">
+    <div class="cs2-titlebar">
+      <img class="cs2-titlebar-icon" src="assets/icons/cs.svg" alt="" />
+      <span class="cs2-titlebar-name">Counter-Strike 2</span>
+      <button class="cs2-close" id="cs2-close-btn">✕</button>
+    </div>
+    <div class="cs2-body" id="cs2-body"></div>
+  </div>
+
+  <!-- Halo Infinite launcher window -->
+  <div id="halo-window" class="hidden">
+    <div class="halo-titlebar">
+      <img class="halo-titlebar-icon" src="assets/icons/halo.svg" alt="" />
+      <span class="halo-titlebar-name">Halo Infinite</span>
+      <button class="halo-close" id="halo-close-btn">✕</button>
+    </div>
+    <div class="halo-body" id="halo-body"></div>
+  </div>
+
+  <!-- Content editor — hidden dev tool for Nat, opened with Ctrl+Shift+E. Not part of the in-fiction desktop. -->
+  <div id="content-editor" class="hidden">
+    <div class="editor-titlebar">
+      <span class="editor-titlebar-name">✎ Editor obsahu</span>
+      <span class="editor-titlebar-hint">Ctrl+Shift+E zavře/otevře</span>
+      <div class="editor-titlebar-actions">
+        <button id="editor-export-btn" title="Exportovat JSON">Export</button>
+        <button id="editor-import-btn" title="Importovat JSON">Import</button>
+        <input type="file" id="editor-import-input" accept="application/json" class="hidden" />
+        <button id="editor-reset-btn" title="Reset na výchozí">Reset</button>
+        <button id="editor-close-btn" title="Zavřít editor">✕</button>
+      </div>
+    </div>
+    <div class="editor-body">
+      <nav class="editor-nav" id="editor-nav"></nav>
+      <div class="editor-panel" id="editor-panel"></div>
+    </div>
+    <div class="editor-statusbar" id="editor-statusbar">Změny se ukládají automaticky do tohoto prohlížeče (localStorage).</div>
   </div>
 
   <script src="script.js"></script>
